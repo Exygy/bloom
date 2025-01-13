@@ -41,6 +41,7 @@ module.exports = withBundleAnalyzer({
     cacheRevalidate: process.env.CACHE_REVALIDATE ? Number(process.env.CACHE_REVALIDATE) : 60,
     cloudinaryCloudName: process.env.CLOUDINARY_CLOUD_NAME,
     showPublicLottery: process.env.SHOW_PUBLIC_LOTTERY === "TRUE",
+    showNewListingDetailPage: process.env.SHOW_NEW_LISTING_DETAIL_PAGE === "TRUE",
     showMandatedAccounts: process.env.SHOW_MANDATED_ACCOUNTS === "TRUE",
     showPwdless: process.env.SHOW_PWDLESS === "TRUE",
     maintenanceWindow: process.env.MAINTENANCE_WINDOW,

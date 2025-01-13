@@ -1,0 +1,13 @@
+.content-card {
+  color: var(--seeds-text-color);
+  font-size: var(--seeds-font-size-base);
+
+  &:not(:last-child) {
+    margin-bottom: var(--seeds-s4);
+  }
+
+  .header {
+    color: var(--seeds-text-color-dark);
+    margin-bottom: var(--seeds-s2);
+  }
+}

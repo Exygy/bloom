@@ -16,6 +16,7 @@ import { ErrorPage } from "../../_error"
 import dayjs from "dayjs"
 import { fetchJurisdictionByName } from "../../../lib/hooks"
 import { Jurisdiction, Listing } from "@bloom-housing/shared-helpers/src/types/backend-swagger"
+import { ListingDetailView } from "../../../components/new_listing/ListingDetailView"
 
 interface ListingProps {
   listing: Listing
@@ -70,7 +71,11 @@ export default function ListingPage(props: ListingProps) {
         <title>{pageTitle}</title>
       </Head>
       <MetaTags title={listing.name} image={metaImage} description={metaDescription} />
-      <ListingView listing={listing} jurisdiction={props.jurisdiction} />
+      {process.env.showNewListingDetailPage ? (
+        <ListingDetailView listing={listing} jurisdiction={props.jurisdiction} />
+      ) : (
+        <ListingView listing={listing} jurisdiction={props.jurisdiction} />
+      )}
     </Layout>
   )
 }
