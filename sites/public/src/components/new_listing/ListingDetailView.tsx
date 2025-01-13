@@ -384,13 +384,13 @@ export const ListingDetailView = (props: ListingProps) => {
                     <Heading
                       size={"md"}
                       priority={4}
-                      className={
+                      className={`${
                         hasPaperApplication && onlineApplicationUrl ? styles["sidebar-spacing"] : ""
-                      }
+                      } ${styles["heading-spacing"]}`}
                     >
                       {t("listings.apply.pickUpAnApplication")}
                     </Heading>
-                    <Address address={applicationPickUpAddress} />
+                    <Address address={applicationPickUpAddress} getDirections={true} />
                     {listing.applicationPickUpAddressOfficeHours && (
                       <>
                         <Heading size={"sm"} priority={4} className={styles["sidebar-spacing"]}>
@@ -407,7 +407,11 @@ export const ListingDetailView = (props: ListingProps) => {
                 )}
                 {applicationMailingAddress && (
                   <div>
-                    <Heading size={"md"} priority={4} className={styles["sidebar-spacing"]}>
+                    <Heading
+                      size={"md"}
+                      priority={4}
+                      className={`${styles["sidebar-spacing"]} ${styles["heading-spacing"]}`}
+                    >
                       {t("listings.apply.submitAPaperApplication")}
                     </Heading>
                     <p>{listing.applicationOrganization}</p>
@@ -417,10 +421,14 @@ export const ListingDetailView = (props: ListingProps) => {
                 )}
                 {applicationDropOffAddress && (
                   <div>
-                    <Heading size={"md"} priority={4} className={styles["sidebar-spacing"]}>
+                    <Heading
+                      size={"md"}
+                      priority={4}
+                      className={`${styles["sidebar-spacing"]} ${styles["heading-spacing"]}`}
+                    >
                       {t("listings.apply.dropOffApplication")}
                     </Heading>
-                    <Address address={applicationPickUpAddress} />
+                    <Address address={applicationPickUpAddress} getDirections={true} />
                     {listing.applicationDropOffAddressOfficeHours && (
                       <>
                         <Heading size={"sm"} priority={4} className={styles["sidebar-spacing"]}>
@@ -440,6 +448,70 @@ export const ListingDetailView = (props: ListingProps) => {
           </Card>
         )}
     </>
+  )
+
+  const WhatToExpect = (
+    <Card className={styles["sidebar-spacing"]}>
+      <Card.Section>
+        <Heading size={"lg"} priority={3} className={styles["heading-spacing"]}>
+          {t("whatToExpect.label")}
+        </Heading>
+        <div>{listing.whatToExpect}</div>
+      </Card.Section>
+    </Card>
+  )
+
+  const LeasingAgent = (
+    <Card className={styles["sidebar-spacing"]}>
+      <Card.Section>
+        <Heading size={"lg"} priority={3} className={styles["heading-spacing"]}>
+          {t("leasingAgent.contact")}
+        </Heading>
+        <div>{listing.leasingAgentName && <p>{listing.leasingAgentName}</p>}</div>
+        <div>
+          {listing.leasingAgentTitle && <p className={"text-label"}>{listing.leasingAgentTitle}</p>}
+        </div>
+        <div>
+          {listing.leasingAgentPhone && (
+            <p className={styles["sidebar-spacing"]}>
+              <a href={`tel:${listing.leasingAgentPhone.replace(/[-()]/g, "")}`}>{`${t("t.call")} ${
+                listing.leasingAgentPhone
+              }`}</a>
+            </p>
+          )}
+        </div>
+        <div>
+          {listing.leasingAgentPhone && (
+            <p className={"text-label"}>{t("leasingAgent.dueToHighCallVolume")}</p>
+          )}
+        </div>
+        <div>
+          {listing.leasingAgentEmail && (
+            <p className={styles["sidebar-spacing"]}>
+              <a href={`mailto:${listing.leasingAgentEmail}`}>{t("t.email")}</a>
+            </p>
+          )}
+        </div>
+        {listing.listingsLeasingAgentAddress && (
+          <div className={styles["sidebar-spacing"]}>
+            <Address address={listing.listingsLeasingAgentAddress} getDirections={true} />
+          </div>
+        )}
+
+        {listing.leasingAgentOfficeHours && (
+          <>
+            <Heading
+              size={"md"}
+              priority={4}
+              className={`${styles["sidebar-spacing"]} ${styles["heading-spacing"]}`}
+            >
+              {t("leasingAgent.officeHours")}
+            </Heading>
+            <p>{listing.leasingAgentOfficeHours}</p>
+          </>
+        )}
+      </Card.Section>
+    </Card>
   )
 
   const getWaitlist = () => {
@@ -650,40 +722,8 @@ export const ListingDetailView = (props: ListingProps) => {
             />
           )}
           {lotterySection}
-          <ExpandableSection
-            content={listing.whatToExpect}
-            strings={{
-              title: t("whatToExpect.label"),
-              readMore: t("t.readMore"),
-              readLess: t("t.readLess"),
-            }}
-          />
-          {
-            <Contact
-              sectionTitle={t("leasingAgent.contact")}
-              additionalInformation={
-                listing.leasingAgentOfficeHours
-                  ? [
-                      {
-                        title: t("leasingAgent.officeHours"),
-                        content: listing.leasingAgentOfficeHours,
-                      },
-                    ]
-                  : undefined
-              }
-              contactAddress={listing.listingsLeasingAgentAddress}
-              contactEmail={listing.leasingAgentEmail}
-              contactName={listing.leasingAgentName}
-              contactPhoneNumber={`${t("t.call")} ${listing.leasingAgentPhone}`}
-              contactPhoneNumberNote={t("leasingAgent.dueToHighCallVolume")}
-              contactTitle={listing.leasingAgentTitle}
-              strings={{
-                email: t("t.email"),
-                website: t("t.website"),
-                getDirections: t("t.getDirections"),
-              }}
-            />
-          }
+          {WhatToExpect}
+          {LeasingAgent}
         </aside>
       </div>
 

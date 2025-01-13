@@ -5,9 +5,10 @@ import { oneLineAddress } from "../lib/helpers"
 
 interface AddressProps {
   address: AddressType
+  getDirections?: boolean
 }
 
-export const Address = ({ address }: AddressProps) => {
+export const Address = ({ address, getDirections }: AddressProps) => {
   const googleMapsHref = "https://www.google.com/maps/place/" + oneLineAddress(address)
 
   // todo what is the most accessible way for this to be read
@@ -18,9 +19,11 @@ export const Address = ({ address }: AddressProps) => {
         <div>{`${address.street}${address.street2 ? `, ${address.street2}` : ""}`}</div>
         <div>{`${address.city}, ${address.state} ${address.zipCode}`}</div>
       </div>
-      <p>
-        <a href={googleMapsHref}>{t("t.getDirections")}</a>
-      </p>
+      {getDirections && (
+        <p>
+          <a href={googleMapsHref}>{t("t.getDirections")}</a>
+        </p>
+      )}
     </>
   )
 }
