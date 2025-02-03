@@ -492,7 +492,8 @@ export const ListingDetailView = (props: ListingProps) => {
     <article
       className={`flex flex-wrap relative max-w-5xl m-auto mt-4 ${styles["listing-detail-view"]}`}
     >
-      <header className={styles["image-card"]}>
+      {/* Image and main details */}
+      <div className={styles["image-card"]}>
         <ImageCard
           images={imageUrlFromListing(listing, parseInt(process.env.listingPhotoSize)).map(
             (imageUrl: string) => {
@@ -533,7 +534,7 @@ export const ListingDetailView = (props: ListingProps) => {
 
           <p>{listing.developer}</p>
         </div>
-      </header>
+      </div>
 
       <div className="w-full md:w-2/3 md:mt-6 md:pr-6">
         <div className={"mx-3 md:mx-0"}>
@@ -572,25 +573,21 @@ export const ListingDetailView = (props: ListingProps) => {
           )}
         </div>
       </div>
-      <div>
-        <aside className="w-full static md:absolute md:right-0 md:w-1/3 md:top-0 sm:w-2/3 md:ml-2 h-full bg-white">
-          <div>
-            {DueDate}
-            {ListingMainDetails}
-            {LotteryResults}
-            {Apply}
 
-            {/* {!applicationsClosed && getWaitlist()} */}
-            {ReferralApplication}
-          </div>
-
-          {OpenHouses}
-          {LotterySection}
-          {WhatToExpect}
-          {LeasingAgent}
-        </aside>
+      {/* Right side bar */}
+      <div className="w-full static md:absolute md:right-0 md:w-1/3 md:top-0 sm:w-2/3 md:ml-2 h-full bg-white">
+        {DueDate}
+        {ListingMainDetails}
+        {LotteryResults}
+        {Apply}
+        {ReferralApplication}
+        {OpenHouses}
+        {LotterySection}
+        {WhatToExpect}
+        {LeasingAgent}
       </div>
 
+      {/* Main content */}
       <ListingDetails>
         <CollapsibleSection
           title={t("listings.sections.eligibilityTitle")}
