@@ -285,29 +285,6 @@ export const getDateString = (date: Date, format: string) => {
   return date ? dayjs(date).format(format) : null
 }
 
-type EligiblitySections =
-  | "Reserved"
-  | "HMI"
-  | "Occupancy"
-  | "Assistance"
-  | "Preferences"
-  | "Programs"
-  | "CreditHistory"
-  | "RentalHistory"
-  | "CriminalBackground"
-
-const eligibilitySections = [
-  "Reserved",
-  "HMI",
-  "Occupancy",
-  "Assistance",
-  "Preferences",
-  "Programs",
-  "CreditHistory",
-  "RentalHistory",
-  "CriminalBackground",
-]
-
 const getBuildingSelectionCriteria = (listing: Listing) => {
   if (listing.listingsBuildingSelectionCriteriaFile) {
     return (
@@ -514,7 +491,7 @@ export const getEligibilitySections = (listing: Listing): EligibilitySection[] =
 export const dateSection = (heading: string, events: EventType[]) => {
   if (!events.length) return
   return (
-    <Card className={"seeds-m-bs-6"}>
+    <Card className={styles["mobile-full-width-card"]}>
       <Card.Section>
         <Heading size={"lg"} className={"seeds-p-be-4"}>
           {heading}

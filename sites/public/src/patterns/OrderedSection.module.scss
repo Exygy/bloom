@@ -5,8 +5,17 @@
   margin-block: var(--seeds-s8);
   width: 100%;
 
+  @media (--sm-only) {
+    flex-direction: column;
+  }
+
   .number-container {
-    margin-right: var(--seeds-s4);
+    @media (--sm-only) {
+      margin-block-end: var(--seeds-s4);
+    }
+    @media (--sm-and-up) {
+      margin-inline-end: var(--seeds-s4);
+    }
 
     .number-circle {
       display: flex;

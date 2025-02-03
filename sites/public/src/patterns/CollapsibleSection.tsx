@@ -9,6 +9,7 @@ interface CollapsibleSectionProps {
   priority?: 1 | 4 | 2 | 3 | 5 | 6
   subtitle?: string
   children: React.ReactNode
+  contentClassName?: string
 }
 
 export const CollapsibleSection = (props: CollapsibleSectionProps) => {
@@ -43,7 +44,13 @@ export const CollapsibleSection = (props: CollapsibleSectionProps) => {
           </button>
         </div>
       </div>
-      {!collapsed && <div className={styles["content"]}>{props.children}</div>}
+      {!collapsed && (
+        <div
+          className={`${styles["content"]} ${props.contentClassName ? props.contentClassName : ""}`}
+        >
+          {props.children}
+        </div>
+      )}
     </div>
   )
 }

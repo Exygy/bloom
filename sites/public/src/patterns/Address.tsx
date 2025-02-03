@@ -20,7 +20,7 @@ export const Address = ({ address, getDirections }: AddressProps) => {
         <div>{`${address.city}, ${address.state} ${address.zipCode}`}</div>
       </div>
       {getDirections && (
-        <p>
+        <p className={"seeds-m-bs-1"}>
           <a href={googleMapsHref}>{t("t.getDirections")}</a>
         </p>
       )}

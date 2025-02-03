@@ -14,7 +14,6 @@ import {
 import {
   GroupedTable,
   ImageCard,
-  ListingDetails,
   ListingMap,
   t,
   StandardTableData,
@@ -181,7 +180,9 @@ export const ListingDetailView = (props: ListingProps) => {
   const ListingMainDetails = (
     <>
       {(listing.reservedCommunityTypes || listing.status !== ListingsStatusEnum.closed) && (
-        <Card className={`${styles["muted-card"]} ${styles["listing-info-card"]} seeds-m-bs-6`}>
+        <Card
+          className={`${styles["muted-card"]} ${styles["listing-info-card"]} ${styles["mobile-full-width-muted-card"]}`}
+        >
           {listing.reservedCommunityTypes && (
             <Card.Section divider="inset">
               <HeadingGroup
@@ -221,7 +222,7 @@ export const ListingDetailView = (props: ListingProps) => {
   const LotteryResults = (
     <>
       {lotteryResultsPdfUrl && listing.status === ListingsStatusEnum.closed && (
-        <Card className={"seeds-m-be-6"}>
+        <Card className={styles["mobile-full-width-card"]}>
           <Card.Section>
             <HeadingGroup
               headingPriority={3}
@@ -285,7 +286,7 @@ export const ListingDetailView = (props: ListingProps) => {
       {getHasNonReferralMethods(listing) &&
         !applicationsClosed &&
         listing.status !== ListingsStatusEnum.closed && (
-          <Card className={"seeds-m-bs-6"}>
+          <Card className={styles["mobile-full-width-card"]}>
             <Card.Section divider="flush" className={styles["card-section-background"]}>
               <Heading priority={3} size={"lg"} className={styles["card-heading"]}>
                 {t("listings.apply.howToApply")}
@@ -368,7 +369,7 @@ export const ListingDetailView = (props: ListingProps) => {
   const ReferralApplication = (
     <>
       {listing?.referralApplication && (
-        <Card className={"seeds-m-bs-6"}>
+        <Card className={styles["mobile-full-width-card"]}>
           <Card.Section>
             <Heading size={"lg"} priority={3} className={"seeds-m-be-4"}>
               {t("application.referralApplication.furtherInformation")}
@@ -391,7 +392,7 @@ export const ListingDetailView = (props: ListingProps) => {
   )
 
   const WhatToExpect = (
-    <Card className={"seeds-m-bs-6"}>
+    <Card className={styles["mobile-full-width-card"]}>
       <Card.Section>
         <Heading size={"lg"} priority={3} className={"seeds-m-be-4"}>
           {t("whatToExpect.label")}
@@ -402,29 +403,27 @@ export const ListingDetailView = (props: ListingProps) => {
   )
 
   const LeasingAgent = (
-    <Card className={"seeds-m-bs-6"}>
+    <Card className={styles["mobile-full-width-card"]}>
       <Card.Section>
         <Heading size={"lg"} priority={3} className={"seeds-m-be-4"}>
           {t("leasingAgent.contact")}
         </Heading>
-        <div>{listing.leasingAgentName && <p>{listing.leasingAgentName}</p>}</div>
         <div>
-          {listing.leasingAgentTitle && <p className={"text-label"}>{listing.leasingAgentTitle}</p>}
+          {listing.leasingAgentName && (
+            <p className={styles["slim-heading"]}>{listing.leasingAgentName}</p>
+          )}
         </div>
+        <div>{listing.leasingAgentTitle && <p>{listing.leasingAgentTitle}</p>}</div>
         <div>
           {listing.leasingAgentPhone && (
-            <p className={"seeds-m-bs-6"}>
+            <p className={"seeds-m-bs-6 seeds-m-be-1"}>
               <a href={`tel:${listing.leasingAgentPhone.replace(/[-()]/g, "")}`}>{`${t("t.call")} ${
                 listing.leasingAgentPhone
               }`}</a>
             </p>
           )}
         </div>
-        <div>
-          {listing.leasingAgentPhone && (
-            <p className={"text-label"}>{t("leasingAgent.dueToHighCallVolume")}</p>
-          )}
-        </div>
+        <div>{listing.leasingAgentPhone && <p>{t("leasingAgent.dueToHighCallVolume")}</p>}</div>
         <div>
           {listing.leasingAgentEmail && (
             <p className={"seeds-m-bs-6"}>
@@ -488,205 +487,218 @@ export const ListingDetailView = (props: ListingProps) => {
     </Card>
   )
 
+  const ApplyBar = (
+    <>
+      {LotteryResults}
+      {Apply}
+      {ReferralApplication}
+      {OpenHouses}
+      {LotterySection}
+      {WhatToExpect}
+      {LeasingAgent}
+    </>
+  )
+
   return (
-    <article
-      className={`flex flex-wrap relative max-w-5xl m-auto mt-4 ${styles["listing-detail-view"]}`}
-    >
-      {/* Image and main details */}
-      <div className={styles["image-card"]}>
-        <ImageCard
-          images={imageUrlFromListing(listing, parseInt(process.env.listingPhotoSize)).map(
-            (imageUrl: string) => {
-              return {
-                url: imageUrl,
-              }
-            }
-          )}
-          description={listing.name}
-          moreImagesLabel={t("listings.moreImagesLabel")}
-          moreImagesDescription={t("listings.moreImagesAltDescription", {
-            listingName: listing.name,
-          })}
-          modalCloseLabel={t("t.backToListing")}
-          modalCloseInContent
-          fallbackImageUrl={IMAGE_FALLBACK_URL}
-        />
-        <div className={styles["listing-name-container"]}>
-          <Heading priority={1} size={"xl"} className={styles["listing-heading"]}>
-            {listing.name}
-          </Heading>
-          <div>
-            <span>{oneLineAddress(listing.listingsBuildingAddress)}</span>
-            <span className={"seeds-m-is-4"}>
-              <Link href={googleMapsHref} newWindowTarget={true}>
-                {t("t.viewOnMap")}
-              </Link>
-            </span>
-          </div>
-
-          {listingTags?.length > 0 && (
-            <div className={styles["listing-tags"]}>
-              {listingTags.map((tag) => {
-                return <Tag variant={tag.variant}>{tag.title}</Tag>
+    <article className={styles["listing-detail-view"]}>
+      <div className={styles["content-wrapper"]}>
+        <div className={styles["left-bar"]}>
+          {/* Image and main details */}
+          <div className={styles["image-card"]}>
+            <ImageCard
+              images={imageUrlFromListing(listing, parseInt(process.env.listingPhotoSize)).map(
+                (imageUrl: string) => {
+                  return {
+                    url: imageUrl,
+                  }
+                }
+              )}
+              description={listing.name}
+              moreImagesLabel={t("listings.moreImagesLabel")}
+              moreImagesDescription={t("listings.moreImagesAltDescription", {
+                listingName: listing.name,
               })}
-            </div>
-          )}
-
-          <p>{listing.developer}</p>
-        </div>
-      </div>
-
-      <div className="w-full md:w-2/3 md:mt-6 md:pr-6">
-        <div className={"mx-3 md:mx-0"}>
-          <Heading size={"lg"} className={"seeds-m-be-4"}>
-            {t("listings.rentSummary")}
-          </Heading>
-          {amiValues.length > 1 &&
-            amiValues.map((percent) => {
-              const byAMI = listing.unitsSummarized.byAMI.find((item) => {
-                return parseInt(item.percent, 10) == percent
-              })
-
-              groupedUnits = byAMI
-                ? getSummariesTable(byAMI.byUnitType, listing.reviewOrderType)
-                : []
-
-              return (
-                <React.Fragment key={percent}>
-                  <h2 className="mt-4 mb-2">
-                    {t("listings.percentAMIUnit", { percent: percent })}
-                  </h2>
-                  <GroupedTable
-                    headers={unitSummariesHeaders}
-                    data={[{ data: groupedUnits }]}
-                    responsiveCollapse={true}
-                  />
-                </React.Fragment>
-              )
-            })}
-          {amiValues.length == 1 && (
-            <GroupedTable
-              headers={unitSummariesHeaders}
-              data={[{ data: groupedUnits }]}
-              responsiveCollapse={true}
+              modalCloseLabel={t("t.backToListing")}
+              modalCloseInContent
+              fallbackImageUrl={IMAGE_FALLBACK_URL}
             />
-          )}
-        </div>
-      </div>
+            <div className={styles["listing-main-details"]}>
+              <Heading priority={1} size={"xl"} className={styles["listing-heading"]}>
+                {listing.name}
+              </Heading>
+              <div className={styles["listing-address"]}>
+                <div className={"seeds-m-ie-4"}>
+                  {oneLineAddress(listing.listingsBuildingAddress)}
+                </div>
+                <div>
+                  <Link href={googleMapsHref} newWindowTarget={true}>
+                    {t("t.viewOnMap")}
+                  </Link>
+                </div>
+              </div>
 
-      {/* Right side bar */}
-      <div className="w-full static md:absolute md:right-0 md:w-1/3 md:top-0 sm:w-2/3 md:ml-2 h-full bg-white">
-        {DueDate}
-        {ListingMainDetails}
-        {LotteryResults}
-        {Apply}
-        {ReferralApplication}
-        {OpenHouses}
-        {LotterySection}
-        {WhatToExpect}
-        {LeasingAgent}
-      </div>
+              {listingTags?.length > 0 && (
+                <div className={styles["listing-tags"]}>
+                  {listingTags.map((tag) => {
+                    return <Tag variant={tag.variant}>{tag.title}</Tag>
+                  })}
+                </div>
+              )}
 
-      {/* Main content */}
-      <ListingDetails>
-        <CollapsibleSection
-          title={t("listings.sections.eligibilityTitle")}
-          subtitle={t("listings.sections.eligibilitySubtitle")}
-          priority={3}
-        >
-          <ol>
-            {eligibilitySections.map((section, index) => {
-              return (
-                <>
-                  <OrderedSection
-                    order={index + 1}
-                    title={section.header}
-                    subtitle={section.subheader}
-                    note={section.note}
-                  >
-                    {section.content}
-                  </OrderedSection>
-                  {index < eligibilitySections.length - 1 && <hr />}
-                </>
-              )
-            })}
-          </ol>
-        </CollapsibleSection>
+              <p>{listing.developer}</p>
+              <div className={`${styles["hide-desktop"]} seeds-m-b-4`}>{DueDate}</div>
+            </div>
+            <div className={styles["hide-desktop"]}>{ListingMainDetails}</div>
+          </div>
 
-        <CollapsibleSection
-          title={t("listings.sections.featuresTitle")}
-          subtitle={t("listings.sections.featuresSubtitle")}
-          priority={3}
-        >
-          <div className={"seeds-p-is-6"}>
-            {features.map((feature) => {
-              return (
-                <HeadingGroup
-                  heading={feature.heading}
-                  subheading={feature.subheading}
-                  size={"lg"}
-                  className={styles["features-heading-group"]}
+          <div className={styles["rent-summary"]}>
+            <div className={"mx-3 md:mx-0"}>
+              <Heading size={"lg"} className={"seeds-m-be-4"}>
+                {t("listings.rentSummary")}
+              </Heading>
+              {amiValues.length > 1 &&
+                amiValues.map((percent) => {
+                  const byAMI = listing.unitsSummarized.byAMI.find((item) => {
+                    return parseInt(item.percent, 10) == percent
+                  })
+
+                  groupedUnits = byAMI
+                    ? getSummariesTable(byAMI.byUnitType, listing.reviewOrderType)
+                    : []
+
+                  return (
+                    <React.Fragment key={percent}>
+                      <h2 className="mt-4 mb-2">
+                        {t("listings.percentAMIUnit", { percent: percent })}
+                      </h2>
+                      <GroupedTable
+                        headers={unitSummariesHeaders}
+                        data={[{ data: groupedUnits }]}
+                        responsiveCollapse={true}
+                      />
+                    </React.Fragment>
+                  )
+                })}
+              {amiValues.length == 1 && (
+                <GroupedTable
+                  headers={unitSummariesHeaders}
+                  data={[{ data: groupedUnits }]}
+                  responsiveCollapse={true}
                 />
-              )
-            })}
-            <Heading size={"lg"}>{t("t.unitFeatures")}</Heading>
-            <UnitTables
-              units={listing.units}
-              unitSummaries={listing?.unitsSummarized?.byUnitType}
-              disableAccordion={listing.disableUnitsAccordion}
-            />
-            {AdditionalFees}
-          </div>
-        </CollapsibleSection>
-
-        <CollapsibleSection
-          title={t("t.neighborhood")}
-          subtitle={t("listings.sections.neighborhoodSubtitle")}
-          priority={3}
-        >
-          <div className={"seeds-p-is-6"}>
-            <ListingMap
-              address={getGenericAddress(listing.listingsBuildingAddress)}
-              listingName={listing.name}
-            />
-          </div>
-        </CollapsibleSection>
-
-        {(listing.requiredDocuments || listing.programRules || listing.specialNotes) && (
-          <CollapsibleSection
-            title={t("listings.additionalInformation")}
-            subtitle={t("listings.sections.additionalInformationSubtitle")}
-            priority={3}
-          >
-            <div className={"seeds-p-is-6"}>
-              {listing.requiredDocuments && (
-                <ContentCard title={t("listings.requiredDocuments")}>
-                  <Markdown
-                    children={listing.requiredDocuments}
-                    options={{ disableParsingRawHTML: true }}
-                  />
-                </ContentCard>
-              )}
-              {listing.programRules && (
-                <ContentCard title={t("listings.importantProgramRules")}>
-                  <Markdown
-                    children={listing.programRules}
-                    options={{ disableParsingRawHTML: true }}
-                  />
-                </ContentCard>
-              )}
-              {listing.specialNotes && (
-                <ContentCard title={t("listings.specialNotes")}>
-                  <Markdown
-                    children={listing.specialNotes}
-                    options={{ disableParsingRawHTML: true }}
-                  />
-                </ContentCard>
               )}
             </div>
-          </CollapsibleSection>
-        )}
-      </ListingDetails>
+          </div>
+
+          {/* Main content */}
+          <div className={styles["main-content"]}>
+            <div className={styles["hide-desktop"]}>{ApplyBar}</div>
+            <CollapsibleSection
+              title={t("listings.sections.eligibilityTitle")}
+              subtitle={t("listings.sections.eligibilitySubtitle")}
+              priority={3}
+              contentClassName={styles["mobile-collapse"]}
+            >
+              <ol>
+                {eligibilitySections.map((section, index) => {
+                  return (
+                    <>
+                      <OrderedSection
+                        order={index + 1}
+                        title={section.header}
+                        subtitle={section.subheader}
+                        note={section.note}
+                      >
+                        {section.content}
+                      </OrderedSection>
+                      {index < eligibilitySections.length - 1 && <hr />}
+                    </>
+                  )
+                })}
+              </ol>
+            </CollapsibleSection>
+
+            <CollapsibleSection
+              title={t("listings.sections.featuresTitle")}
+              subtitle={t("listings.sections.featuresSubtitle")}
+              priority={3}
+            >
+              <div className={styles["inline-collapse-padding"]}>
+                {features.map((feature) => {
+                  return (
+                    <HeadingGroup
+                      heading={feature.heading}
+                      subheading={feature.subheading}
+                      size={"lg"}
+                      className={styles["features-heading-group"]}
+                    />
+                  )
+                })}
+                <Heading size={"lg"}>{t("t.unitFeatures")}</Heading>
+                <UnitTables
+                  units={listing.units}
+                  unitSummaries={listing?.unitsSummarized?.byUnitType}
+                  disableAccordion={listing.disableUnitsAccordion}
+                />
+                {AdditionalFees}
+              </div>
+            </CollapsibleSection>
+
+            <CollapsibleSection
+              title={t("t.neighborhood")}
+              subtitle={t("listings.sections.neighborhoodSubtitle")}
+              priority={3}
+            >
+              <div className={styles["inline-collapse-padding"]}>
+                <ListingMap
+                  address={getGenericAddress(listing.listingsBuildingAddress)}
+                  listingName={listing.name}
+                />
+              </div>
+            </CollapsibleSection>
+
+            {(listing.requiredDocuments || listing.programRules || listing.specialNotes) && (
+              <CollapsibleSection
+                title={t("listings.additionalInformation")}
+                subtitle={t("listings.sections.additionalInformationSubtitle")}
+                priority={3}
+              >
+                <div className={styles["inline-collapse-padding"]}>
+                  {listing.requiredDocuments && (
+                    <ContentCard title={t("listings.requiredDocuments")}>
+                      <Markdown
+                        children={listing.requiredDocuments}
+                        options={{ disableParsingRawHTML: true }}
+                      />
+                    </ContentCard>
+                  )}
+                  {listing.programRules && (
+                    <ContentCard title={t("listings.importantProgramRules")}>
+                      <Markdown
+                        children={listing.programRules}
+                        options={{ disableParsingRawHTML: true }}
+                      />
+                    </ContentCard>
+                  )}
+                  {listing.specialNotes && (
+                    <ContentCard title={t("listings.specialNotes")}>
+                      <Markdown
+                        children={listing.specialNotes}
+                        options={{ disableParsingRawHTML: true }}
+                      />
+                    </ContentCard>
+                  )}
+                </div>
+              </CollapsibleSection>
+            )}
+          </div>
+        </div>
+        {/* Right side bar */}
+        <div className={styles["right-bar"]}>
+          {DueDate}
+          {ListingMainDetails}
+          {ApplyBar}
+        </div>
+      </div>
       <PaperApplicationDialog
         showDialog={showDownloadModal}
         setShowDialog={setShowDownloadModal}
