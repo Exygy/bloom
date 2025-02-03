@@ -12,5 +12,5 @@ export const getCurrencyRange = (min: number | null, max: number | null) => {
   if (min && max && min !== max) {
     return `$${min} – $${max}`
   }
-  return min || max ? `$${min ?? max}` : ""
+  return min || max ? `$${min ? min : max}` : ""
 }

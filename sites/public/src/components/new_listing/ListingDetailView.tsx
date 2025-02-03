@@ -153,6 +153,10 @@ export const ListingDetailView = (props: ListingProps) => {
     ListingEventsTypeEnum.lotteryResults,
     process.env.cloudinaryCloudName
   )
+  const enableUtilitiesIncluded = props.jurisdiction.featureFlags?.some(
+    (flag) => flag.name === "enableUtilitiesIncluded" && flag.active
+  )
+  const utilitiesIncluded = getUtilitiesIncluded(listing)
   let groupedUnits: StandardTableData = []
   if (amiValues.length == 1) {
     groupedUnits = getSummariesTable(
@@ -449,46 +453,50 @@ export const ListingDetailView = (props: ListingProps) => {
     </Card>
   )
 
-  const enableUtilitiesIncluded = props.jurisdiction.featureFlags?.some(
-    (flag) => flag.name === "enableUtilitiesIncluded" && flag.active
-  )
-
   const AdditionalFees = (
-    <Card className={"seeds-m-bs-6"}>
-      <Card.Section>
-        <Heading size={"lg"} priority={3} className={"seeds-m-be-4"}>
-          {t("listings.sections.additionalFees")}
-        </Heading>
-        <div className={styles["split-card"]}>
-          {listing.applicationFee && (
-            <div className={styles["split-card-cell"]}>
-              <Heading size={"md"}>{t("listings.applicationFee")}</Heading>
-              <div className={styles.emphasized}>{`$${listing.applicationFee}`}</div>
-              <div>{t("listings.applicationPerApplicantAgeDescription")}</div>
-              <div>{t("listings.applicationFeeDueAt")}</div>
+    <>
+      {(listing.applicationFee ||
+        listing.depositMin ||
+        listing.depositMax ||
+        listing.costsNotIncluded ||
+        (enableUtilitiesIncluded && utilitiesIncluded.length)) && (
+        <Card className={"seeds-m-bs-6"}>
+          <Card.Section>
+            <Heading size={"lg"} priority={3} className={"seeds-m-be-4"}>
+              {t("listings.sections.additionalFees")}
+            </Heading>
+            <div className={styles["split-card"]}>
+              {listing.applicationFee && (
+                <div className={styles["split-card-cell"]}>
+                  <Heading size={"md"}>{t("listings.applicationFee")}</Heading>
+                  <div className={styles.emphasized}>{`$${listing.applicationFee}`}</div>
+                  <div>{t("listings.applicationPerApplicantAgeDescription")}</div>
+                  <div>{t("listings.applicationFeeDueAt")}</div>
+                </div>
+              )}
+              {(listing.depositMin || listing.depositMax) && (
+                <div className={styles["split-card-cell"]}>
+                  <Heading size={"md"}>{t("t.deposit")}</Heading>
+                  <div className={styles.emphasized}>
+                    {getCurrencyRange(parseInt(listing.depositMin), parseInt(listing.depositMax))}
+                  </div>
+                  <div>{listing.depositHelperText}</div>
+                </div>
+              )}
             </div>
-          )}
-          {(listing.depositMin || listing.depositMax) && (
-            <div className={styles["split-card-cell"]}>
-              <Heading size={"md"}>{t("t.deposit")}</Heading>
-              <div className={styles.emphasized}>
-                {getCurrencyRange(parseInt(listing.depositMin), parseInt(listing.depositMax))}
+            {listing.costsNotIncluded && (
+              <div className={"seeds-m-be-6"}>{listing.costsNotIncluded}</div>
+            )}
+            {enableUtilitiesIncluded && utilitiesIncluded.length && (
+              <div className={"seeds-m-be-6"}>
+                <Heading size={"md"}>{t("listings.sections.utilities")}</Heading>
+                {utilitiesIncluded}
               </div>
-              <div>{listing.depositHelperText}</div>
-            </div>
-          )}
-        </div>
-        {listing.costsNotIncluded && (
-          <div className={"seeds-m-be-6"}>{listing.costsNotIncluded}</div>
-        )}
-        {enableUtilitiesIncluded && (
-          <div className={"seeds-m-be-6"}>
-            <Heading size={"md"}>{t("listings.sections.utilities")}</Heading>
-            {getUtilitiesIncluded(listing)}
-          </div>
-        )}
-      </Card.Section>
-    </Card>
+            )}
+          </Card.Section>
+        </Card>
+      )}
+    </>
   )
 
   const ApplyBar = (
