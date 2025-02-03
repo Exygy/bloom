@@ -7,29 +7,20 @@ import {
   ApplicationMethodsTypeEnum,
   Jurisdiction,
   Listing,
-  ListingEvent,
   ListingEventsTypeEnum,
   ListingsStatusEnum,
-  MultiselectQuestionsApplicationSectionEnum,
   ReviewOrderTypeEnum,
 } from "@bloom-housing/shared-helpers/src/types/backend-swagger"
 import {
-  ExpandableText,
   GroupedTable,
   ImageCard,
   ListingDetails,
   ListingMap,
-  StandardTable,
-  TableHeaders,
   t,
-  EventType,
   StandardTableData,
 } from "@bloom-housing/ui-components"
 import {
-  cloudinaryPdfFromId,
-  getOccupancyDescription,
   imageUrlFromListing,
-  occupancyTable,
   getCurrencyRange,
   getPostmarkString,
   UnitTables,
@@ -42,9 +33,8 @@ import { Card, HeadingGroup, Icon, Heading, Button, Tag, Link } from "@bloom-hou
 import { ErrorPage } from "../../pages/_error"
 import { useGetApplicationStatusProps } from "../../lib/hooks"
 import { downloadExternalPDF, getGenericAddress, oneLineAddress } from "../../lib/helpers"
-
 import { CollapsibleSection } from "../../patterns/CollapsibleSection"
-import { CardList, ContentCard } from "../../patterns/CardList"
+import { ContentCard } from "../../patterns/CardList"
 import { OrderedSection } from "../../patterns/OrderedSection"
 import { Address } from "../../patterns/Address"
 
@@ -58,9 +48,7 @@ import {
   getEligibilitySections,
   getEvent,
   getFeatures,
-  getFilteredMultiselectQuestions,
   getHasNonReferralMethods,
-  getHmiData,
   getListingTags,
   getMethod,
   getOnlineApplicationURL,
@@ -85,16 +73,10 @@ const unitSummariesHeaders = {
   availability: t("t.availability"),
 }
 
-const occupancyHeaders = {
-  unitType: "t.unitType",
-  occupancy: "t.occupancy",
-}
-
 export const ListingDetailView = (props: ListingProps) => {
   const { initialStateLoaded, profile } = useContext(AuthContext)
   const [showDownloadModal, setShowDownloadModal] = useState(false)
 
-  let buildingSelectionCriteria
   const { listing } = props
   const { content: appStatusContent, subContent: appStatusSubContent } =
     useGetApplicationStatusProps(listing)
@@ -111,22 +93,11 @@ export const ListingDetailView = (props: ListingProps) => {
     "https://www.google.com/maps/place/" + oneLineAddress(listing.listingsBuildingAddress)
   const applicationsClosed = dayjs() > dayjs(listing.applicationDueDate)
   const amiValues = getAmiValues(listing)
-  const hmiHeaders = listing?.unitsSummarized?.hmi?.columns as TableHeaders
-  const hmiData = getHmiData(listing)
-  const preferences = getFilteredMultiselectQuestions(
-    listing.listingMultiselectQuestions,
-    MultiselectQuestionsApplicationSectionEnum.preferences
-  )
-  const programs = getFilteredMultiselectQuestions(
-    listing.listingMultiselectQuestions,
-    MultiselectQuestionsApplicationSectionEnum.programs
-  )
   const redirectIfSignedOut = () =>
     process.env.showMandatedAccounts && initialStateLoaded && !profile
   const onlineApplicationUrl = redirectIfSignedOut()
     ? `/sign-in?redirectUrl=/applications/start/choose-language&listingId=${listing.id}`
     : getOnlineApplicationURL(listing.applicationMethods, listing.id, props.preview)
-
   const disableApplyButton = !props.preview && listing.status !== ListingsStatusEnum.active
   const eligibilitySections = getEligibilitySections(listing)
   const paperApplications = getPaperApplications(listing.applicationMethods)
@@ -165,31 +136,21 @@ export const ListingDetailView = (props: ListingProps) => {
       : null,
     listing.developer
   )
-  let openHouseEvents: EventType[] | null = null
-  let publicLottery: ListingEvent | null = null
-  let lotteryResults: ListingEvent | null = null
-  if (Array.isArray(listing.listingEvents)) {
-    listing.listingEvents.forEach((event) => {
-      switch (event.type) {
-        case ListingEventsTypeEnum.openHouse:
-          if (!openHouseEvents) {
-            openHouseEvents = []
-          }
-          openHouseEvents.push(getEvent(event))
-          break
-        case ListingEventsTypeEnum.publicLottery:
-          publicLottery = event
-          break
-        case ListingEventsTypeEnum.lotteryResults:
-          lotteryResults = event
-          break
-      }
-    })
-  }
+  const openHouseEvents = listing.listingEvents
+    ?.filter((event) => event.type === ListingEventsTypeEnum.openHouse)
+    .map((event) => getEvent(event))
+  const publicLotteryEvent = listing.listingEvents?.find(
+    (event) => event.type === ListingEventsTypeEnum.publicLottery
+  )
+  const lotteryResultsEvent = listing.listingEvents?.find(
+    (event) => event.type === ListingEventsTypeEnum.lotteryResults
+  )
+  const lotteryRanNoResultsPosted =
+    dayjs(publicLotteryEvent?.startTime) < dayjs() && !lotteryResultsEvent
   const listingTags = getListingTags(listing)
   const features = getFeatures(listing, props?.jurisdiction)
   const lotteryResultsPdfUrl = pdfUrlFromListingEvents(
-    [lotteryResults],
+    [lotteryResultsEvent],
     ListingEventsTypeEnum.lotteryResults,
     process.env.cloudinaryCloudName
   )
@@ -200,20 +161,6 @@ export const ListingDetailView = (props: ListingProps) => {
       listing.reviewOrderType
     )
   } // else condition is handled inline below
-
-  const OpenHouses = dateSection(t("listings.openHouseEvent.header"), openHouseEvents)
-
-  const lotteryRanNoResultsPosted = dayjs(publicLottery?.startTime) < dayjs() && !lotteryResults
-
-  const LotterySection =
-    publicLottery &&
-    (!lotteryResults || lotteryRanNoResultsPosted) &&
-    dateSection(t("listings.publicLottery.header"), [
-      getEvent(
-        publicLottery,
-        lotteryRanNoResultsPosted ? t("listings.lotteryResults.completeResultsWillBePosted") : ""
-      ),
-    ])
 
   // Sections ----------
   const DueDate = (
@@ -282,8 +229,8 @@ export const ListingDetailView = (props: ListingProps) => {
               className={`${styles["heading-group"]} seeds-m-be-4`}
               heading={t("listings.lotteryResults.header")}
               subheading={
-                lotteryResults?.startTime
-                  ? dayjs(lotteryResults?.startTime).format("MMMM D, YYYY")
+                lotteryResultsEvent?.startTime
+                  ? dayjs(lotteryResultsEvent?.startTime).format("MMMM D, YYYY")
                   : null
               }
             />
@@ -295,6 +242,18 @@ export const ListingDetailView = (props: ListingProps) => {
       )}
     </>
   )
+
+  const LotterySection =
+    publicLotteryEvent &&
+    (!lotteryResultsEvent || lotteryRanNoResultsPosted) &&
+    dateSection(t("listings.publicLottery.header"), [
+      getEvent(
+        publicLotteryEvent,
+        lotteryRanNoResultsPosted ? t("listings.lotteryResults.completeResultsWillBePosted") : ""
+      ),
+    ])
+
+  const OpenHouses = dateSection(t("listings.openHouseEvent.header"), openHouseEvents)
 
   const ApplyOnlineButton = (
     <Button
