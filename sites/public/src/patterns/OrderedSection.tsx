@@ -13,21 +13,23 @@ interface OrderedSectionProps {
 
 export const OrderedSection = (props: OrderedSectionProps) => {
   return (
-    <div className={styles["ordered-section"]}>
-      <div className={styles["number-container"]}>
-        <div className={styles["number-circle"]}>{props.order}</div>
+    <li>
+      <div className={styles["ordered-section"]}>
+        <div className={styles["number-container"]}>
+          <div className={styles["number-circle"]}>{props.order}</div>
+        </div>
+        <div className={styles["content"]}>
+          <HeadingGroup
+            heading={props.title}
+            subheading={props.subtitle}
+            headingPriority={3}
+            size={"lg"}
+            className={`${styles["heading"]}`}
+          />
+          <div>{props.children}</div>
+          {props.note && <p className={styles["note"]}>{props.note}</p>}
+        </div>
       </div>
-      <div className={styles["content"]}>
-        <HeadingGroup
-          heading={props.title}
-          subheading={props.subtitle}
-          headingPriority={3}
-          size={"lg"}
-          className={styles["heading"]}
-        />
-        <div>{props.children}</div>
-        <p className={styles["note"]}>{props.note}</p>
-      </div>
-    </div>
+    </li>
   )
 }

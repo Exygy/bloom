@@ -74,19 +74,19 @@
 }
 
 .heading-group {
-  --heading-color: var(--seeds-text-color-dark);
+  --heading-color: var(--seeds-text-color-darker);
   --subheading-margin: var(--seeds-s1);
   --subheading-margin-sm: var(--seeds-s2);
 }
 
-.waitlist-heading-group {
+.emphasized-heading-group {
   p {
     font-weight: var(--seeds-font-weight-semibold);
   }
 }
 
 .features-heading-group {
-  --heading-color: var(--seeds-text-color-dark);
+  --heading-color: var(--seeds-text-color-darker);
 }
 
 // GetApplication
@@ -98,7 +98,28 @@
   font-size: var(--seeds-type-label-size);
 }
 
-.event-date {
+.slim-heading {
   font-size: var(--seeds-type-heading-size-lg);
-  color: var(--seeds-text-color-dark);
+  color: var(--seeds-text-color-darker);
+}
+
+.split-card {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.split-card-cell {
+  @media (--md-and-up) {
+    flex-basis: 50%;
+  }
+  &:not(:last-child) {
+    padding-inline-end: var(--seeds-s4);
+  }
+  margin-block-end: var(--seeds-s6);
+}
+
+.emphasized {
+  font-weight: var(--seeds-font-weight-bold);
+  font-size: var(--seeds-type-heading-size-lg);
 }

@@ -14,7 +14,6 @@ import {
   ReviewOrderTypeEnum,
 } from "@bloom-housing/shared-helpers/src/types/backend-swagger"
 import {
-  AdditionalFees,
   ExpandableText,
   GroupedTable,
   ImageCard,
@@ -56,6 +55,7 @@ import {
   getAvailabilityContent,
   getAvailabilitySubheading,
   getDateString,
+  getEligibilitySections,
   getEvent,
   getFeatures,
   getFilteredMultiselectQuestions,
@@ -66,6 +66,7 @@ import {
   getOnlineApplicationURL,
   getPaperApplications,
   getReservedTitle,
+  getUtilitiesIncluded,
   PaperApplicationDialog,
 } from "./ListingDetailViewHelpers"
 
@@ -127,11 +128,7 @@ export const ListingDetailView = (props: ListingProps) => {
     : getOnlineApplicationURL(listing.applicationMethods, listing.id, props.preview)
 
   const disableApplyButton = !props.preview && listing.status !== ListingsStatusEnum.active
-  const occupancyDescription = getOccupancyDescription(listing)
-  const occupancyData = occupancyTable(listing)
-  const householdMaximumIncomeSubheader = listing?.units[0]?.bmrProgramChart
-    ? t("listings.forIncomeCalculationsBMR")
-    : t("listings.forIncomeCalculations")
+  const eligibilitySections = getEligibilitySections(listing)
   const paperApplications = getPaperApplications(listing.applicationMethods)
   const paperApplicationURL: string = watch(
     "paperApplicationLanguage",
@@ -204,33 +201,9 @@ export const ListingDetailView = (props: ListingProps) => {
     )
   } // else condition is handled inline below
 
-  if (listing.listingsBuildingSelectionCriteriaFile) {
-    buildingSelectionCriteria = (
-      <p>
-        <a
-          href={cloudinaryPdfFromId(
-            listing.listingsBuildingSelectionCriteriaFile.fileId,
-            process.env.cloudinaryCloudName
-          )}
-          className={"text-blue-700"}
-        >
-          {t("listings.moreBuildingSelectionCriteria")}
-        </a>
-      </p>
-    )
-  } else if (listing.buildingSelectionCriteria) {
-    buildingSelectionCriteria = (
-      <p>
-        <a href={listing.buildingSelectionCriteria} className={"text-blue-700"}>
-          {t("listings.moreBuildingSelectionCriteria")}
-        </a>
-      </p>
-    )
-  }
-
   const OpenHouses = dateSection(t("listings.openHouseEvent.header"), openHouseEvents)
 
-  const lotteryRanNoResultsPosted = dayjs(publicLottery.startTime) < dayjs() && !lotteryResults
+  const lotteryRanNoResultsPosted = dayjs(publicLottery?.startTime) < dayjs() && !lotteryResults
 
   const LotterySection =
     publicLottery &&
@@ -270,7 +243,7 @@ export const ListingDetailView = (props: ListingProps) => {
                   `listings.reservedCommunityTypes.${listing.reservedCommunityTypes.name}`
                 )}
                 size={"lg"}
-                className={styles["heading-group"]}
+                className={`${styles["heading-group"]} ${styles["emphasized-heading-group"]}`}
               />
               <p className={styles["card-note"]}>{listing.reservedCommunityDescription}</p>
             </Card.Section>
@@ -288,7 +261,7 @@ export const ListingDetailView = (props: ListingProps) => {
                   listing.unitsAvailable
                 )}
                 size={"lg"}
-                className={`${styles["heading-group"]} ${styles["waitlist-heading-group"]}`}
+                className={`${styles["heading-group"]} ${styles["emphasized-heading-group"]}`}
               />
               <p>{getAvailabilityContent(props.listing.reviewOrderType)}</p>
             </Card.Section>
@@ -518,46 +491,43 @@ export const ListingDetailView = (props: ListingProps) => {
     </Card>
   )
 
-  const getUtilitiesIncluded = () => {
-    let utilitiesExist = false
-    const utilitiesIncluded = Object.keys(listing?.listingUtilities ?? {}).reduce(
-      (acc, current, index) => {
-        if (listing?.listingUtilities[current]) {
-          utilitiesExist = true
-          acc.push(
-            <li key={index} className={"list-disc list-inside"}>
-              {t(`listings.utilities.${current}`)}
-            </li>
-          )
-        }
-        return acc
-      },
-      []
-    )
-    return !utilitiesExist ? null : (
-      <div>
-        <div className="text-base">{t("listings.sections.utilities")}</div>
-        {utilitiesIncluded.length <= 4 ? (
-          <ul>{utilitiesIncluded}</ul>
-        ) : (
-          <div className="flex">
-            <ul className="float-left w-1/2">{utilitiesIncluded.slice(0, 4)}</ul>
-            <ul className="float-right w-1/2">{utilitiesIncluded.slice(4)}</ul>
+  const AdditionalFees = (
+    <Card className={"seeds-m-bs-6"}>
+      <Card.Section>
+        <Heading size={"lg"} priority={3} className={"seeds-m-be-4"}>
+          {t("listings.sections.additionalFees")}
+        </Heading>
+        <div className={styles["split-card"]}>
+          {listing.applicationFee && (
+            <div className={styles["split-card-cell"]}>
+              <Heading size={"md"}>{t("listings.applicationFee")}</Heading>
+              <div className={styles.emphasized}>{`$${listing.applicationFee}`}</div>
+              <div>{t("listings.applicationPerApplicantAgeDescription")}</div>
+              <div>{t("listings.applicationFeeDueAt")}</div>
+            </div>
+          )}
+          {(listing.depositMin || listing.depositMax) && (
+            <div className={styles["split-card-cell"]}>
+              <Heading size={"md"}>{t("t.deposit")}</Heading>
+              <div className={styles.emphasized}>
+                {getCurrencyRange(parseInt(listing.depositMin), parseInt(listing.depositMax))}
+              </div>
+              <div>{listing.depositHelperText}</div>
+            </div>
+          )}
+        </div>
+        {listing.costsNotIncluded && (
+          <div className={"seeds-m-be-6"}>{listing.costsNotIncluded}</div>
+        )}
+        {props?.jurisdiction.enableUtilitiesIncluded && (
+          <div className={"seeds-m-be-6"}>
+            <Heading size={"md"}>{t("listings.sections.utilities")}</Heading>
+            {getUtilitiesIncluded(listing)}
           </div>
         )}
-      </div>
-    )
-  }
-
-  const getFooterContent = () => {
-    const footerContent: (string | React.ReactNode)[] = []
-    if (props.jurisdiction.enableUtilitiesIncluded) {
-      const utilitiesDisplay = getUtilitiesIncluded()
-      if (utilitiesDisplay) footerContent.push(utilitiesDisplay)
-    }
-    if (listing?.costsNotIncluded) footerContent.push(listing.costsNotIncluded)
-    return footerContent
-  }
+      </Card.Section>
+    </Card>
+  )
 
   return (
     <article
@@ -585,12 +555,15 @@ export const ListingDetailView = (props: ListingProps) => {
           <Heading priority={1} size={"xl"} className={styles["listing-heading"]}>
             {listing.name}
           </Heading>
-          <div>{oneLineAddress(listing.listingsBuildingAddress)}</div>
-          <p>
-            <a href={googleMapsHref} target="_blank" aria-label="Opens in new window">
-              {t("t.viewOnMap")}
-            </a>
-          </p>
+          <div>
+            <span>{oneLineAddress(listing.listingsBuildingAddress)}</span>
+            <span className={"seeds-m-is-4"}>
+              <Link href={googleMapsHref} newWindowTarget={true}>
+                {t("t.viewOnMap")}
+              </Link>
+            </span>
+          </div>
+
           {listingTags?.length > 0 && (
             <div className={styles["listing-tags"]}>
               {listingTags.map((tag) => {
@@ -605,6 +578,9 @@ export const ListingDetailView = (props: ListingProps) => {
 
       <div className="w-full md:w-2/3 md:mt-6 md:pr-6">
         <div className={"mx-3 md:mx-0"}>
+          <Heading size={"lg"} className={"seeds-m-be-4"}>
+            {t("listings.rentSummary")}
+          </Heading>
           {amiValues.length > 1 &&
             amiValues.map((percent) => {
               const byAMI = listing.unitsSummarized.byAMI.find((item) => {
@@ -662,163 +638,23 @@ export const ListingDetailView = (props: ListingProps) => {
           subtitle={t("listings.sections.eligibilitySubtitle")}
           priority={3}
         >
-          <ul>
-            {listing.reservedCommunityTypes && (
-              <>
-                <OrderedSection order={1} title={getReservedTitle(listing)}>
-                  <CardList
-                    cardContent={[
-                      {
-                        title: t(
-                          `listings.reservedCommunityTypes.${listing.reservedCommunityTypes.name}`
-                        ),
-                        description: listing.reservedCommunityDescription,
-                      },
-                    ]}
-                  />
-                </OrderedSection>
-                <hr />
-              </>
-            )}
-
-            <OrderedSection
-              order={2}
-              title={t("listings.householdMaximumIncome")}
-              subtitle={householdMaximumIncomeSubheader}
-            >
-              <StandardTable
-                headers={hmiHeaders}
-                data={hmiData}
-                responsiveCollapse={true}
-                translateData={true}
-              />
-            </OrderedSection>
-
-            <hr />
-
-            <OrderedSection order={3} title={t("t.occupancy")} subtitle={occupancyDescription}>
-              <StandardTable
-                headers={occupancyHeaders}
-                data={occupancyData}
-                responsiveCollapse={false}
-              />
-            </OrderedSection>
-
-            <hr />
-
-            {listing.rentalAssistance && (
-              <>
-                <OrderedSection
-                  order={4}
-                  title={t("listings.sections.rentalAssistanceTitle")}
-                  subtitle={listing.rentalAssistance}
-                />
-                <hr />
-              </>
-            )}
-
-            {programs?.length > 0 && (
-              <>
-                <OrderedSection
-                  order={5}
-                  title={t("listings.sections.housingProgramsTitle")}
-                  subtitle={t("listings.sections.housingProgramsSubtitle")}
-                  note={t("listings.remainingUnitsAfterPrograms")}
-                >
-                  <CardList
-                    cardContent={programs.map((question) => {
-                      return {
-                        title: question.multiselectQuestions.text,
-                        description: question.multiselectQuestions.description,
-                      }
-                    })}
-                  />
-                </OrderedSection>
-                <hr />
-              </>
-            )}
-
-            {preferences?.length > 0 && (
-              <>
-                <OrderedSection
-                  order={6}
-                  title={t("listings.sections.housingPreferencesTitle")}
-                  subtitle={t("listings.sections.housingPreferencesSubtitle")}
-                  note={t("listings.remainingUnitsAfterPreferenceConsideration")}
-                >
-                  <CardList
-                    cardContent={preferences.map((question) => {
-                      return {
-                        title: question.multiselectQuestions.text,
-                        description: question.multiselectQuestions.description,
-                      }
-                    })}
-                  />
-                </OrderedSection>
-                <hr />
-              </>
-            )}
-
-            {(listing.creditHistory ||
-              listing.rentalHistory ||
-              listing.criminalBackground ||
-              buildingSelectionCriteria) && (
-              <OrderedSection
-                order={7}
-                title={t("listings.sections.additionalEligibilityTitle")}
-                subtitle={t("listings.sections.additionalEligibilitySubtitle")}
-              >
+          <ol>
+            {eligibilitySections.map((section, index) => {
+              return (
                 <>
-                  {listing.creditHistory && (
-                    <ContentCard title={t("listings.creditHistory")}>
-                      <ExpandableText
-                        className="text-xs text-gray-700"
-                        buttonClassName="ml-4"
-                        markdownProps={{ disableParsingRawHTML: true }}
-                        strings={{
-                          readMore: t("t.more"),
-                          readLess: t("t.less"),
-                        }}
-                      >
-                        {listing.creditHistory}
-                      </ExpandableText>
-                    </ContentCard>
-                  )}
-                  {listing.rentalHistory && (
-                    <ContentCard title={t("listings.rentalHistory")}>
-                      <ExpandableText
-                        className="text-xs text-gray-700"
-                        buttonClassName="ml-4"
-                        markdownProps={{ disableParsingRawHTML: true }}
-                        strings={{
-                          readMore: t("t.more"),
-                          readLess: t("t.less"),
-                        }}
-                      >
-                        {listing.rentalHistory}
-                      </ExpandableText>
-                    </ContentCard>
-                  )}
-                  {listing.criminalBackground && (
-                    <ContentCard title={t("listings.criminalBackground")}>
-                      <ExpandableText
-                        className="text-xs text-gray-700"
-                        buttonClassName="ml-4"
-                        markdownProps={{ disableParsingRawHTML: true }}
-                        strings={{
-                          readMore: t("t.more"),
-                          readLess: t("t.less"),
-                        }}
-                      >
-                        {listing.criminalBackground}
-                      </ExpandableText>
-                    </ContentCard>
-                  )}
-                  {buildingSelectionCriteria}
+                  <OrderedSection
+                    order={index + 1}
+                    title={section.header}
+                    subtitle={section.subheader}
+                    note={section.note}
+                  >
+                    {section.content}
+                  </OrderedSection>
+                  {index < eligibilitySections.length - 1 && <hr />}
                 </>
-              </OrderedSection>
-            )}
-          </ul>
+              )
+            })}
+          </ol>
         </CollapsibleSection>
 
         <CollapsibleSection
@@ -826,7 +662,7 @@ export const ListingDetailView = (props: ListingProps) => {
           subtitle={t("listings.sections.featuresSubtitle")}
           priority={3}
         >
-          <div>
+          <div className={"seeds-p-is-6"}>
             {features.map((feature) => {
               return (
                 <HeadingGroup
@@ -843,22 +679,7 @@ export const ListingDetailView = (props: ListingProps) => {
               unitSummaries={listing?.unitsSummarized?.byUnitType}
               disableAccordion={listing.disableUnitsAccordion}
             />
-
-            <AdditionalFees
-              deposit={getCurrencyRange(parseInt(listing.depositMin), parseInt(listing.depositMax))}
-              applicationFee={listing.applicationFee ? `$${listing.applicationFee}` : undefined}
-              footerContent={getFooterContent()}
-              strings={{
-                sectionHeader: t("listings.sections.additionalFees"),
-                applicationFee: t("listings.applicationFee"),
-                deposit: t("t.deposit"),
-                applicationFeeSubtext: [
-                  t("listings.applicationPerApplicantAgeDescription"),
-                  t("listings.applicationFeeDueAt"),
-                ],
-                depositSubtext: [listing.depositHelperText],
-              }}
-            />
+            {AdditionalFees}
           </div>
         </CollapsibleSection>
 
@@ -867,10 +688,12 @@ export const ListingDetailView = (props: ListingProps) => {
           subtitle={t("listings.sections.neighborhoodSubtitle")}
           priority={3}
         >
-          <ListingMap
-            address={getGenericAddress(listing.listingsBuildingAddress)}
-            listingName={listing.name}
-          />
+          <div className={"seeds-p-is-6"}>
+            <ListingMap
+              address={getGenericAddress(listing.listingsBuildingAddress)}
+              listingName={listing.name}
+            />
+          </div>
         </CollapsibleSection>
 
         {(listing.requiredDocuments || listing.programRules || listing.specialNotes) && (
@@ -879,30 +702,32 @@ export const ListingDetailView = (props: ListingProps) => {
             subtitle={t("listings.sections.additionalInformationSubtitle")}
             priority={3}
           >
-            {listing.requiredDocuments && (
-              <ContentCard title={t("listings.requiredDocuments")}>
-                <Markdown
-                  children={listing.requiredDocuments}
-                  options={{ disableParsingRawHTML: true }}
-                />
-              </ContentCard>
-            )}
-            {listing.programRules && (
-              <ContentCard title={t("listings.importantProgramRules")}>
-                <Markdown
-                  children={listing.programRules}
-                  options={{ disableParsingRawHTML: true }}
-                />
-              </ContentCard>
-            )}
-            {listing.specialNotes && (
-              <ContentCard title={t("listings.specialNotes")}>
-                <Markdown
-                  children={listing.specialNotes}
-                  options={{ disableParsingRawHTML: true }}
-                />
-              </ContentCard>
-            )}
+            <div className={"seeds-p-is-6"}>
+              {listing.requiredDocuments && (
+                <ContentCard title={t("listings.requiredDocuments")}>
+                  <Markdown
+                    children={listing.requiredDocuments}
+                    options={{ disableParsingRawHTML: true }}
+                  />
+                </ContentCard>
+              )}
+              {listing.programRules && (
+                <ContentCard title={t("listings.importantProgramRules")}>
+                  <Markdown
+                    children={listing.programRules}
+                    options={{ disableParsingRawHTML: true }}
+                  />
+                </ContentCard>
+              )}
+              {listing.specialNotes && (
+                <ContentCard title={t("listings.specialNotes")}>
+                  <Markdown
+                    children={listing.specialNotes}
+                    options={{ disableParsingRawHTML: true }}
+                  />
+                </ContentCard>
+              )}
+            </div>
           </CollapsibleSection>
         )}
       </ListingDetails>

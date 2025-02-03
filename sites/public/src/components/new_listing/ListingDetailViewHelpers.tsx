@@ -14,11 +14,26 @@ import {
   ReviewOrderTypeEnum,
 } from "@bloom-housing/shared-helpers/src/types/backend-swagger"
 import { TagVariant } from "@bloom-housing/ui-seeds/src/text/Tag"
-import { EventType, FieldGroup, Form, StandardTableData, t } from "@bloom-housing/ui-components"
-import { cloudinaryPdfFromId, getTimeRangeString } from "@bloom-housing/shared-helpers"
+import {
+  EventType,
+  ExpandableText,
+  FieldGroup,
+  Form,
+  StandardTable,
+  StandardTableData,
+  t,
+  TableHeaders,
+} from "@bloom-housing/ui-components"
+import {
+  cloudinaryPdfFromId,
+  getOccupancyDescription,
+  getTimeRangeString,
+  occupancyTable,
+} from "@bloom-housing/shared-helpers"
 import { downloadExternalPDF } from "../../lib/helpers"
 
 import styles from "./ListingDetailView.module.scss"
+import { CardList, ContentCard } from "../../patterns/CardList"
 
 export const getFilteredMultiselectQuestions = (
   multiselectQuestions: ListingMultiselectQuestion[],
@@ -156,6 +171,19 @@ export const getAccessibilityFeatures = (listing: Listing) => {
   return featuresExist ? features : null
 }
 
+export const getUtilitiesIncluded = (listing: Listing) => {
+  let utilitiesExist = false
+  const utilities = Object.keys(listing?.listingUtilities ?? {}).map((utility, index) => {
+    if (listing?.listingUtilities[utility]) {
+      utilitiesExist = true
+      return `${t(`listings.utilities.${utility}`)}${
+        index < Object.keys(listing?.listingUtilities ?? {}).length - 1 ? ", " : ""
+      }`
+    }
+  })
+  return utilitiesExist ? utilities : null
+}
+
 export const getFeatures = (
   listing: Listing,
   jurisdiction: Jurisdiction
@@ -257,6 +285,232 @@ export const getDateString = (date: Date, format: string) => {
   return date ? dayjs(date).format(format) : null
 }
 
+type EligiblitySections =
+  | "Reserved"
+  | "HMI"
+  | "Occupancy"
+  | "Assistance"
+  | "Preferences"
+  | "Programs"
+  | "CreditHistory"
+  | "RentalHistory"
+  | "CriminalBackground"
+
+const eligibilitySections = [
+  "Reserved",
+  "HMI",
+  "Occupancy",
+  "Assistance",
+  "Preferences",
+  "Programs",
+  "CreditHistory",
+  "RentalHistory",
+  "CriminalBackground",
+]
+
+const getBuildingSelectionCriteria = (listing: Listing) => {
+  if (listing.listingsBuildingSelectionCriteriaFile) {
+    return (
+      <p>
+        <Link
+          href={cloudinaryPdfFromId(
+            listing.listingsBuildingSelectionCriteriaFile.fileId,
+            process.env.cloudinaryCloudName
+          )}
+        >
+          {t("listings.moreBuildingSelectionCriteria")}
+        </Link>
+      </p>
+    )
+  } else if (listing.buildingSelectionCriteria) {
+    return (
+      <p>
+        <Link href={listing.buildingSelectionCriteria}>
+          {t("listings.moreBuildingSelectionCriteria")}
+        </Link>
+      </p>
+    )
+  }
+}
+
+export type EligibilitySection = {
+  header: string
+  subheader?: string
+  content?: React.ReactNode
+  note?: string
+}
+
+export const getEligibilitySections = (listing: Listing): EligibilitySection[] => {
+  const eligibilityFeatures: EligibilitySection[] = []
+
+  // Reserved community type
+  if (listing.reservedCommunityTypes) {
+    eligibilityFeatures.push({
+      header: getReservedTitle(listing),
+      content: (
+        <CardList
+          cardContent={[
+            {
+              title: t(`listings.reservedCommunityTypes.${listing.reservedCommunityTypes.name}`),
+              description: listing.reservedCommunityDescription,
+            },
+          ]}
+        />
+      ),
+    })
+  }
+
+  // HMI
+  eligibilityFeatures.push({
+    header: t("listings.householdMaximumIncome"),
+    subheader: listing?.units[0]?.bmrProgramChart
+      ? t("listings.forIncomeCalculationsBMR")
+      : t("listings.forIncomeCalculations"),
+    content: (
+      <StandardTable
+        headers={listing?.unitsSummarized?.hmi?.columns as TableHeaders}
+        data={getHmiData(listing)}
+        responsiveCollapse={true}
+        translateData={true}
+      />
+    ),
+  })
+
+  // Occupancy
+  eligibilityFeatures.push({
+    header: t("t.occupancy"),
+    subheader: getOccupancyDescription(listing),
+    content: (
+      <StandardTable
+        headers={{
+          unitType: "t.unitType",
+          occupancy: "t.occupancy",
+        }}
+        data={occupancyTable(listing)}
+        responsiveCollapse={false}
+      />
+    ),
+  })
+
+  // Rental Assistance
+  if (listing.rentalAssistance) {
+    eligibilityFeatures.push({
+      header: t("listings.sections.rentalAssistanceTitle"),
+      subheader: listing.rentalAssistance,
+    })
+  }
+
+  // Preferences
+  const preferences = getFilteredMultiselectQuestions(
+    listing.listingMultiselectQuestions,
+    MultiselectQuestionsApplicationSectionEnum.preferences
+  )
+  if (preferences?.length > 0) {
+    eligibilityFeatures.push({
+      header: t("listings.sections.housingPreferencesTitle"),
+      subheader: t("listings.sections.housingPreferencesSubtitle"),
+      note: t("listings.remainingUnitsAfterPreferenceConsideration"),
+      content: (
+        <CardList
+          cardContent={preferences.map((question) => {
+            return {
+              title: question.multiselectQuestions.text,
+              description: question.multiselectQuestions.description,
+            }
+          })}
+        />
+      ),
+    })
+  }
+
+  // Programs
+  const programs = getFilteredMultiselectQuestions(
+    listing.listingMultiselectQuestions,
+    MultiselectQuestionsApplicationSectionEnum.programs
+  )
+  if (programs?.length > 0) {
+    eligibilityFeatures.push({
+      header: t("listings.sections.housingProgramsTitle"),
+      subheader: t("listings.sections.housingProgramsSubtitle"),
+      note: t("listings.remainingUnitsAfterPrograms"),
+      content: (
+        <CardList
+          cardContent={programs.map((question) => {
+            return {
+              title: question.multiselectQuestions.text,
+              description: question.multiselectQuestions.description,
+            }
+          })}
+        />
+      ),
+    })
+  }
+
+  // Additional Eligibility Rules
+  if (
+    listing.creditHistory ||
+    listing.rentalHistory ||
+    listing.criminalBackground ||
+    listing.listingsBuildingSelectionCriteriaFile
+  ) {
+    eligibilityFeatures.push({
+      header: t("listings.sections.additionalEligibilityTitle"),
+      subheader: t("listings.sections.additionalEligibilitySubtitle"),
+      content: (
+        <>
+          {listing.creditHistory && (
+            <ContentCard title={t("listings.creditHistory")}>
+              <ExpandableText
+                className="text-xs text-gray-700"
+                buttonClassName="ml-4"
+                markdownProps={{ disableParsingRawHTML: true }}
+                strings={{
+                  readMore: t("t.more"),
+                  readLess: t("t.less"),
+                }}
+              >
+                {listing.creditHistory}
+              </ExpandableText>
+            </ContentCard>
+          )}
+          {listing.rentalHistory && (
+            <ContentCard title={t("listings.rentalHistory")}>
+              <ExpandableText
+                className="text-xs text-gray-700"
+                buttonClassName="ml-4"
+                markdownProps={{ disableParsingRawHTML: true }}
+                strings={{
+                  readMore: t("t.more"),
+                  readLess: t("t.less"),
+                }}
+              >
+                {listing.rentalHistory}
+              </ExpandableText>
+            </ContentCard>
+          )}
+          {listing.criminalBackground && (
+            <ContentCard title={t("listings.criminalBackground")}>
+              <ExpandableText
+                className="text-xs text-gray-700"
+                buttonClassName="ml-4"
+                markdownProps={{ disableParsingRawHTML: true }}
+                strings={{
+                  readMore: t("t.more"),
+                  readLess: t("t.less"),
+                }}
+              >
+                {listing.criminalBackground}
+              </ExpandableText>
+            </ContentCard>
+          )}
+          {getBuildingSelectionCriteria(listing)}
+        </>
+      ),
+    })
+  }
+  return eligibilityFeatures
+}
+
 export const dateSection = (heading: string, events: EventType[]) => {
   if (!events.length) return
   return (
@@ -270,7 +524,9 @@ export const dateSection = (heading: string, events: EventType[]) => {
             <>
               {openHouseEvent.dateString && (
                 <div
-                  className={`${styles["event-date"]} seeds-m-be-1 ${index > 0 && `seeds-m-bs-4`}`}
+                  className={`${styles["slim-heading"]} seeds-m-be-1 ${
+                    index > 0 && `seeds-m-bs-4`
+                  }`}
                 >
                   {openHouseEvent.dateString}
                 </div>

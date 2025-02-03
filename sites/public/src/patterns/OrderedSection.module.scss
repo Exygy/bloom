@@ -25,6 +25,7 @@
     width: 100%;
 
     .heading {
+      --heading-color: var(--seeds-text-color-darker);
       p {
         color: var(--seeds-text-color);
       }
