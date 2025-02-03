@@ -173,10 +173,12 @@ export const ListingDetailView = (props: ListingProps) => {
           <Icon size={"md"} className={styles["primary-icon"]}>
             <ClockIcon />
           </Icon>
-          {appStatusContent}
+          <div>
+            <div>{appStatusContent}</div>
+            <div>{appStatusSubContent}</div>
+          </div>
         </div>
         {/* todo test subcontent */}
-        <div>{appStatusSubContent}</div>
       </Card.Section>
     </Card>
   )
@@ -231,7 +233,7 @@ export const ListingDetailView = (props: ListingProps) => {
             <HeadingGroup
               headingPriority={3}
               size={"lg"}
-              className={`${styles["heading-group"]} seeds-m-be-4`}
+              className={`${styles["heading-group"]} seeds-m-be-heading`}
               heading={t("listings.lotteryResults.header")}
               subheading={
                 lotteryResultsEvent?.startTime
@@ -280,6 +282,7 @@ export const ListingDetailView = (props: ListingProps) => {
           ? await downloadExternalPDF(paperApplications[0].fileURL, listing.name)
           : setShowDownloadModal(true)
       }}
+      className={styles["full-width-button"]}
     >
       {t("listings.apply.downloadApplication")}
     </Button>
@@ -313,15 +316,15 @@ export const ListingDetailView = (props: ListingProps) => {
                       size={"md"}
                       priority={3}
                       className={`${
-                        hasPaperApplication && onlineApplicationUrl ? "seeds-m-bs-6" : ""
-                      } seeds-m-be-4`}
+                        hasPaperApplication && onlineApplicationUrl ? "seeds-m-bs-content" : ""
+                      } seeds-m-be-header`}
                     >
                       {t("listings.apply.pickUpAnApplication")}
                     </Heading>
                     <Address address={applicationPickUpAddress} getDirections={true} />
                     {listing.applicationPickUpAddressOfficeHours && (
                       <>
-                        <Heading size={"sm"} priority={3} className={"seeds-m-bs-6"}>
+                        <Heading size={"sm"} priority={3} className={"seeds-m-bs-content"}>
                           {t("leasingAgent.officeHours")}
                         </Heading>
                         <Markdown
@@ -334,18 +337,18 @@ export const ListingDetailView = (props: ListingProps) => {
                   </div>
                 )}
                 {applicationMailingAddress && (
-                  <div>
-                    <Heading size={"md"} priority={3} className={"seeds-m-be-4 seeds-m-bs-6"}>
+                  <div className={"seeds-m-bs-content"}>
+                    <Heading size={"md"} priority={3} className={"seeds-m-be-header"}>
                       {t("listings.apply.submitAPaperApplication")}
                     </Heading>
                     <p>{listing.applicationOrganization}</p>
                     <Address address={applicationMailingAddress} />
-                    {postmarkString && <p className={"text-label"}>{postmarkString}</p>}
+                    {postmarkString && <p className={"seeds-m-bs-label"}>{postmarkString}</p>}
                   </div>
                 )}
                 {applicationDropOffAddress && (
-                  <div>
-                    <Heading size={"md"} priority={3} className={`seeds-m-be-4 seeds-m-bs-6`}>
+                  <div className={"seeds-m-bs-content"}>
+                    <Heading size={"md"} priority={3} className={`seeds-m-be-heading`}>
                       {t("listings.apply.dropOffApplication")}
                     </Heading>
                     <Address address={applicationPickUpAddress} getDirections={true} />
@@ -375,11 +378,11 @@ export const ListingDetailView = (props: ListingProps) => {
       {listing?.referralApplication && (
         <Card className={styles["mobile-full-width-card"]}>
           <Card.Section>
-            <Heading size={"lg"} priority={2} className={"seeds-m-be-4"}>
+            <Heading size={"lg"} priority={2} className={"seeds-m-be-header"}>
               {t("application.referralApplication.furtherInformation")}
             </Heading>
             {listing.referralApplication.phoneNumber && (
-              <p className={"seeds-m-be-2"}>
+              <p className={"seeds-m-be-text"}>
                 <a href={`tel:${listing.leasingAgentPhone.replace(/[-()]/g, "")}`}>{`${t(
                   "t.call"
                 )} ${listing.referralApplication.phoneNumber}`}</a>
@@ -398,7 +401,7 @@ export const ListingDetailView = (props: ListingProps) => {
   const WhatToExpect = (
     <Card className={styles["mobile-full-width-card"]}>
       <Card.Section>
-        <Heading size={"lg"} priority={3} className={"seeds-m-be-4"}>
+        <Heading size={"lg"} priority={3} className={"seeds-m-be-header"}>
           {t("whatToExpect.label")}
         </Heading>
         <div>{listing.whatToExpect}</div>
@@ -409,7 +412,7 @@ export const ListingDetailView = (props: ListingProps) => {
   const LeasingAgent = (
     <Card className={styles["mobile-full-width-card"]}>
       <Card.Section>
-        <Heading size={"lg"} priority={2} className={"seeds-m-be-4"}>
+        <Heading size={"lg"} priority={2} className={"seeds-m-be-header"}>
           {t("leasingAgent.contact")}
         </Heading>
         <div>
@@ -420,7 +423,7 @@ export const ListingDetailView = (props: ListingProps) => {
         <div>{listing.leasingAgentTitle && <p>{listing.leasingAgentTitle}</p>}</div>
         <div>
           {listing.leasingAgentPhone && (
-            <p className={"seeds-m-bs-6 seeds-m-be-1"}>
+            <p className={"seeds-m-bs-content seeds-m-be-text"}>
               <a href={`tel:${listing.leasingAgentPhone.replace(/[-()]/g, "")}`}>{`${t("t.call")} ${
                 listing.leasingAgentPhone
               }`}</a>
@@ -430,24 +433,24 @@ export const ListingDetailView = (props: ListingProps) => {
         <div>{listing.leasingAgentPhone && <p>{t("leasingAgent.dueToHighCallVolume")}</p>}</div>
         <div>
           {listing.leasingAgentEmail && (
-            <p className={"seeds-m-bs-6"}>
+            <p className={"seeds-m-bs-content"}>
               <a href={`mailto:${listing.leasingAgentEmail}`}>{t("t.email")}</a>
             </p>
           )}
         </div>
         {listing.listingsLeasingAgentAddress && (
-          <div className={"seeds-m-bs-6"}>
+          <div className={"seeds-m-bs-content"}>
             <Address address={listing.listingsLeasingAgentAddress} getDirections={true} />
           </div>
         )}
 
         {listing.leasingAgentOfficeHours && (
-          <>
-            <Heading size={"md"} priority={4} className={"seeds-m-be-4 seeds-m-bs-6"}>
+          <div className={"seeds-m-bs-content"}>
+            <Heading size={"md"} priority={4} className={"seeds-m-be-header"}>
               {t("leasingAgent.officeHours")}
             </Heading>
             <p>{listing.leasingAgentOfficeHours}</p>
-          </>
+          </div>
         )}
       </Card.Section>
     </Card>
@@ -460,9 +463,9 @@ export const ListingDetailView = (props: ListingProps) => {
         listing.depositMax ||
         listing.costsNotIncluded ||
         (enableUtilitiesIncluded && utilitiesIncluded?.length)) && (
-        <Card className={"seeds-m-bs-6"}>
+        <Card className={"seeds-m-bs-content"}>
           <Card.Section>
-            <Heading size={"lg"} priority={3} className={"seeds-m-be-4"}>
+            <Heading size={"lg"} priority={3} className={"seeds-m-be-header"}>
               {t("listings.sections.additionalFees")}
             </Heading>
             <div className={styles["split-card"]}>
@@ -485,10 +488,10 @@ export const ListingDetailView = (props: ListingProps) => {
               )}
             </div>
             {listing.costsNotIncluded && (
-              <div className={"seeds-m-be-6"}>{listing.costsNotIncluded}</div>
+              <div className={"seeds-m-be-content"}>{listing.costsNotIncluded}</div>
             )}
             {enableUtilitiesIncluded && utilitiesIncluded?.length && (
-              <div className={"seeds-m-be-6"}>
+              <div className={"seeds-m-be-content"}>
                 <Heading size={"md"}>{t("listings.sections.utilities")}</Heading>
                 {utilitiesIncluded}
               </div>
@@ -550,22 +553,22 @@ export const ListingDetailView = (props: ListingProps) => {
               </div>
 
               {listingTags?.length > 0 && (
-                <div className={styles["listing-tags"]}>
+                <div className={`${styles["listing-tags"]} seeds-m-bs-3`}>
                   {listingTags.map((tag) => {
                     return <Tag variant={tag.variant}>{tag.title}</Tag>
                   })}
                 </div>
               )}
 
-              <p>{listing.developer}</p>
-              <div className={`${styles["hide-desktop"]} seeds-m-b-4`}>{DueDate}</div>
+              <p className={"seeds-m-bs-3"}>{listing.developer}</p>
+              <div className={`${styles["hide-desktop"]} seeds-m-b-3`}>{DueDate}</div>
             </div>
             <div className={styles["hide-desktop"]}>{ListingMainDetails}</div>
           </div>
 
           <div className={styles["rent-summary"]}>
             <div className={"mx-3 md:mx-0"}>
-              <Heading size={"lg"} className={"seeds-m-be-4"} priority={2}>
+              <Heading size={"lg"} className={"seeds-m-be-header"} priority={2}>
                 {t("listings.rentSummary")}
               </Heading>
               {amiValues.length > 1 &&

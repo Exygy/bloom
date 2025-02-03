@@ -3,7 +3,6 @@
 }
 
 .muted-card {
-  --card-spacing-sm: var(--seeds-s4);
   --card-border-color: var(--seeds-color-primary-light);
   --card-border-width: var(--seeds-border-2);
   --card-background-color: var(--seeds-bg-color-surface-primary);
@@ -12,7 +11,7 @@
 }
 
 .mobile-full-width-card {
-  margin-block-start: var(--seeds-s6);
+  margin-block-start: var(--seeds-spacer-content);
   @media (--sm-only) {
     margin-block-start: 0;
     border-radius: 0;
@@ -23,7 +22,7 @@
 }
 
 .mobile-full-width-muted-card {
-  margin-block-start: var(--seeds-s6);
+  margin-block-start: var(--seeds-spacer-content);
   @media (--sm-only) {
     margin-block-start: 0;
     border-radius: 0;
@@ -39,14 +38,14 @@
 }
 
 .inline-collapse-padding {
-  padding-inline-start: var(--seeds-s6);
+  padding-inline-start: var(--seeds-spacer-content);
   @media (--sm-only) {
     padding-inline: var(--seeds-s4);
   }
 }
 
 .card-heading {
-  margin-bottom: var(--seeds-s2);
+  margin-bottom: var(--seeds-spacer-header);
 }
 
 .listing-heading {
@@ -57,11 +56,9 @@
 }
 
 .listing-tags {
-  margin-block: var(--seeds-s2);
-
   span {
     &:not(:last-child) {
-      margin-right: var(--seeds-s2);
+      margin-inline-end: var(--seeds-s2);
     }
   }
 }
@@ -144,7 +141,7 @@
   &:not(:last-child) {
     padding-inline-end: var(--seeds-s4);
   }
-  margin-block-end: var(--seeds-s6);
+  margin-block-end: var(--seeds-spacer-content);
 }
 
 .emphasized {
@@ -158,14 +155,9 @@
   width: 100%;
   justify-content: center;
   @media (--sm-and-up) {
-    padding-top: var(--seeds-s8);
-  }
-  button {
-    width: 100%;
-    margin-top: var(--seeds-s2);
+    padding-top: var(--seeds-spacer-section);
   }
   .full-width-button {
-    margin-top: var(--seeds-s2);
     width: 100%;
   }
 }
@@ -194,7 +186,7 @@
   flex-direction: column;
   flex-basis: calc(100% / 3 * 2);
   @media (--sm-and-up) {
-    padding-inline-end: var(--seeds-s6);
+    padding-inline-end: var(--seeds-spacer-section);
   }
 }
 
@@ -206,13 +198,13 @@
 .rent-summary {
   flex-direction: column;
   display: flex;
-  margin-block-start: var(--seeds-s6);
+  margin-block-start: var(--seeds-spacer-content);
 }
 
 .main-content {
   display: flex;
   flex-direction: column;
-  margin-block-start: var(--seeds-s6);
+  margin-block-start: var(--seeds-spacer-content);
 }
 
 .hide-desktop {
