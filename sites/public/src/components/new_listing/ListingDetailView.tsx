@@ -288,7 +288,7 @@ export const ListingDetailView = (props: ListingProps) => {
         listing.status !== ListingsStatusEnum.closed && (
           <Card className={styles["mobile-full-width-card"]}>
             <Card.Section divider="flush" className={styles["card-section-background"]}>
-              <Heading priority={3} size={"lg"} className={styles["card-heading"]}>
+              <Heading priority={2} size={"lg"} className={styles["card-heading"]}>
                 {t("listings.apply.howToApply")}
               </Heading>
               {onlineApplicationUrl ? ApplyOnlineButton : DownloadApplicationButton}
@@ -297,7 +297,7 @@ export const ListingDetailView = (props: ListingProps) => {
               <Card.Section divider="flush">
                 {hasPaperApplication && onlineApplicationUrl && (
                   <>
-                    <Heading priority={3} size={"lg"} className={styles["card-heading"]}>
+                    <Heading priority={2} size={"lg"} className={styles["card-heading"]}>
                       {t("listings.apply.getAPaperApplication")}
                     </Heading>
                     {DownloadApplicationButton}
@@ -307,7 +307,7 @@ export const ListingDetailView = (props: ListingProps) => {
                   <div>
                     <Heading
                       size={"md"}
-                      priority={4}
+                      priority={3}
                       className={`${
                         hasPaperApplication && onlineApplicationUrl ? "seeds-m-bs-6" : ""
                       } seeds-m-be-4`}
@@ -317,7 +317,7 @@ export const ListingDetailView = (props: ListingProps) => {
                     <Address address={applicationPickUpAddress} getDirections={true} />
                     {listing.applicationPickUpAddressOfficeHours && (
                       <>
-                        <Heading size={"sm"} priority={4} className={"seeds-m-bs-6"}>
+                        <Heading size={"sm"} priority={3} className={"seeds-m-bs-6"}>
                           {t("leasingAgent.officeHours")}
                         </Heading>
                         <Markdown
@@ -331,7 +331,7 @@ export const ListingDetailView = (props: ListingProps) => {
                 )}
                 {applicationMailingAddress && (
                   <div>
-                    <Heading size={"md"} priority={4} className={"seeds-m-be-4 seeds-m-bs-6"}>
+                    <Heading size={"md"} priority={3} className={"seeds-m-be-4 seeds-m-bs-6"}>
                       {t("listings.apply.submitAPaperApplication")}
                     </Heading>
                     <p>{listing.applicationOrganization}</p>
@@ -341,7 +341,7 @@ export const ListingDetailView = (props: ListingProps) => {
                 )}
                 {applicationDropOffAddress && (
                   <div>
-                    <Heading size={"md"} priority={4} className={`seeds-m-be-4 seeds-m-bs-6`}>
+                    <Heading size={"md"} priority={3} className={`seeds-m-be-4 seeds-m-bs-6`}>
                       {t("listings.apply.dropOffApplication")}
                     </Heading>
                     <Address address={applicationPickUpAddress} getDirections={true} />
@@ -371,7 +371,7 @@ export const ListingDetailView = (props: ListingProps) => {
       {listing?.referralApplication && (
         <Card className={styles["mobile-full-width-card"]}>
           <Card.Section>
-            <Heading size={"lg"} priority={3} className={"seeds-m-be-4"}>
+            <Heading size={"lg"} priority={2} className={"seeds-m-be-4"}>
               {t("application.referralApplication.furtherInformation")}
             </Heading>
             {listing.referralApplication.phoneNumber && (
@@ -405,7 +405,7 @@ export const ListingDetailView = (props: ListingProps) => {
   const LeasingAgent = (
     <Card className={styles["mobile-full-width-card"]}>
       <Card.Section>
-        <Heading size={"lg"} priority={3} className={"seeds-m-be-4"}>
+        <Heading size={"lg"} priority={2} className={"seeds-m-be-4"}>
           {t("leasingAgent.contact")}
         </Heading>
         <div>
@@ -553,7 +553,7 @@ export const ListingDetailView = (props: ListingProps) => {
 
           <div className={styles["rent-summary"]}>
             <div className={"mx-3 md:mx-0"}>
-              <Heading size={"lg"} className={"seeds-m-be-4"}>
+              <Heading size={"lg"} className={"seeds-m-be-4"} priority={2}>
                 {t("listings.rentSummary")}
               </Heading>
               {amiValues.length > 1 &&
@@ -595,7 +595,7 @@ export const ListingDetailView = (props: ListingProps) => {
             <CollapsibleSection
               title={t("listings.sections.eligibilityTitle")}
               subtitle={t("listings.sections.eligibilitySubtitle")}
-              priority={3}
+              priority={2}
               contentClassName={styles["mobile-collapse"]}
             >
               <ol>
@@ -620,7 +620,7 @@ export const ListingDetailView = (props: ListingProps) => {
             <CollapsibleSection
               title={t("listings.sections.featuresTitle")}
               subtitle={t("listings.sections.featuresSubtitle")}
-              priority={3}
+              priority={2}
             >
               <div className={styles["inline-collapse-padding"]}>
                 {features.map((feature) => {
@@ -629,6 +629,7 @@ export const ListingDetailView = (props: ListingProps) => {
                       heading={feature.heading}
                       subheading={feature.subheading}
                       size={"lg"}
+                      headingPriority={3}
                       className={styles["features-heading-group"]}
                     />
                   )
@@ -646,7 +647,7 @@ export const ListingDetailView = (props: ListingProps) => {
             <CollapsibleSection
               title={t("t.neighborhood")}
               subtitle={t("listings.sections.neighborhoodSubtitle")}
-              priority={3}
+              priority={2}
             >
               <div className={styles["inline-collapse-padding"]}>
                 <ListingMap
@@ -660,7 +661,7 @@ export const ListingDetailView = (props: ListingProps) => {
               <CollapsibleSection
                 title={t("listings.additionalInformation")}
                 subtitle={t("listings.sections.additionalInformationSubtitle")}
-                priority={3}
+                priority={2}
               >
                 <div className={styles["inline-collapse-padding"]}>
                   {listing.requiredDocuments && (

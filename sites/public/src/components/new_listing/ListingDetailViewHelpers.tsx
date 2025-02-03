@@ -493,7 +493,7 @@ export const dateSection = (heading: string, events: EventType[]) => {
   return (
     <Card className={styles["mobile-full-width-card"]}>
       <Card.Section>
-        <Heading size={"lg"} className={"seeds-p-be-4"}>
+        <Heading size={"lg"} priority={2} className={"seeds-p-be-4"}>
           {heading}
         </Heading>
         {events.map((openHouseEvent, index) => {
