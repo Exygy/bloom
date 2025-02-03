@@ -81,6 +81,16 @@
   --subheading-margin-sm: var(--seeds-s2);
 }
 
+.waitlist-heading-group {
+  p {
+    font-weight: var(--seeds-font-weight-semibold);
+  }
+}
+
+.features-heading-group {
+  --heading-color: var(--seeds-text-color-dark);
+}
+
 // GetApplication
 .card-section-background {
   background-color: var(--seeds-bg-color-surface-primary);

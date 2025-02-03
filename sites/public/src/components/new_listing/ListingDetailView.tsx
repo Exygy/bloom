@@ -15,22 +15,18 @@ import {
 } from "@bloom-housing/shared-helpers/src/types/backend-swagger"
 import {
   AdditionalFees,
-  Description,
   ExpandableText,
   GroupedTable,
   ImageCard,
-  Contact,
   ListingDetails,
   ListingMap,
   EventSection,
   ReferralApplication,
   StandardTable,
   TableHeaders,
-  QuantityRowSection,
   t,
   EventType,
   StandardTableData,
-  ExpandableSection,
 } from "@bloom-housing/ui-components"
 import {
   cloudinaryPdfFromId,
@@ -58,9 +54,11 @@ import { Address } from "../../patterns/Address"
 import {
   getAddress,
   getAmiValues,
-  getAvailabilityHeading,
+  getAvailabilityContent,
+  getAvailabilitySubheading,
   getDateString,
   getEvent,
+  getFeatures,
   getFilteredMultiselectQuestions,
   getHasNonReferralMethods,
   getHmiData,
@@ -193,6 +191,7 @@ export const ListingDetailView = (props: ListingProps) => {
     })
   }
   const listingTags = getListingTags(listing)
+  const features = getFeatures(listing, props?.jurisdiction)
   const lotteryResultsPdfUrl = pdfUrlFromListingEvents(
     [lotteryResults],
     ListingEventsTypeEnum.lotteryResults,
@@ -296,10 +295,14 @@ export const ListingDetailView = (props: ListingProps) => {
                     ? t("listings.waitlist.isOpen")
                     : t("listings.vacantUnitsAvailable")
                 }
-                subheading={getAvailabilityHeading(props.listing.reviewOrderType)}
+                subheading={getAvailabilitySubheading(
+                  listing.waitlistOpenSpots,
+                  listing.unitsAvailable
+                )}
                 size={"lg"}
-                className={styles["heading-group"]}
+                className={`${styles["heading-group"]} ${styles["waitlist-heading-group"]}`}
               />
+              <p>{getAvailabilityContent(props.listing.reviewOrderType)}</p>
             </Card.Section>
           )}
         </Card>
@@ -513,61 +516,6 @@ export const ListingDetailView = (props: ListingProps) => {
       </Card.Section>
     </Card>
   )
-
-  const getWaitlist = () => {
-    const waitlistRow = [
-      {
-        text: t("listings.waitlist.openSlots"),
-        amount: listing.waitlistOpenSpots,
-        emphasized: true,
-      },
-    ]
-    const unitRow = [
-      {
-        text: listing.unitsAvailable === 1 ? t("listings.vacantUnit") : t("listings.vacantUnits"),
-        amount: listing.unitsAvailable,
-        emphasized: true,
-      },
-    ]
-    const description = () => {
-      switch (listing.reviewOrderType) {
-        case ReviewOrderTypeEnum.waitlist:
-          return t("listings.waitlist.submitForWaitlist")
-        case ReviewOrderTypeEnum.firstComeFirstServe:
-          return t("listings.eligibleApplicants.FCFS")
-        default:
-          return t("listings.availableUnitsDescription")
-      }
-    }
-
-    return (
-      <QuantityRowSection
-        quantityRows={
-          listing.reviewOrderType === ReviewOrderTypeEnum.waitlist ? waitlistRow : unitRow
-        }
-        strings={{
-          sectionTitle:
-            listing.reviewOrderType === ReviewOrderTypeEnum.waitlist
-              ? t("listings.waitlist.isOpen")
-              : t("listings.vacantUnitsAvailable"),
-          description: description(),
-        }}
-      />
-    )
-  }
-
-  const getAccessibilityFeatures = () => {
-    let featuresExist = false
-    const features = Object.keys(listing?.listingFeatures ?? {}).map((feature, index) => {
-      if (listing?.listingFeatures[feature]) {
-        featuresExist = true
-        return <li key={index}>{t(`eligibility.accessibility.${feature}`)}</li>
-      }
-    })
-    return featuresExist ? <ul>{features}</ul> : null
-  }
-
-  const accessibilityFeatures = getAccessibilityFeatures()
 
   const getUtilitiesIncluded = () => {
     let utilitiesExist = false
@@ -897,49 +845,24 @@ export const ListingDetailView = (props: ListingProps) => {
           subtitle={t("listings.sections.featuresSubtitle")}
           priority={3}
         >
-          <div className="listing-detail-panel">
-            <dl className="column-definition-list">
-              {listing.neighborhood && (
-                <Description term={t("t.neighborhood")} description={listing.neighborhood} />
-              )}
-              {listing.yearBuilt && (
-                <Description term={t("t.built")} description={listing.yearBuilt} />
-              )}
-              {listing.smokingPolicy && (
-                <Description term={t("t.smokingPolicy")} description={listing.smokingPolicy} />
-              )}
-              {listing.petPolicy && (
-                <Description term={t("t.petsPolicy")} description={listing.petPolicy} />
-              )}
-              {listing.amenities && (
-                <Description term={t("t.propertyAmenities")} description={listing.amenities} />
-              )}
-              {listing.unitAmenities && (
-                <Description term={t("t.unitAmenities")} description={listing.unitAmenities} />
-              )}
-              {listing.servicesOffered && (
-                <Description term={t("t.servicesOffered")} description={listing.servicesOffered} />
-              )}
-              {accessibilityFeatures && props.jurisdiction?.enableAccessibilityFeatures && (
-                <Description term={t("t.accessibility")} description={accessibilityFeatures} />
-              )}
-              {listing.accessibility && (
-                <Description
-                  term={t("t.additionalAccessibility")}
-                  description={listing.accessibility}
+          <div>
+            <Heading size={"lg"}>{t("t.unitFeatures")}</Heading>
+            <UnitTables
+              units={listing.units}
+              unitSummaries={listing?.unitsSummarized?.byUnitType}
+              disableAccordion={listing.disableUnitsAccordion}
+            />
+            {features.map((feature) => {
+              return (
+                <HeadingGroup
+                  heading={feature.heading}
+                  subheading={feature.subheading}
+                  size={"lg"}
+                  className={styles["features-heading-group"]}
                 />
-              )}
-              <Description
-                term={t("t.unitFeatures")}
-                description={
-                  <UnitTables
-                    units={listing.units}
-                    unitSummaries={listing?.unitsSummarized?.byUnitType}
-                    disableAccordion={listing.disableUnitsAccordion}
-                  />
-                }
-              />
-            </dl>
+              )
+            })}
+
             <AdditionalFees
               deposit={getCurrencyRange(parseInt(listing.depositMin), parseInt(listing.depositMax))}
               applicationFee={listing.applicationFee ? `$${listing.applicationFee}` : undefined}

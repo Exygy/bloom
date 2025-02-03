@@ -5,6 +5,7 @@ import {
   ApplicationAddressTypeEnum,
   ApplicationMethod,
   ApplicationMethodsTypeEnum,
+  Jurisdiction,
   Listing,
   ListingEventCreate,
   ListingMultiselectQuestion,
@@ -39,7 +40,19 @@ export const getMultiselectQuestionData = (multiselectQuestions: ListingMultisel
   })
 }
 
-export const getAvailabilityHeading = (reviewOrderType: ReviewOrderTypeEnum) => {
+export const getAvailabilitySubheading = (waitlistOpenSpots: number, unitsAvailable: number) => {
+  if (waitlistOpenSpots) {
+    return `${waitlistOpenSpots} ${t("listings.waitlist.openSlots")}`
+  }
+  if (unitsAvailable) {
+    return `${unitsAvailable} ${
+      unitsAvailable === 1 ? t("listings.vacantUnit") : t("listings.vacantUnits")
+    }`
+  }
+  return null
+}
+
+export const getAvailabilityContent = (reviewOrderType: ReviewOrderTypeEnum) => {
   switch (reviewOrderType) {
     case ReviewOrderTypeEnum.waitlist:
       return t("listings.waitlist.submitForWaitlist")
@@ -126,6 +139,56 @@ export const getEvent = (event: ListingEventCreate, note?: string | React.ReactN
     linkText: event.label || t("listings.openHouseEvent.seeVideo"),
     note: note || event.note,
   }
+}
+
+export const getAccessibilityFeatures = (listing: Listing) => {
+  let featuresExist = false
+  const features = Object.keys(listing?.listingFeatures ?? {}).map((feature, index) => {
+    if (listing?.listingFeatures[feature]) {
+      featuresExist = true
+      return `${t(`eligibility.accessibility.${feature}`)}${
+        index < Object.keys(listing?.listingFeatures ?? {}).length - 1 ? ", " : ""
+      }`
+    }
+  })
+  return featuresExist ? features : null
+}
+
+export const getFeatures = (
+  listing: Listing,
+  jurisdiction: Jurisdiction
+): { heading: string; subheading: string }[] => {
+  const features = []
+  if (listing.neighborhood) {
+    features.push({ heading: t("t.neighborhood"), subheading: listing.neighborhood })
+  }
+  if (listing.yearBuilt) {
+    features.push({ heading: t("t.built"), subheading: listing.yearBuilt })
+  }
+  if (listing.smokingPolicy) {
+    features.push({ heading: t("t.smokingPolicy"), subheading: listing.smokingPolicy })
+  }
+  if (listing.petPolicy) {
+    features.push({ heading: t("t.petsPolicy"), subheading: listing.petPolicy })
+  }
+  if (listing.amenities) {
+    features.push({ heading: t("t.propertyAmenities"), subheading: listing.amenities })
+  }
+  if (listing.unitAmenities) {
+    features.push({ heading: t("t.unitAmenities"), subheading: listing.unitAmenities })
+  }
+  if (listing.servicesOffered) {
+    features.push({ heading: t("t.servicesOffered"), subheading: listing.servicesOffered })
+  }
+  const accessibilityFeatures = getAccessibilityFeatures(listing)
+  if (accessibilityFeatures && jurisdiction?.enableAccessibilityFeatures) {
+    features.push({ heading: t("t.accessibility"), subheading: accessibilityFeatures })
+  }
+  if (listing.accessibility) {
+    features.push({ heading: t("t.additionalAccessibility"), subheading: listing.accessibility })
+  }
+
+  return features
 }
 
 export const getAmiValues = (listing: Listing) => {
