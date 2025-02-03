@@ -26,7 +26,7 @@ export const OrderedSection = (props: OrderedSectionProps) => {
             size={"lg"}
             className={`${styles["heading"]}`}
           />
-          <div>{props.children}</div>
+          {props.children && <div className={"seeds-m-bs-content"}>{props.children}</div>}
           {props.note && <p className={styles["note"]}>{props.note}</p>}
         </div>
       </div>

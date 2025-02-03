@@ -34,6 +34,7 @@ import { downloadExternalPDF } from "../../lib/helpers"
 
 import styles from "./ListingDetailView.module.scss"
 import { CardList, ContentCard } from "../../patterns/CardList"
+import Markdown from "markdown-to-jsx"
 
 export const getFilteredMultiselectQuestions = (
   multiselectQuestions: ListingMultiselectQuestion[],
@@ -291,7 +292,7 @@ export const getDateString = (date: Date, format: string) => {
 const getBuildingSelectionCriteria = (listing: Listing) => {
   if (listing.listingsBuildingSelectionCriteriaFile) {
     return (
-      <p>
+      <p className={"seeds-m-bs-content"}>
         <Link
           href={cloudinaryPdfFromId(
             listing.listingsBuildingSelectionCriteriaFile.fileId,
@@ -304,7 +305,7 @@ const getBuildingSelectionCriteria = (listing: Listing) => {
     )
   } else if (listing.buildingSelectionCriteria) {
     return (
-      <p>
+      <p className={"seeds-m-bs-content"}>
         <Link href={listing.buildingSelectionCriteria}>
           {t("listings.moreBuildingSelectionCriteria")}
         </Link>
@@ -398,6 +399,7 @@ export const getEligibilitySections = (listing: Listing): EligibilitySection[] =
               description: question.multiselectQuestions.description,
             }
           })}
+          ordered={true}
         />
       ),
     })
@@ -433,56 +435,22 @@ export const getEligibilitySections = (listing: Listing): EligibilitySection[] =
     listing.criminalBackground ||
     listing.listingsBuildingSelectionCriteriaFile
   ) {
+    const cardContent: { title: string; description: React.ReactNode }[] = []
+    if (listing.creditHistory)
+      cardContent.push({ title: t("listings.creditHistory"), description: listing.creditHistory })
+    if (listing.rentalHistory)
+      cardContent.push({ title: t("listings.rentalHistory"), description: listing.rentalHistory })
+    if (listing.criminalBackground)
+      cardContent.push({
+        title: t("listings.criminalBackground"),
+        description: listing.criminalBackground,
+      })
     eligibilityFeatures.push({
       header: t("listings.sections.additionalEligibilityTitle"),
       subheader: t("listings.sections.additionalEligibilitySubtitle"),
       content: (
         <>
-          {listing.creditHistory && (
-            <ContentCard title={t("listings.creditHistory")}>
-              <ExpandableText
-                className="text-xs text-gray-700"
-                buttonClassName="ml-4"
-                markdownProps={{ disableParsingRawHTML: true }}
-                strings={{
-                  readMore: t("t.more"),
-                  readLess: t("t.less"),
-                }}
-              >
-                {listing.creditHistory}
-              </ExpandableText>
-            </ContentCard>
-          )}
-          {listing.rentalHistory && (
-            <ContentCard title={t("listings.rentalHistory")}>
-              <ExpandableText
-                className="text-xs text-gray-700"
-                buttonClassName="ml-4"
-                markdownProps={{ disableParsingRawHTML: true }}
-                strings={{
-                  readMore: t("t.more"),
-                  readLess: t("t.less"),
-                }}
-              >
-                {listing.rentalHistory}
-              </ExpandableText>
-            </ContentCard>
-          )}
-          {listing.criminalBackground && (
-            <ContentCard title={t("listings.criminalBackground")}>
-              <ExpandableText
-                className="text-xs text-gray-700"
-                buttonClassName="ml-4"
-                markdownProps={{ disableParsingRawHTML: true }}
-                strings={{
-                  readMore: t("t.more"),
-                  readLess: t("t.less"),
-                }}
-              >
-                {listing.criminalBackground}
-              </ExpandableText>
-            </ContentCard>
-          )}
+          <CardList cardContent={cardContent} />
           {getBuildingSelectionCriteria(listing)}
         </>
       ),
@@ -491,12 +459,38 @@ export const getEligibilitySections = (listing: Listing): EligibilitySection[] =
   return eligibilityFeatures
 }
 
+export const getAdditionalInformation = (listing: Listing) => {
+  const cardContent: { title: string; description: React.ReactNode }[] = []
+  if (listing.requiredDocuments)
+    cardContent.push({
+      title: t("listings.requiredDocuments"),
+      description: (
+        <Markdown children={listing.requiredDocuments} options={{ disableParsingRawHTML: true }} />
+      ),
+    })
+  if (listing.programRules)
+    cardContent.push({
+      title: t("listings.importantProgramRules"),
+      description: (
+        <Markdown children={listing.programRules} options={{ disableParsingRawHTML: true }} />
+      ),
+    })
+  if (listing.specialNotes)
+    cardContent.push({
+      title: t("listings.specialNotes"),
+      description: (
+        <Markdown children={listing.specialNotes} options={{ disableParsingRawHTML: true }} />
+      ),
+    })
+  return cardContent
+}
+
 export const dateSection = (heading: string, events: EventType[]) => {
   if (!events.length) return
   return (
     <Card className={styles["mobile-full-width-card"]}>
       <Card.Section>
-        <Heading size={"lg"} priority={2} className={"seeds-p-be-4"}>
+        <Heading size={"lg"} priority={2} className={"seeds-p-be-header"}>
           {heading}
         </Heading>
         {events.map((openHouseEvent, index) => {
@@ -504,7 +498,7 @@ export const dateSection = (heading: string, events: EventType[]) => {
             <>
               {openHouseEvent.dateString && (
                 <div
-                  className={`${styles["slim-heading"]} seeds-m-be-1 ${
+                  className={`${styles["slim-heading"]} seeds-m-be-text ${
                     index > 0 && `seeds-m-bs-4`
                   }`}
                 >
@@ -512,16 +506,18 @@ export const dateSection = (heading: string, events: EventType[]) => {
                 </div>
               )}
               {openHouseEvent.timeString && (
-                <div className={"seeds-m-be-1"}>{openHouseEvent.timeString}</div>
+                <div className={"seeds-m-be-text"}>{openHouseEvent.timeString}</div>
               )}
               {openHouseEvent.linkText && openHouseEvent.linkURL && (
-                <div className={"seeds-m-be-1"}>
+                <div className={"seeds-m-be-text"}>
                   <Link href={openHouseEvent.linkURL} hideExternalLinkIcon={true}>
                     {openHouseEvent.linkText}
                   </Link>
                 </div>
               )}
-              {openHouseEvent.note && <div className={"seeds-m-be-1"}>{openHouseEvent.note}</div>}
+              {openHouseEvent.note && (
+                <div className={"seeds-m-be-text"}>{openHouseEvent.note}</div>
+              )}
             </>
           )
         })}

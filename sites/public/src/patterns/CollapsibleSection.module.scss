@@ -4,7 +4,7 @@
     display: flex;
     flex-direction: row;
     background-color: var(--seeds-bg-color-muted);
-    margin-bottom: var(--seeds-s8);
+    margin-bottom: var(--seeds-spacer-section);
 
     .header-content {
       width: 100%;
@@ -13,7 +13,7 @@
       .heading {
         font-size: var(--seeds-type-heading-size-2xl);
         font-family: var(--seeds-font-alt-sans);
-        margin-bottom: var(--seeds-s4);
+        margin-bottom: var(--seeds-spacer-label);
       }
     }
 
@@ -37,6 +37,6 @@
   }
 
   .content {
-    margin-bottom: var(--seeds-s8);
+    margin-bottom: var(--seeds-spacer-section);
   }
 }

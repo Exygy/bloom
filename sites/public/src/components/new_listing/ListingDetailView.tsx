@@ -33,12 +33,13 @@ import { ErrorPage } from "../../pages/_error"
 import { useGetApplicationStatusProps } from "../../lib/hooks"
 import { downloadExternalPDF, getGenericAddress, oneLineAddress } from "../../lib/helpers"
 import { CollapsibleSection } from "../../patterns/CollapsibleSection"
-import { ContentCard } from "../../patterns/CardList"
+import { CardList } from "../../patterns/CardList"
 import { OrderedSection } from "../../patterns/OrderedSection"
 import { Address } from "../../patterns/Address"
 
 import {
   dateSection,
+  getAdditionalInformation,
   getAddress,
   getAmiValues,
   getAvailabilityContent,
@@ -323,16 +324,15 @@ export const ListingDetailView = (props: ListingProps) => {
                     </Heading>
                     <Address address={applicationPickUpAddress} getDirections={true} />
                     {listing.applicationPickUpAddressOfficeHours && (
-                      <>
-                        <Heading size={"sm"} priority={3} className={"seeds-m-bs-content"}>
+                      <div className={"seeds-m-bs-content"}>
+                        <Heading size={"md"} priority={4} className={"seeds-m-be-header"}>
                           {t("leasingAgent.officeHours")}
                         </Heading>
                         <Markdown
-                          className={styles["address-markdown"]}
                           children={listing.applicationPickUpAddressOfficeHours}
                           options={{ disableParsingRawHTML: true }}
                         />
-                      </>
+                      </div>
                     )}
                   </div>
                 )}
@@ -348,21 +348,20 @@ export const ListingDetailView = (props: ListingProps) => {
                 )}
                 {applicationDropOffAddress && (
                   <div className={"seeds-m-bs-content"}>
-                    <Heading size={"md"} priority={3} className={`seeds-m-be-heading`}>
+                    <Heading size={"md"} priority={3} className={`seeds-m-be-header`}>
                       {t("listings.apply.dropOffApplication")}
                     </Heading>
                     <Address address={applicationPickUpAddress} getDirections={true} />
                     {listing.applicationDropOffAddressOfficeHours && (
-                      <>
-                        <Heading size={"sm"} priority={4} className={styles["sidebar-spacing"]}>
+                      <div className={"seeds-m-bs-content"}>
+                        <Heading size={"md"} priority={4} className={"seeds-m-be-header"}>
                           {t("leasingAgent.officeHours")}
                         </Heading>
                         <Markdown
-                          className={styles["address-markdown"]}
                           children={listing.applicationDropOffAddressOfficeHours}
                           options={{ disableParsingRawHTML: true }}
                         />
-                      </>
+                      </div>
                     )}
                   </div>
                 )}
@@ -417,13 +416,15 @@ export const ListingDetailView = (props: ListingProps) => {
         </Heading>
         <div>
           {listing.leasingAgentName && (
-            <p className={styles["slim-heading"]}>{listing.leasingAgentName}</p>
+            <p className={`${styles["slim-heading"]} seeds-m-be-text`}>
+              {listing.leasingAgentName}
+            </p>
           )}
         </div>
         <div>{listing.leasingAgentTitle && <p>{listing.leasingAgentTitle}</p>}</div>
         <div>
           {listing.leasingAgentPhone && (
-            <p className={"seeds-m-bs-content seeds-m-be-text"}>
+            <p className={"seeds-m-bs-header seeds-m-be-text"}>
               <a href={`tel:${listing.leasingAgentPhone.replace(/[-()]/g, "")}`}>{`${t("t.call")} ${
                 listing.leasingAgentPhone
               }`}</a>
@@ -433,19 +434,19 @@ export const ListingDetailView = (props: ListingProps) => {
         <div>{listing.leasingAgentPhone && <p>{t("leasingAgent.dueToHighCallVolume")}</p>}</div>
         <div>
           {listing.leasingAgentEmail && (
-            <p className={"seeds-m-bs-content"}>
+            <p className={"seeds-m-bs-header"}>
               <a href={`mailto:${listing.leasingAgentEmail}`}>{t("t.email")}</a>
             </p>
           )}
         </div>
         {listing.listingsLeasingAgentAddress && (
-          <div className={"seeds-m-bs-content"}>
+          <div className={"seeds-m-bs-header"}>
             <Address address={listing.listingsLeasingAgentAddress} getDirections={true} />
           </div>
         )}
 
         {listing.leasingAgentOfficeHours && (
-          <div className={"seeds-m-bs-content"}>
+          <div className={"seeds-m-bs-header"}>
             <Heading size={"md"} priority={4} className={"seeds-m-be-header"}>
               {t("leasingAgent.officeHours")}
             </Heading>
@@ -471,7 +472,9 @@ export const ListingDetailView = (props: ListingProps) => {
             <div className={styles["split-card"]}>
               {listing.applicationFee && (
                 <div className={styles["split-card-cell"]}>
-                  <Heading size={"md"}>{t("listings.applicationFee")}</Heading>
+                  <Heading size={"md"} className={styles["slim-heading"]}>
+                    {t("listings.applicationFee")}
+                  </Heading>
                   <div className={styles.emphasized}>{`$${listing.applicationFee}`}</div>
                   <div>{t("listings.applicationPerApplicantAgeDescription")}</div>
                   <div>{t("listings.applicationFeeDueAt")}</div>
@@ -479,7 +482,9 @@ export const ListingDetailView = (props: ListingProps) => {
               )}
               {(listing.depositMin || listing.depositMax) && (
                 <div className={styles["split-card-cell"]}>
-                  <Heading size={"md"}>{t("t.deposit")}</Heading>
+                  <Heading size={"md"} className={styles["slim-heading"]}>
+                    {t("t.deposit")}
+                  </Heading>
                   <div className={styles.emphasized}>
                     {getCurrencyRange(parseInt(listing.depositMin), parseInt(listing.depositMax))}
                   </div>
@@ -567,7 +572,7 @@ export const ListingDetailView = (props: ListingProps) => {
           </div>
 
           <div className={styles["rent-summary"]}>
-            <div className={"mx-3 md:mx-0"}>
+            <div>
               <Heading size={"lg"} className={"seeds-m-be-header"} priority={2}>
                 {t("listings.rentSummary")}
               </Heading>
@@ -649,7 +654,9 @@ export const ListingDetailView = (props: ListingProps) => {
                     />
                   )
                 })}
-                <Heading size={"lg"}>{t("t.unitFeatures")}</Heading>
+                <Heading size={"lg"} className={"seeds-m-be-header"}>
+                  {t("t.unitFeatures")}
+                </Heading>
                 <UnitTables
                   units={listing.units}
                   unitSummaries={listing?.unitsSummarized?.byUnitType}
@@ -679,30 +686,7 @@ export const ListingDetailView = (props: ListingProps) => {
                 priority={2}
               >
                 <div className={styles["inline-collapse-padding"]}>
-                  {listing.requiredDocuments && (
-                    <ContentCard title={t("listings.requiredDocuments")}>
-                      <Markdown
-                        children={listing.requiredDocuments}
-                        options={{ disableParsingRawHTML: true }}
-                      />
-                    </ContentCard>
-                  )}
-                  {listing.programRules && (
-                    <ContentCard title={t("listings.importantProgramRules")}>
-                      <Markdown
-                        children={listing.programRules}
-                        options={{ disableParsingRawHTML: true }}
-                      />
-                    </ContentCard>
-                  )}
-                  {listing.specialNotes && (
-                    <ContentCard title={t("listings.specialNotes")}>
-                      <Markdown
-                        children={listing.specialNotes}
-                        options={{ disableParsingRawHTML: true }}
-                      />
-                    </ContentCard>
-                  )}
+                  <CardList cardContent={getAdditionalInformation(listing)} />
                 </div>
               </CollapsibleSection>
             )}

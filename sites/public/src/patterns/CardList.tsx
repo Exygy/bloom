@@ -26,13 +26,23 @@ export const ContentCard = (props: ContentCardProps) => {
 interface CardListProps {
   cardContent: { title: string; description: React.ReactNode }[]
   priority?: 1 | 4 | 2 | 3 | 5 | 6
+  ordered?: boolean
 }
 
 export const CardList = (props: CardListProps) => {
   return (
     <div>
       {props.cardContent.map((card, index) => {
-        return <ContentCard title={card.title} description={card.description} key={index} />
+        return (
+          <div className={styles["card-container"]}>
+            {props.ordered && (
+              <div className={styles["card-number-container"]}>
+                <div className={styles["number-circle"]}>{index + 1}</div>
+              </div>
+            )}
+            <ContentCard title={card.title} description={card.description} key={index} />
+          </div>
+        )
       })}
     </div>
   )
