@@ -20,8 +20,6 @@ import {
   ImageCard,
   ListingDetails,
   ListingMap,
-  EventSection,
-  ReferralApplication,
   StandardTable,
   TableHeaders,
   t,
@@ -41,7 +39,7 @@ import {
   pdfUrlFromListingEvents,
   AuthContext,
 } from "@bloom-housing/shared-helpers"
-import { Card, HeadingGroup, Icon, Heading, Button, Tag } from "@bloom-housing/ui-seeds"
+import { Card, HeadingGroup, Icon, Heading, Button, Tag, Link } from "@bloom-housing/ui-seeds"
 import { ErrorPage } from "../../pages/_error"
 import { useGetApplicationStatusProps } from "../../lib/hooks"
 import { downloadExternalPDF, getGenericAddress, oneLineAddress } from "../../lib/helpers"
@@ -52,6 +50,7 @@ import { OrderedSection } from "../../patterns/OrderedSection"
 import { Address } from "../../patterns/Address"
 
 import {
+  dateSection,
   getAddress,
   getAmiValues,
   getAvailabilityContent,
@@ -229,30 +228,19 @@ export const ListingDetailView = (props: ListingProps) => {
     )
   }
 
-  let lotterySection
-  if (publicLottery && (!lotteryResults || (lotteryResults && !lotteryResults.url))) {
-    lotterySection = publicLottery.startDate && (
-      <EventSection
-        headerText={t("listings.publicLottery.header")}
-        sectionHeader={true}
-        events={[getEvent(publicLottery)]}
-      />
-    )
-    if (dayjs(publicLottery.startTime) < dayjs() && lotteryResults && !lotteryResults.url) {
-      lotterySection = (
-        <EventSection
-          headerText={t("listings.lotteryResults.header")}
-          sectionHeader={true}
-          events={[
-            getEvent(
-              lotteryResults,
-              lotteryResults.note || t("listings.lotteryResults.completeResultsWillBePosted")
-            ),
-          ]}
-        />
-      )
-    }
-  }
+  const OpenHouses = dateSection(t("listings.openHouseEvent.header"), openHouseEvents)
+
+  const lotteryRanNoResultsPosted = dayjs(publicLottery.startTime) < dayjs() && !lotteryResults
+
+  const LotterySection =
+    publicLottery &&
+    (!lotteryResults || lotteryRanNoResultsPosted) &&
+    dateSection(t("listings.publicLottery.header"), [
+      getEvent(
+        publicLottery,
+        lotteryRanNoResultsPosted ? t("listings.lotteryResults.completeResultsWillBePosted") : ""
+      ),
+    ])
 
   // Sections ----------
   const DueDate = (
@@ -273,7 +261,7 @@ export const ListingDetailView = (props: ListingProps) => {
   const ListingMainDetails = (
     <>
       {(listing.reservedCommunityTypes || listing.status !== ListingsStatusEnum.closed) && (
-        <Card className={`${styles["muted-card"]} ${styles["listing-info-card"]}`}>
+        <Card className={`${styles["muted-card"]} ${styles["listing-info-card"]} seeds-m-bs-6`}>
           {listing.reservedCommunityTypes && (
             <Card.Section divider="inset">
               <HeadingGroup
@@ -312,13 +300,13 @@ export const ListingDetailView = (props: ListingProps) => {
 
   const LotteryResults = (
     <>
-      {lotteryResultsPdfUrl && (
-        <Card>
+      {lotteryResultsPdfUrl && listing.status === ListingsStatusEnum.closed && (
+        <Card className={"seeds-m-be-6"}>
           <Card.Section>
             <HeadingGroup
               headingPriority={3}
               size={"lg"}
-              className={styles["heading-group"]}
+              className={`${styles["heading-group"]} seeds-m-be-4`}
               heading={t("listings.lotteryResults.header")}
               subheading={
                 lotteryResults?.startTime
@@ -326,7 +314,7 @@ export const ListingDetailView = (props: ListingProps) => {
                   : null
               }
             />
-            <Button href={lotteryResultsPdfUrl}>
+            <Button href={lotteryResultsPdfUrl} hideExternalLinkIcon={true}>
               {t("listings.lotteryResults.downloadResults")}
             </Button>
           </Card.Section>
@@ -365,7 +353,7 @@ export const ListingDetailView = (props: ListingProps) => {
       {getHasNonReferralMethods(listing) &&
         !applicationsClosed &&
         listing.status !== ListingsStatusEnum.closed && (
-          <Card>
+          <Card className={"seeds-m-bs-6"}>
             <Card.Section divider="flush" className={styles["card-section-background"]}>
               <Heading priority={3} size={"lg"} className={styles["card-heading"]}>
                 {t("listings.apply.howToApply")}
@@ -388,15 +376,15 @@ export const ListingDetailView = (props: ListingProps) => {
                       size={"md"}
                       priority={4}
                       className={`${
-                        hasPaperApplication && onlineApplicationUrl ? styles["sidebar-spacing"] : ""
-                      } ${styles["heading-spacing"]}`}
+                        hasPaperApplication && onlineApplicationUrl ? "seeds-m-bs-6" : ""
+                      } seeds-m-be-4`}
                     >
                       {t("listings.apply.pickUpAnApplication")}
                     </Heading>
                     <Address address={applicationPickUpAddress} getDirections={true} />
                     {listing.applicationPickUpAddressOfficeHours && (
                       <>
-                        <Heading size={"sm"} priority={4} className={styles["sidebar-spacing"]}>
+                        <Heading size={"sm"} priority={4} className={"seeds-m-bs-6"}>
                           {t("leasingAgent.officeHours")}
                         </Heading>
                         <Markdown
@@ -410,11 +398,7 @@ export const ListingDetailView = (props: ListingProps) => {
                 )}
                 {applicationMailingAddress && (
                   <div>
-                    <Heading
-                      size={"md"}
-                      priority={4}
-                      className={`${styles["sidebar-spacing"]} ${styles["heading-spacing"]}`}
-                    >
+                    <Heading size={"md"} priority={4} className={"seeds-m-be-4 seeds-m-bs-6"}>
                       {t("listings.apply.submitAPaperApplication")}
                     </Heading>
                     <p>{listing.applicationOrganization}</p>
@@ -424,11 +408,7 @@ export const ListingDetailView = (props: ListingProps) => {
                 )}
                 {applicationDropOffAddress && (
                   <div>
-                    <Heading
-                      size={"md"}
-                      priority={4}
-                      className={`${styles["sidebar-spacing"]} ${styles["heading-spacing"]}`}
-                    >
+                    <Heading size={"md"} priority={4} className={`seeds-m-be-4 seeds-m-bs-6`}>
                       {t("listings.apply.dropOffApplication")}
                     </Heading>
                     <Address address={applicationPickUpAddress} getDirections={true} />
@@ -453,10 +433,35 @@ export const ListingDetailView = (props: ListingProps) => {
     </>
   )
 
+  const ReferralApplication = (
+    <>
+      {listing?.referralApplication && (
+        <Card className={"seeds-m-bs-6"}>
+          <Card.Section>
+            <Heading size={"lg"} priority={3} className={"seeds-m-be-4"}>
+              {t("application.referralApplication.furtherInformation")}
+            </Heading>
+            {listing.referralApplication.phoneNumber && (
+              <p className={"seeds-m-be-2"}>
+                <a href={`tel:${listing.leasingAgentPhone.replace(/[-()]/g, "")}`}>{`${t(
+                  "t.call"
+                )} ${listing.referralApplication.phoneNumber}`}</a>
+              </p>
+            )}
+            <p>
+              {listing.referralApplication.externalReference ||
+                t("application.referralApplication.instructions")}
+            </p>
+          </Card.Section>
+        </Card>
+      )}
+    </>
+  )
+
   const WhatToExpect = (
-    <Card className={styles["sidebar-spacing"]}>
+    <Card className={"seeds-m-bs-6"}>
       <Card.Section>
-        <Heading size={"lg"} priority={3} className={styles["heading-spacing"]}>
+        <Heading size={"lg"} priority={3} className={"seeds-m-be-4"}>
           {t("whatToExpect.label")}
         </Heading>
         <div>{listing.whatToExpect}</div>
@@ -465,9 +470,9 @@ export const ListingDetailView = (props: ListingProps) => {
   )
 
   const LeasingAgent = (
-    <Card className={styles["sidebar-spacing"]}>
+    <Card className={"seeds-m-bs-6"}>
       <Card.Section>
-        <Heading size={"lg"} priority={3} className={styles["heading-spacing"]}>
+        <Heading size={"lg"} priority={3} className={"seeds-m-be-4"}>
           {t("leasingAgent.contact")}
         </Heading>
         <div>{listing.leasingAgentName && <p>{listing.leasingAgentName}</p>}</div>
@@ -476,7 +481,7 @@ export const ListingDetailView = (props: ListingProps) => {
         </div>
         <div>
           {listing.leasingAgentPhone && (
-            <p className={styles["sidebar-spacing"]}>
+            <p className={"seeds-m-bs-6"}>
               <a href={`tel:${listing.leasingAgentPhone.replace(/[-()]/g, "")}`}>{`${t("t.call")} ${
                 listing.leasingAgentPhone
               }`}</a>
@@ -490,24 +495,20 @@ export const ListingDetailView = (props: ListingProps) => {
         </div>
         <div>
           {listing.leasingAgentEmail && (
-            <p className={styles["sidebar-spacing"]}>
+            <p className={"seeds-m-bs-6"}>
               <a href={`mailto:${listing.leasingAgentEmail}`}>{t("t.email")}</a>
             </p>
           )}
         </div>
         {listing.listingsLeasingAgentAddress && (
-          <div className={styles["sidebar-spacing"]}>
+          <div className={"seeds-m-bs-6"}>
             <Address address={listing.listingsLeasingAgentAddress} getDirections={true} />
           </div>
         )}
 
         {listing.leasingAgentOfficeHours && (
           <>
-            <Heading
-              size={"md"}
-              priority={4}
-              className={`${styles["sidebar-spacing"]} ${styles["heading-spacing"]}`}
-            >
+            <Heading size={"md"} priority={4} className={"seeds-m-be-4 seeds-m-bs-6"}>
               {t("leasingAgent.officeHours")}
             </Heading>
             <p>{listing.leasingAgentOfficeHours}</p>
@@ -645,31 +646,11 @@ export const ListingDetailView = (props: ListingProps) => {
             {Apply}
 
             {/* {!applicationsClosed && getWaitlist()} */}
-
-            {listing?.referralApplication && (
-              <ReferralApplication
-                phoneNumber={
-                  listing.referralApplication.phoneNumber ||
-                  t("application.referralApplication.phoneNumber")
-                }
-                description={
-                  listing.referralApplication.externalReference ||
-                  t("application.referralApplication.instructions")
-                }
-                strings={{
-                  title: t("application.referralApplication.furtherInformation"),
-                }}
-              />
-            )}
+            {ReferralApplication}
           </div>
 
-          {openHouseEvents && (
-            <EventSection
-              events={openHouseEvents}
-              headerText={t("listings.openHouseEvent.header")}
-            />
-          )}
-          {lotterySection}
+          {OpenHouses}
+          {LotterySection}
           {WhatToExpect}
           {LeasingAgent}
         </aside>
@@ -846,12 +827,6 @@ export const ListingDetailView = (props: ListingProps) => {
           priority={3}
         >
           <div>
-            <Heading size={"lg"}>{t("t.unitFeatures")}</Heading>
-            <UnitTables
-              units={listing.units}
-              unitSummaries={listing?.unitsSummarized?.byUnitType}
-              disableAccordion={listing.disableUnitsAccordion}
-            />
             {features.map((feature) => {
               return (
                 <HeadingGroup
@@ -862,6 +837,12 @@ export const ListingDetailView = (props: ListingProps) => {
                 />
               )
             })}
+            <Heading size={"lg"}>{t("t.unitFeatures")}</Heading>
+            <UnitTables
+              units={listing.units}
+              unitSummaries={listing?.unitsSummarized?.byUnitType}
+              disableAccordion={listing.disableUnitsAccordion}
+            />
 
             <AdditionalFees
               deposit={getCurrencyRange(parseInt(listing.depositMin), parseInt(listing.depositMax))}

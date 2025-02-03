@@ -1,6 +1,7 @@
 import React from "react"
 import { UseFormMethods } from "react-hook-form"
 import dayjs from "dayjs"
+import { Button, Card, Dialog, Heading, Link } from "@bloom-housing/ui-seeds"
 import {
   ApplicationAddressTypeEnum,
   ApplicationMethod,
@@ -15,8 +16,9 @@ import {
 import { TagVariant } from "@bloom-housing/ui-seeds/src/text/Tag"
 import { EventType, FieldGroup, Form, StandardTableData, t } from "@bloom-housing/ui-components"
 import { cloudinaryPdfFromId, getTimeRangeString } from "@bloom-housing/shared-helpers"
-import { Button, Dialog } from "@bloom-housing/ui-seeds"
 import { downloadExternalPDF } from "../../lib/helpers"
+
+import styles from "./ListingDetailView.module.scss"
 
 export const getFilteredMultiselectQuestions = (
   multiselectQuestions: ListingMultiselectQuestion[],
@@ -253,6 +255,43 @@ export const getReservedTitle = (listing: Listing) => {
 
 export const getDateString = (date: Date, format: string) => {
   return date ? dayjs(date).format(format) : null
+}
+
+export const dateSection = (heading: string, events: EventType[]) => {
+  if (!events.length) return
+  return (
+    <Card className={"seeds-m-bs-6"}>
+      <Card.Section>
+        <Heading size={"lg"} className={"seeds-p-be-4"}>
+          {heading}
+        </Heading>
+        {events.map((openHouseEvent, index) => {
+          return (
+            <>
+              {openHouseEvent.dateString && (
+                <div
+                  className={`${styles["event-date"]} seeds-m-be-1 ${index > 0 && `seeds-m-bs-4`}`}
+                >
+                  {openHouseEvent.dateString}
+                </div>
+              )}
+              {openHouseEvent.timeString && (
+                <div className={"seeds-m-be-1"}>{openHouseEvent.timeString}</div>
+              )}
+              {openHouseEvent.linkText && openHouseEvent.linkURL && (
+                <div className={"seeds-m-be-1"}>
+                  <Link href={openHouseEvent.linkURL} hideExternalLinkIcon={true}>
+                    {openHouseEvent.linkText}
+                  </Link>
+                </div>
+              )}
+              {openHouseEvent.note && <div className={"seeds-m-be-1"}>{openHouseEvent.note}</div>}
+            </>
+          )
+        })}
+      </Card.Section>
+    </Card>
+  )
 }
 
 type ListingTag = {

@@ -57,7 +57,6 @@
 // DueDate
 .application-date-card {
   color: var(--seeds-text-color);
-  margin-bottom: var(--seeds-s6);
   font-size: var(--seeds-type-label-size);
   svg {
     margin-right: var(--seeds-s2);
@@ -69,7 +68,6 @@
 
 // ListingMainDetails
 .listing-info-card {
-  margin-bottom: var(--seeds-s6);
   .card-note {
     font-size: var(--seeds-type-label-size);
   }
@@ -96,14 +94,11 @@
   background-color: var(--seeds-bg-color-surface-primary);
 }
 
-.sidebar-spacing {
-  margin-top: var(--seeds-s6);
-}
-
-.heading-spacing {
-  margin-bottom: var(--seeds-s2);
-}
-
 .address-markdown {
   font-size: var(--seeds-type-label-size);
+}
+
+.event-date {
+  font-size: var(--seeds-type-heading-size-lg);
+  color: var(--seeds-text-color-dark);
 }
