@@ -11,6 +11,7 @@ type DownloadLotteryResultsProps = {
 }
 
 const DownloadLotteryResults = (props: DownloadLotteryResultsProps) => {
+  if (!props.pdfURL) return null
   return (
     <section className="aside-block text-center">
       <h2 className="text-caps pb-4">
