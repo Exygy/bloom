@@ -154,6 +154,12 @@
 
 .listing-detail-view {
   color: var(--seeds-text-color);
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  @media (--sm-and-up) {
+    padding-top: var(--seeds-s8);
+  }
   button {
     width: 100%;
     margin-top: var(--seeds-s2);
@@ -162,10 +168,6 @@
     margin-top: var(--seeds-s2);
     width: 100%;
   }
-  display: flex;
-  width: 100%;
-  justify-content: center;
-  // flex flex-wrap relative max-w-5xl m-auto mt-4
 }
 
 .content-wrapper {
@@ -173,7 +175,7 @@
   display: flex;
   flex-direction: column;
   @media (--sm-and-up) {
-    padding-inline: var(--seeds-s2);
+    margin-inline: var(--seeds-s2);
     flex-direction: row;
   }
 }

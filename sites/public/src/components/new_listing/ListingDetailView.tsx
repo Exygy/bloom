@@ -459,7 +459,7 @@ export const ListingDetailView = (props: ListingProps) => {
         listing.depositMin ||
         listing.depositMax ||
         listing.costsNotIncluded ||
-        (enableUtilitiesIncluded && utilitiesIncluded.length)) && (
+        (enableUtilitiesIncluded && utilitiesIncluded?.length)) && (
         <Card className={"seeds-m-bs-6"}>
           <Card.Section>
             <Heading size={"lg"} priority={3} className={"seeds-m-be-4"}>
@@ -487,7 +487,7 @@ export const ListingDetailView = (props: ListingProps) => {
             {listing.costsNotIncluded && (
               <div className={"seeds-m-be-6"}>{listing.costsNotIncluded}</div>
             )}
-            {enableUtilitiesIncluded && utilitiesIncluded.length && (
+            {enableUtilitiesIncluded && utilitiesIncluded?.length && (
               <div className={"seeds-m-be-6"}>
                 <Heading size={"md"}>{t("listings.sections.utilities")}</Heading>
                 {utilitiesIncluded}
