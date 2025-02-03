@@ -449,6 +449,10 @@ export const ListingDetailView = (props: ListingProps) => {
     </Card>
   )
 
+  const enableUtilitiesIncluded = props.jurisdiction.featureFlags?.some(
+    (flag) => flag.name === "enableUtilitiesIncluded" && flag.active
+  )
+
   const AdditionalFees = (
     <Card className={"seeds-m-bs-6"}>
       <Card.Section>
@@ -477,7 +481,7 @@ export const ListingDetailView = (props: ListingProps) => {
         {listing.costsNotIncluded && (
           <div className={"seeds-m-be-6"}>{listing.costsNotIncluded}</div>
         )}
-        {props?.jurisdiction.enableUtilitiesIncluded && (
+        {enableUtilitiesIncluded && (
           <div className={"seeds-m-be-6"}>
             <Heading size={"md"}>{t("listings.sections.utilities")}</Heading>
             {getUtilitiesIncluded(listing)}
