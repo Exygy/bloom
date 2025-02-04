@@ -12,7 +12,6 @@ import {
   ReviewOrderTypeEnum,
 } from "@bloom-housing/shared-helpers/src/types/backend-swagger"
 import {
-  GroupedTable,
   ImageCard,
   ListingMap,
   t,
@@ -70,10 +69,10 @@ interface ListingProps {
 }
 
 const unitSummariesHeaders = {
-  unitType: t("t.unitType"),
-  minimumIncome: t("t.minimumIncome"),
-  rent: t("t.rent"),
-  availability: t("t.availability"),
+  unitType: "t.unitType",
+  minimumIncome: "t.minimumIncome",
+  rent: "t.rent",
+  availability: "t.availability",
 }
 
 export const ListingDetailView = (props: ListingProps) => {
@@ -594,18 +593,18 @@ export const ListingDetailView = (props: ListingProps) => {
                       <h2 className="mt-4 mb-2">
                         {t("listings.percentAMIUnit", { percent: percent })}
                       </h2>
-                      <GroupedTable
+                      <StandardTable
                         headers={unitSummariesHeaders}
-                        data={[{ data: groupedUnits }]}
+                        data={groupedUnits}
                         responsiveCollapse={true}
                       />
                     </React.Fragment>
                   )
                 })}
               {amiValues.length == 1 && (
-                <GroupedTable
+                <StandardTable
                   headers={unitSummariesHeaders}
-                  data={[{ data: groupedUnits }]}
+                  data={groupedUnits}
                   responsiveCollapse={true}
                 />
               )}
