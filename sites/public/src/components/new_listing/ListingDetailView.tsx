@@ -449,7 +449,7 @@ export const ListingDetailView = (props: ListingProps) => {
 
         {listing.leasingAgentOfficeHours && (
           <div className={"seeds-m-bs-header"}>
-            <Heading size={"md"} priority={4} className={"seeds-m-be-header"}>
+            <Heading size={"md"} priority={3} className={"seeds-m-be-header"}>
               {t("leasingAgent.officeHours")}
             </Heading>
             <p>{listing.leasingAgentOfficeHours}</p>
@@ -535,7 +535,7 @@ export const ListingDetailView = (props: ListingProps) => {
                   }
                 }
               )}
-              description={listing.name}
+              description={t("listings.buildingImageAltText")}
               moreImagesLabel={t("listings.moreImagesLabel")}
               moreImagesDescription={t("listings.moreImagesAltDescription", {
                 listingName: listing.name,
@@ -697,7 +697,7 @@ export const ListingDetailView = (props: ListingProps) => {
                 priority={2}
               >
                 <div className={styles["inline-collapse-padding"]}>
-                  <CardList cardContent={getAdditionalInformation(listing)} />
+                  <CardList cardContent={getAdditionalInformation(listing)} priority={3} />
                 </div>
               </CollapsibleSection>
             )}

@@ -185,12 +185,12 @@ export const getUnitTableData = (units: Unit[], unitSummary: UnitSummary) => {
   }
 
   const barContent = (
-    <h3 className={"toggle-header-content"}>
+    <div className={"toggle-header-content"}>
       <strong>{t("listings.unitTypes." + unitSummary.unitTypes.name)}</strong>:&nbsp;
       {unitsLabel(availableUnits)}
       {areaRangeSection}
       {floorSection}
-    </h3>
+    </div>
   )
 
   return {
