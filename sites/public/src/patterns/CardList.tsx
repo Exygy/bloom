@@ -40,7 +40,12 @@ export const CardList = (props: CardListProps) => {
                 <div className={styles["number-circle"]}>{index + 1}</div>
               </div>
             )}
-            <ContentCard title={card.title} description={card.description} key={index} />
+            <ContentCard
+              title={card.title}
+              description={card.description}
+              key={index}
+              priority={props.priority}
+            />
           </div>
         )
       })}
