@@ -4,7 +4,9 @@
   width: 100%;
   .header {
     color: var(--seeds-text-color-dark);
-    margin-bottom: var(--seeds-spacer-header);
+  }
+  .description {
+    margin-block-start: var(--seeds-spacer-header);
   }
 }
 
@@ -12,7 +14,7 @@
   display: flex;
   flex-direction: row;
   &:not(:last-child) {
-    margin-bottom: var(--seeds-spacer-content);
+    margin-block-end: var(--seeds-spacer-content);
   }
   @media (--sm-only) {
     flex-direction: column;

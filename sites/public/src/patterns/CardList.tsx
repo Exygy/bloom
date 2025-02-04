@@ -16,7 +16,7 @@ export const ContentCard = (props: ContentCardProps) => {
         <Heading size="md" priority={props.priority ?? 4} className={styles["header"]}>
           {props.title}
         </Heading>
-        {props.description && <p>{props.description}</p>}
+        {props.description && <p className={styles.description}>{props.description}</p>}
         {props.children && <div>{props.children}</div>}
       </Card.Section>
     </Card>
