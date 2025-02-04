@@ -17,16 +17,18 @@ import {
   ListingMap,
   t,
   StandardTableData,
+  StandardTable,
 } from "@bloom-housing/ui-components"
 import {
   imageUrlFromListing,
   getCurrencyRange,
   getPostmarkString,
-  UnitTables,
   getSummariesTable,
   IMAGE_FALLBACK_URL,
   pdfUrlFromListingEvents,
   AuthContext,
+  getUnitTableData,
+  unitsHeaders,
 } from "@bloom-housing/shared-helpers"
 import { Card, HeadingGroup, Icon, Heading, Button, Tag, Link } from "@bloom-housing/ui-seeds"
 import { ErrorPage } from "../../pages/_error"
@@ -36,6 +38,7 @@ import { CollapsibleSection } from "../../patterns/CollapsibleSection"
 import { CardList } from "../../patterns/CardList"
 import { OrderedSection } from "../../patterns/OrderedSection"
 import { Address } from "../../patterns/Address"
+import { ExpandableTable } from "../../patterns/ExpandableTable"
 
 import {
   dateSection,
@@ -654,14 +657,23 @@ export const ListingDetailView = (props: ListingProps) => {
                     />
                   )
                 })}
-                <Heading size={"lg"} className={"seeds-m-be-header"}>
+                <Heading size={"lg"} className={"seeds-m-be-header"} priority={3}>
                   {t("t.unitFeatures")}
                 </Heading>
-                <UnitTables
-                  units={listing.units}
-                  unitSummaries={listing?.unitsSummarized?.byUnitType}
-                  disableAccordion={listing.disableUnitsAccordion}
-                />
+                {listing?.unitsSummarized?.byUnitType.map((summary, index) => {
+                  const unitTableData = getUnitTableData(listing.units, summary)
+                  return (
+                    <div className={index !== 0 ? "seeds-m-bs-header" : ""}>
+                      <ExpandableTable
+                        title={unitTableData.barContent}
+                        priority={4}
+                        disableCollapse={listing.disableUnitsAccordion}
+                      >
+                        <StandardTable headers={unitsHeaders} data={unitTableData.unitsFormatted} />
+                      </ExpandableTable>
+                    </div>
+                  )
+                })}
                 {AdditionalFees}
               </div>
             </CollapsibleSection>

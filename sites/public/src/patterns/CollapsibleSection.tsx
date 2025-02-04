@@ -5,7 +5,7 @@ import { Heading, Icon } from "@bloom-housing/ui-seeds"
 import styles from "./CollapsibleSection.module.scss"
 
 interface CollapsibleSectionProps {
-  title: string
+  title: React.ReactNode
   priority?: 1 | 4 | 2 | 3 | 5 | 6
   subtitle?: string
   children: React.ReactNode
@@ -31,7 +31,6 @@ export const CollapsibleSection = (props: CollapsibleSectionProps) => {
             aria-label="Collapse section"
             aria-expanded={!collapsed}
           >
-            {/* todo change to icon */}
             {collapsed ? (
               <Icon size={"lg"} aria-label="Expand">
                 <PlusIcon />
