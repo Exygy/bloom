@@ -1,6 +1,7 @@
 import React from "react"
 import { UseFormMethods } from "react-hook-form"
 import dayjs from "dayjs"
+import Markdown from "markdown-to-jsx"
 import { Button, Card, Dialog, Heading, Link } from "@bloom-housing/ui-seeds"
 import {
   ApplicationAddressTypeEnum,
@@ -30,10 +31,9 @@ import {
   occupancyTable,
 } from "@bloom-housing/shared-helpers"
 import { downloadExternalPDF } from "../../lib/helpers"
-
-import styles from "./ListingDetailView.module.scss"
 import { CardList } from "../../patterns/CardList"
-import Markdown from "markdown-to-jsx"
+
+import styles from "./ListingViewSeeds.module.scss"
 
 export const getFilteredMultiselectQuestions = (
   multiselectQuestions: ListingMultiselectQuestion[],

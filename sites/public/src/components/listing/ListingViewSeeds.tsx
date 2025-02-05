@@ -58,9 +58,9 @@ import {
   getReservedTitle,
   getUtilitiesIncluded,
   PaperApplicationDialog,
-} from "./ListingDetailViewHelpers"
+} from "./ListingViewSeedsHelpers"
 
-import styles from "./ListingDetailView.module.scss"
+import styles from "./ListingViewSeeds.module.scss"
 
 interface ListingProps {
   listing: Listing
@@ -75,7 +75,7 @@ const unitSummariesHeaders = {
   availability: "t.availability",
 }
 
-export const ListingDetailView = (props: ListingProps) => {
+export const ListingViewSeeds = (props: ListingProps) => {
   const { initialStateLoaded, profile } = useContext(AuthContext)
   const [showDownloadModal, setShowDownloadModal] = useState(false)
 
