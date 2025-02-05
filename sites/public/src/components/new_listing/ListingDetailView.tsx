@@ -202,7 +202,7 @@ export const ListingDetailView = (props: ListingProps) => {
                 size={"lg"}
                 className={`${styles["heading-group"]} ${styles["emphasized-heading-group"]}`}
               />
-              <p className={styles["card-note"]}>{listing.reservedCommunityDescription}</p>
+              <p>{listing.reservedCommunityDescription}</p>
             </Card.Section>
           )}
           {listing.status !== ListingsStatusEnum.closed && (
