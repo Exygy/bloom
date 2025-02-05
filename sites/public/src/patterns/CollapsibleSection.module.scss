@@ -4,16 +4,18 @@
     display: flex;
     flex-direction: row;
     background-color: var(--seeds-bg-color-muted);
-    margin-bottom: var(--seeds-spacer-section);
 
     .header-content {
       width: 100%;
       color: var(--seeds-text-color);
       padding: var(--seeds-s6);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
       .heading {
         font-size: var(--seeds-type-heading-size-2xl);
         font-family: var(--seeds-font-alt-sans);
-        margin-bottom: var(--seeds-spacer-label);
+        margin-block-end: var(--seeds-spacer-label);
       }
     }
 
@@ -37,6 +39,14 @@
   }
 
   .content {
-    margin-bottom: var(--seeds-spacer-section);
+    margin-block-end: var(--seeds-spacer-section);
   }
+}
+
+.collapsible-button {
+  width: 100%;
+}
+
+.collapsed-section {
+  margin-block-end: var(--seeds-spacer-section);
 }

@@ -1,4 +1,7 @@
-.expandable-table {
+.expandable-section {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
   .header {
     display: flex;
     flex-direction: row;
@@ -6,8 +9,10 @@
 
     .header-content {
       width: 100%;
+      display: flex;
       color: var(--seeds-text-color);
       padding: var(--seeds-s6);
+      flex-grow: 1;
       .heading {
         font-size: var(--seeds-type-heading-size-2xl);
         font-family: var(--seeds-font-alt-sans);
@@ -38,4 +43,8 @@
     margin-bottom: var(--seeds-spacer-section);
     border-top: var(--seeds-border-1) solid var(--seeds-border-color);
   }
+}
+
+.button-wrapper {
+  width: 100%;
 }

@@ -37,7 +37,7 @@ import { CollapsibleSection } from "../../patterns/CollapsibleSection"
 import { CardList } from "../../patterns/CardList"
 import { OrderedSection } from "../../patterns/OrderedSection"
 import { Address } from "../../patterns/Address"
-import { ExpandableTable } from "../../patterns/ExpandableTable"
+import { ExpandableSection } from "../../patterns/ExpandableSection"
 
 import {
   dateSection,
@@ -653,7 +653,7 @@ export const ListingDetailView = (props: ListingProps) => {
               subtitle={t("listings.sections.featuresSubtitle")}
               priority={2}
             >
-              <div className={styles["inline-collapse-padding"]}>
+              <div className={`${styles["inline-collapse-padding"]} seeds-m-bs-section`}>
                 {features.map((feature) => {
                   return (
                     <HeadingGroup
@@ -672,13 +672,13 @@ export const ListingDetailView = (props: ListingProps) => {
                   const unitTableData = getUnitTableData(listing.units, summary)
                   return (
                     <div className={index !== 0 ? "seeds-m-bs-header" : ""}>
-                      <ExpandableTable
+                      <ExpandableSection
                         title={unitTableData.barContent}
                         priority={4}
                         disableCollapse={listing.disableUnitsAccordion}
                       >
                         <StandardTable headers={unitsHeaders} data={unitTableData.unitsFormatted} />
-                      </ExpandableTable>
+                      </ExpandableSection>
                     </div>
                   )
                 })}
@@ -691,7 +691,7 @@ export const ListingDetailView = (props: ListingProps) => {
               subtitle={t("listings.sections.neighborhoodSubtitle")}
               priority={2}
             >
-              <div className={styles["inline-collapse-padding"]}>
+              <div className={`${styles["inline-collapse-padding"]} seeds-m-bs-section`}>
                 <ListingMap
                   address={getGenericAddress(listing.listingsBuildingAddress)}
                   listingName={listing.name}
@@ -705,7 +705,7 @@ export const ListingDetailView = (props: ListingProps) => {
                 subtitle={t("listings.sections.additionalInformationSubtitle")}
                 priority={2}
               >
-                <div className={styles["inline-collapse-padding"]}>
+                <div className={`${styles["inline-collapse-padding"]} seeds-m-bs-section`}>
                   <CardList cardContent={getAdditionalInformation(listing)} priority={3} />
                 </div>
               </CollapsibleSection>
