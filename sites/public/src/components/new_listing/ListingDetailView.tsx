@@ -407,14 +407,18 @@ export const ListingDetailView = (props: ListingProps) => {
   )
 
   const WhatToExpect = (
-    <Card className={styles["mobile-full-width-card"]}>
-      <Card.Section>
-        <Heading size={"lg"} priority={3} className={"seeds-m-be-header"}>
-          {t("whatToExpect.label")}
-        </Heading>
-        <div>{listing.whatToExpect}</div>
-      </Card.Section>
-    </Card>
+    <>
+      {listing.whatToExpect && (
+        <Card className={styles["mobile-full-width-card"]}>
+          <Card.Section>
+            <Heading size={"lg"} priority={3} className={"seeds-m-be-header"}>
+              {t("whatToExpect.label")}
+            </Heading>
+            <div>{listing.whatToExpect}</div>
+          </Card.Section>
+        </Card>
+      )}
+    </>
   )
 
   const LeasingAgent = (
