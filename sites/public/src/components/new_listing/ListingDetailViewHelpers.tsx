@@ -16,7 +16,6 @@ import {
 import { TagVariant } from "@bloom-housing/ui-seeds/src/text/Tag"
 import {
   EventType,
-  ExpandableText,
   FieldGroup,
   Form,
   StandardTable,
@@ -33,7 +32,7 @@ import {
 import { downloadExternalPDF } from "../../lib/helpers"
 
 import styles from "./ListingDetailView.module.scss"
-import { CardList, ContentCard } from "../../patterns/CardList"
+import { CardList } from "../../patterns/CardList"
 import Markdown from "markdown-to-jsx"
 
 export const getFilteredMultiselectQuestions = (
