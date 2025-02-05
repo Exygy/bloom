@@ -513,7 +513,11 @@ export const dateSection = (heading: string, events: EventType[]) => {
                   </Link>
                 </div>
               )}
-              {event.note && <div className={"seeds-m-be-text"}>{event.note}</div>}
+              {event.note && (
+                <div className={`${index < events.length - 1 ? "seeds-m-be-text" : ""}`}>
+                  {event.note}
+                </div>
+              )}
             </div>
           )
         })}
