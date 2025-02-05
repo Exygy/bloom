@@ -12,6 +12,8 @@
       display: flex;
       flex-direction: column;
       align-items: flex-start;
+      text-align: start;
+
       .heading {
         font-size: var(--seeds-type-heading-size-2xl);
         font-family: var(--seeds-font-alt-sans);

@@ -168,7 +168,7 @@ export const ListingDetailView = (props: ListingProps) => {
     )
   } // else condition is handled inline below
 
-  // Sections ----------
+  // Right bar sections ----------
   const DueDate = (
     <Card className={`${styles["muted-card"]} ${styles["application-date-card"]}`} spacing={"sm"}>
       <Card.Section>
@@ -470,6 +470,125 @@ export const ListingDetailView = (props: ListingProps) => {
     </Card>
   )
 
+  // Main content sections ----------
+  const ImageDetailsSection = (
+    <div className={styles["image-card"]}>
+      <ImageCard
+        images={imageUrlFromListing(listing, parseInt(process.env.listingPhotoSize)).map(
+          (imageUrl: string) => {
+            return {
+              url: imageUrl,
+            }
+          }
+        )}
+        description={t("listings.buildingImageAltText")}
+        moreImagesLabel={t("listings.moreImagesLabel")}
+        moreImagesDescription={t("listings.moreImagesAltDescription", {
+          listingName: listing.name,
+        })}
+        modalCloseLabel={t("t.backToListing")}
+        modalCloseInContent
+        fallbackImageUrl={IMAGE_FALLBACK_URL}
+      />
+      <div className={styles["listing-main-details"]}>
+        <Heading priority={1} size={"xl"} className={styles["listing-heading"]}>
+          {listing.name}
+        </Heading>
+        <div className={styles["listing-address"]}>
+          <div className={"seeds-m-ie-4"}>{oneLineAddress(listing.listingsBuildingAddress)}</div>
+          <div>
+            <Link href={googleMapsHref} newWindowTarget={true}>
+              {t("t.viewOnMap")}
+            </Link>
+          </div>
+        </div>
+
+        {listingTags?.length > 0 && (
+          <div className={`${styles["listing-tags"]} seeds-m-bs-3`}>
+            {listingTags.map((tag, index) => {
+              return (
+                <Tag variant={tag.variant} key={index}>
+                  {tag.title}
+                </Tag>
+              )
+            })}
+          </div>
+        )}
+
+        <p className={"seeds-m-bs-3"}>{listing.developer}</p>
+        <div className={`${styles["hide-desktop"]} seeds-m-b-3`}>{DueDate}</div>
+      </div>
+      <div className={styles["hide-desktop"]}>{ListingMainDetails}</div>
+    </div>
+  )
+
+  const RentSummary = (
+    <div className={styles["rent-summary"]}>
+      <div>
+        <Heading size={"lg"} className={"seeds-m-be-header"} priority={2}>
+          {t("t.rent")}
+        </Heading>
+        {amiValues.length > 1 &&
+          amiValues.map((percent) => {
+            const byAMI = listing.unitsSummarized.byAMI.find((item) => {
+              return parseInt(item.percent, 10) == percent
+            })
+
+            groupedUnits = byAMI ? getSummariesTable(byAMI.byUnitType, listing.reviewOrderType) : []
+
+            return (
+              <React.Fragment key={percent}>
+                <Heading size={"md"} priority={3} className={"seeds-m-bs-content"}>
+                  {t("listings.percentAMIUnit", { percent: percent })}
+                </Heading>
+                <div className={"seeds-m-bs-header"}>
+                  <StandardTable
+                    headers={unitSummariesHeaders}
+                    data={groupedUnits}
+                    responsiveCollapse={true}
+                  />
+                </div>
+              </React.Fragment>
+            )
+          })}
+        {amiValues.length == 1 && (
+          <StandardTable
+            headers={unitSummariesHeaders}
+            data={groupedUnits}
+            responsiveCollapse={true}
+          />
+        )}
+      </div>
+    </div>
+  )
+
+  const EligibilitySection = (
+    <CollapsibleSection
+      title={t("listings.sections.eligibilityTitle")}
+      subtitle={t("listings.sections.eligibilitySubtitle")}
+      priority={2}
+      contentClassName={styles["mobile-collapse"]}
+    >
+      <ol>
+        {eligibilitySections.map((section, index) => {
+          return (
+            <div key={index}>
+              <OrderedSection
+                order={index + 1}
+                title={section.header}
+                subtitle={section.subheader}
+                note={section.note}
+              >
+                {section.content}
+              </OrderedSection>
+              {index < eligibilitySections.length - 1 && <hr />}
+            </div>
+          )
+        })}
+      </ol>
+    </CollapsibleSection>
+  )
+
   const AdditionalFees = (
     <>
       {(listing.applicationFee ||
@@ -520,6 +639,78 @@ export const ListingDetailView = (props: ListingProps) => {
     </>
   )
 
+  const FeaturesSection = (
+    <CollapsibleSection
+      title={t("listings.sections.featuresTitle")}
+      subtitle={t("listings.sections.featuresSubtitle")}
+      priority={2}
+    >
+      <div className={`${styles["inline-collapse-padding"]} seeds-m-bs-section`}>
+        {features.map((feature, index) => {
+          return (
+            <HeadingGroup
+              heading={feature.heading}
+              subheading={feature.subheading}
+              size={"lg"}
+              headingPriority={3}
+              className={styles["features-heading-group"]}
+              key={index}
+            />
+          )
+        })}
+        <Heading size={"lg"} className={"seeds-m-be-header"} priority={3}>
+          {t("t.unitFeatures")}
+        </Heading>
+        {listing?.unitsSummarized?.byUnitType.map((summary, index) => {
+          const unitTableData = getUnitTableData(listing.units, summary)
+          return (
+            <div className={index !== 0 ? "seeds-m-bs-header" : ""} key={index}>
+              <ExpandableSection
+                title={unitTableData.barContent}
+                priority={4}
+                disableCollapse={listing.disableUnitsAccordion}
+              >
+                <StandardTable headers={unitsHeaders} data={unitTableData.unitsFormatted} />
+              </ExpandableSection>
+            </div>
+          )
+        })}
+        {AdditionalFees}
+      </div>
+    </CollapsibleSection>
+  )
+
+  const NeighborhoodSection = (
+    <CollapsibleSection
+      title={t("t.neighborhood")}
+      subtitle={t("listings.sections.neighborhoodSubtitle")}
+      priority={2}
+    >
+      <div className={`${styles["inline-collapse-padding"]} seeds-m-bs-section`}>
+        <ListingMap
+          address={getGenericAddress(listing.listingsBuildingAddress)}
+          listingName={listing.name}
+        />
+      </div>
+    </CollapsibleSection>
+  )
+
+  const AdditionalInformationSection = (
+    <>
+      {(listing.requiredDocuments || listing.programRules || listing.specialNotes) && (
+        <CollapsibleSection
+          title={t("listings.additionalInformation")}
+          subtitle={t("listings.sections.additionalInformationSubtitle")}
+          priority={2}
+        >
+          <div className={`${styles["inline-collapse-padding"]} seeds-m-bs-section`}>
+            <CardList cardContent={getAdditionalInformation(listing)} priority={3} />
+          </div>
+        </CollapsibleSection>
+      )}
+    </>
+  )
+
   const ApplyBar = (
     <>
       {LotteryResults}
@@ -536,193 +727,17 @@ export const ListingDetailView = (props: ListingProps) => {
     <article className={styles["listing-detail-view"]}>
       <div className={styles["content-wrapper"]}>
         <div className={styles["left-bar"]}>
-          {/* Image and main details */}
-          <div className={styles["image-card"]}>
-            <ImageCard
-              images={imageUrlFromListing(listing, parseInt(process.env.listingPhotoSize)).map(
-                (imageUrl: string) => {
-                  return {
-                    url: imageUrl,
-                  }
-                }
-              )}
-              description={t("listings.buildingImageAltText")}
-              moreImagesLabel={t("listings.moreImagesLabel")}
-              moreImagesDescription={t("listings.moreImagesAltDescription", {
-                listingName: listing.name,
-              })}
-              modalCloseLabel={t("t.backToListing")}
-              modalCloseInContent
-              fallbackImageUrl={IMAGE_FALLBACK_URL}
-            />
-            <div className={styles["listing-main-details"]}>
-              <Heading priority={1} size={"xl"} className={styles["listing-heading"]}>
-                {listing.name}
-              </Heading>
-              <div className={styles["listing-address"]}>
-                <div className={"seeds-m-ie-4"}>
-                  {oneLineAddress(listing.listingsBuildingAddress)}
-                </div>
-                <div>
-                  <Link href={googleMapsHref} newWindowTarget={true}>
-                    {t("t.viewOnMap")}
-                  </Link>
-                </div>
-              </div>
-
-              {listingTags?.length > 0 && (
-                <div className={`${styles["listing-tags"]} seeds-m-bs-3`}>
-                  {listingTags.map((tag, index) => {
-                    return (
-                      <Tag variant={tag.variant} key={index}>
-                        {tag.title}
-                      </Tag>
-                    )
-                  })}
-                </div>
-              )}
-
-              <p className={"seeds-m-bs-3"}>{listing.developer}</p>
-              <div className={`${styles["hide-desktop"]} seeds-m-b-3`}>{DueDate}</div>
-            </div>
-            <div className={styles["hide-desktop"]}>{ListingMainDetails}</div>
-          </div>
-
-          <div className={styles["rent-summary"]}>
-            <div>
-              <Heading size={"lg"} className={"seeds-m-be-header"} priority={2}>
-                {t("listings.rentSummary")}
-              </Heading>
-              {amiValues.length > 1 &&
-                amiValues.map((percent) => {
-                  const byAMI = listing.unitsSummarized.byAMI.find((item) => {
-                    return parseInt(item.percent, 10) == percent
-                  })
-
-                  groupedUnits = byAMI
-                    ? getSummariesTable(byAMI.byUnitType, listing.reviewOrderType)
-                    : []
-
-                  return (
-                    <React.Fragment key={percent}>
-                      <Heading size={"md"} priority={3} className={"seeds-m-bs-content"}>
-                        {t("listings.percentAMIUnit", { percent: percent })}
-                      </Heading>
-                      <div className={"seeds-m-bs-header"}>
-                        <StandardTable
-                          headers={unitSummariesHeaders}
-                          data={groupedUnits}
-                          responsiveCollapse={true}
-                        />
-                      </div>
-                    </React.Fragment>
-                  )
-                })}
-              {amiValues.length == 1 && (
-                <StandardTable
-                  headers={unitSummariesHeaders}
-                  data={groupedUnits}
-                  responsiveCollapse={true}
-                />
-              )}
-            </div>
-          </div>
-
-          {/* Main content */}
+          {ImageDetailsSection}
+          {RentSummary}
           <div className={styles["main-content"]}>
             <div className={styles["hide-desktop"]}>{ApplyBar}</div>
-            <CollapsibleSection
-              title={t("listings.sections.eligibilityTitle")}
-              subtitle={t("listings.sections.eligibilitySubtitle")}
-              priority={2}
-              contentClassName={styles["mobile-collapse"]}
-            >
-              <ol>
-                {eligibilitySections.map((section, index) => {
-                  return (
-                    <div key={index}>
-                      <OrderedSection
-                        order={index + 1}
-                        title={section.header}
-                        subtitle={section.subheader}
-                        note={section.note}
-                      >
-                        {section.content}
-                      </OrderedSection>
-                      {index < eligibilitySections.length - 1 && <hr />}
-                    </div>
-                  )
-                })}
-              </ol>
-            </CollapsibleSection>
-
-            <CollapsibleSection
-              title={t("listings.sections.featuresTitle")}
-              subtitle={t("listings.sections.featuresSubtitle")}
-              priority={2}
-            >
-              <div className={`${styles["inline-collapse-padding"]} seeds-m-bs-section`}>
-                {features.map((feature, index) => {
-                  return (
-                    <HeadingGroup
-                      heading={feature.heading}
-                      subheading={feature.subheading}
-                      size={"lg"}
-                      headingPriority={3}
-                      className={styles["features-heading-group"]}
-                      key={index}
-                    />
-                  )
-                })}
-                <Heading size={"lg"} className={"seeds-m-be-header"} priority={3}>
-                  {t("t.unitFeatures")}
-                </Heading>
-                {listing?.unitsSummarized?.byUnitType.map((summary, index) => {
-                  const unitTableData = getUnitTableData(listing.units, summary)
-                  return (
-                    <div className={index !== 0 ? "seeds-m-bs-header" : ""} key={index}>
-                      <ExpandableSection
-                        title={unitTableData.barContent}
-                        priority={4}
-                        disableCollapse={listing.disableUnitsAccordion}
-                      >
-                        <StandardTable headers={unitsHeaders} data={unitTableData.unitsFormatted} />
-                      </ExpandableSection>
-                    </div>
-                  )
-                })}
-                {AdditionalFees}
-              </div>
-            </CollapsibleSection>
-
-            <CollapsibleSection
-              title={t("t.neighborhood")}
-              subtitle={t("listings.sections.neighborhoodSubtitle")}
-              priority={2}
-            >
-              <div className={`${styles["inline-collapse-padding"]} seeds-m-bs-section`}>
-                <ListingMap
-                  address={getGenericAddress(listing.listingsBuildingAddress)}
-                  listingName={listing.name}
-                />
-              </div>
-            </CollapsibleSection>
-
-            {(listing.requiredDocuments || listing.programRules || listing.specialNotes) && (
-              <CollapsibleSection
-                title={t("listings.additionalInformation")}
-                subtitle={t("listings.sections.additionalInformationSubtitle")}
-                priority={2}
-              >
-                <div className={`${styles["inline-collapse-padding"]} seeds-m-bs-section`}>
-                  <CardList cardContent={getAdditionalInformation(listing)} priority={3} />
-                </div>
-              </CollapsibleSection>
-            )}
+            {EligibilitySection}
+            {FeaturesSection}
+            {NeighborhoodSection}
+            {AdditionalInformationSection}
           </div>
         </div>
-        {/* Right side bar */}
-        <div className={styles["right-bar"]}>
+        <div className={`${styles["right-bar"]} ${styles["hide-mobile"]}`}>
           {DueDate}
           {ListingMainDetails}
           {ApplyBar}

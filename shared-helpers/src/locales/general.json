@@ -659,7 +659,6 @@
   "listings.remainingUnitsAfterPreferenceConsideration": "After all preference holders have been considered, any remaining units will be available to other qualified applicants.",
   "listings.remainingUnitsAfterPrograms": "One or more questions in the application will help to determine whether or not you are eligible for the housing programs listed above. After you have submitted your application, the property manager will ask you to verify your housing program eligibility by providing documentation or another form of verification.",
   "listings.rentalHistory": "Rental History",
-  "listings.rentSummary": "Rent summary",
   "listings.rePricing": "Re-Pricing",
   "listings.requiredDocuments": "Required Documents",
   "listings.reservedCommunityBuilding": "%{type} Building",

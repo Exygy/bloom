@@ -186,9 +186,6 @@
   display: flex;
   flex-direction: column;
   flex-basis: calc(100% / 3);
-  @media (--sm-only) {
-    display: none;
-  }
 }
 
 .left-bar {
@@ -222,6 +219,12 @@
 
 .hide-desktop {
   @media (--sm-and-up) {
+    display: none;
+  }
+}
+
+.hide-mobile {
+  @media (--sm-only) {
     display: none;
   }
 }
