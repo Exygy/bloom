@@ -433,7 +433,8 @@ export const getEligibilitySections = (listing: Listing): EligibilitySection[] =
     listing.creditHistory ||
     listing.rentalHistory ||
     listing.criminalBackground ||
-    listing.listingsBuildingSelectionCriteriaFile
+    listing.listingsBuildingSelectionCriteriaFile ||
+    listing.buildingSelectionCriteria
   ) {
     const cardContent: { title: string; description: React.ReactNode }[] = []
     if (listing.creditHistory)
