@@ -15,32 +15,39 @@ interface CollapsibleSectionProps {
 export const CollapsibleSection = (props: CollapsibleSectionProps) => {
   const [collapsed, setCollapsed] = useState(false)
 
+  const HeadingContent = (
+    <>
+      <Heading priority={props.priority} size={"xl"} className={styles["heading"]}>
+        {props.title}
+      </Heading>
+      {props.subtitle && <p>{props.subtitle}</p>}
+    </>
+  )
+
+  const sectionId = crypto.randomUUID()
+
   return (
     <div
       className={`${styles["collapsible-section"]} ${collapsed ? styles["collapsed-section"] : ""}`}
-      aria-expanded={!collapsed}
     >
+      <div className={"sr-only"}>{HeadingContent}</div>
       <button
         onClick={() => setCollapsed(!collapsed)}
-        aria-label="Collapse section"
+        aria-label={!collapsed ? "Collapse section" : "Expand section"}
         aria-expanded={!collapsed}
+        aria-controls={sectionId}
         className={styles["collapsible-button"]}
       >
         <div className={styles["header"]}>
-          <div className={styles["header-content"]}>
-            <Heading priority={props.priority} size={"xl"} className={styles["heading"]}>
-              {props.title}
-            </Heading>
-            {props.subtitle && <p>{props.subtitle}</p>}
-          </div>
+          <div className={styles["header-content"]}>{HeadingContent}</div>
           <div className={styles["button-container"]}>
-            <div className={styles["header-button"]} aria-label="Collapse section">
+            <div className={styles["header-button"]}>
               {collapsed ? (
-                <Icon size={"lg"} aria-label="Expand">
+                <Icon size={"lg"}>
                   <PlusIcon />
                 </Icon>
               ) : (
-                <Icon size={"lg"} aria-label="Collapse">
+                <Icon size={"lg"}>
                   <MinusIcon />
                 </Icon>
               )}
@@ -51,6 +58,7 @@ export const CollapsibleSection = (props: CollapsibleSectionProps) => {
       {!collapsed && (
         <div
           className={`${styles["content"]} ${props.contentClassName ? props.contentClassName : ""}`}
+          id={sectionId}
         >
           {props.children}
         </div>

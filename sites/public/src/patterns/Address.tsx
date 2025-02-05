@@ -11,7 +11,6 @@ interface AddressProps {
 export const Address = ({ address, getDirections }: AddressProps) => {
   const googleMapsHref = "https://www.google.com/maps/place/" + oneLineAddress(address)
 
-  // todo what is the most accessible way for this to be read
   return (
     <>
       <div>

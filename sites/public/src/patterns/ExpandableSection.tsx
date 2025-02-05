@@ -16,6 +16,7 @@ interface ButtonWrapperProps {
   children: React.ReactNode
   collapsed: boolean
   setCollapsed: React.Dispatch<React.SetStateAction<boolean>>
+  controlsId: string
 }
 
 const ButtonWrapper = (props: ButtonWrapperProps) => {
@@ -23,8 +24,9 @@ const ButtonWrapper = (props: ButtonWrapperProps) => {
     <button
       onClick={() => props.setCollapsed(!props.collapsed)}
       className={styles["button-wrapper"]}
-      aria-label="Collapse section"
+      aria-label={!props.collapsed ? "Collapse section" : "Expand section"}
       aria-expanded={!props.collapsed}
+      aria-controls={props.controlsId}
     >
       {props.children}
     </button>
@@ -34,26 +36,26 @@ const ButtonWrapper = (props: ButtonWrapperProps) => {
 export const ExpandableSection = (props: ExpandableSectionProps) => {
   const [collapsed, setCollapsed] = useState(true)
 
+  const HeadingContent = (
+    <Heading priority={props.priority} size={"xl"} className={styles["heading"]}>
+      {props.title}
+    </Heading>
+  )
+
+  const sectionId = crypto.randomUUID()
   const SectionContent = (
-    <div
-      className={styles["expandable-section"]}
-      aria-expanded={!props.disableCollapse ? !collapsed : null}
-    >
+    <div className={styles["expandable-section"]} id={sectionId}>
       <div className={styles["header"]}>
-        <div className={styles["header-content"]}>
-          <Heading priority={props.priority} size={"xl"} className={styles["heading"]}>
-            {props.title}
-          </Heading>
-        </div>
+        <div className={styles["header-content"]}>{HeadingContent}</div>
         <div className={styles["button-container"]}>
           {!props.disableCollapse && (
             <div className={styles["header-button"]}>
               {collapsed ? (
-                <Icon size={"md"} aria-label="Expand">
+                <Icon size={"md"}>
                   <PlusIcon />
                 </Icon>
               ) : (
-                <Icon size={"md"} aria-label="Collapse">
+                <Icon size={"md"}>
                   <MinusIcon />
                 </Icon>
               )}
@@ -61,24 +63,27 @@ export const ExpandableSection = (props: ExpandableSectionProps) => {
           )}
         </div>
       </div>
-      {!collapsed && (
-        <div
-          className={`${styles["content"]} ${props.contentClassName ? props.contentClassName : ""}`}
-        >
-          {props.children}
-        </div>
-      )}
     </div>
   )
 
   return (
     <>
       {!props.disableCollapse ? (
-        <ButtonWrapper collapsed={collapsed} setCollapsed={setCollapsed}>
-          {SectionContent}
-        </ButtonWrapper>
+        <>
+          <div className={"sr-only"}>{HeadingContent}</div>
+          <ButtonWrapper collapsed={collapsed} setCollapsed={setCollapsed} controlsId={sectionId}>
+            {SectionContent}
+          </ButtonWrapper>
+        </>
       ) : (
         <>{SectionContent}</>
+      )}
+      {!collapsed && (
+        <div
+          className={`${styles["content"]} ${props.contentClassName ? props.contentClassName : ""}`}
+        >
+          {props.children}
+        </div>
       )}
     </>
   )

@@ -11,7 +11,7 @@
       width: 100%;
       display: flex;
       color: var(--seeds-text-color);
-      padding: var(--seeds-s6);
+      padding: var(--seeds-spacer-content);
       flex-grow: 1;
       text-align: start;
       .heading {
@@ -34,16 +34,16 @@
     font-size: var(--seeds-s10);
     line-height: normal;
     font-weight: lighter;
-    padding-inline: var(--seeds-s8);
+    padding-inline: var(--seeds-spacer-section);
     display: flex;
     align-items: center;
     color: var(--seeds-color-primary);
   }
+}
 
-  .content {
-    margin-block-end: var(--seeds-spacer-section);
-    border-block-start: var(--seeds-border-1) solid var(--seeds-border-color);
-  }
+.content {
+  margin-block-end: var(--seeds-spacer-section);
+  border-block-start: var(--seeds-border-1) solid var(--seeds-border-color);
 }
 
 .button-wrapper {

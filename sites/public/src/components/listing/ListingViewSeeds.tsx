@@ -160,13 +160,6 @@ export const ListingViewSeeds = (props: ListingProps) => {
     (flag) => flag.name === "enableUtilitiesIncluded" && flag.active
   )
   const utilitiesIncluded = getUtilitiesIncluded(listing)
-  let groupedUnits: StandardTableData = []
-  if (amiValues.length == 1) {
-    groupedUnits = getSummariesTable(
-      listing.unitsSummarized.byUnitTypeAndRent,
-      listing.reviewOrderType
-    )
-  } // else condition is handled inline below
 
   // Right bar sections ----------
   const DueDate = (
@@ -270,7 +263,6 @@ export const ListingViewSeeds = (props: ListingProps) => {
 
   const ApplyOnlineButton = (
     <Button
-      // todo disabled doesnt work for link buttons
       disabled={disableApplyButton}
       className={styles["full-width-button"]}
       href={onlineApplicationUrl}
@@ -537,7 +529,9 @@ export const ListingViewSeeds = (props: ListingProps) => {
               return parseInt(item.percent, 10) == percent
             })
 
-            groupedUnits = byAMI ? getSummariesTable(byAMI.byUnitType, listing.reviewOrderType) : []
+            const groupedUnits = byAMI
+              ? getSummariesTable(byAMI.byUnitType, listing.reviewOrderType)
+              : []
 
             return (
               <React.Fragment key={percent}>
@@ -554,10 +548,13 @@ export const ListingViewSeeds = (props: ListingProps) => {
               </React.Fragment>
             )
           })}
-        {amiValues.length == 1 && (
+        {amiValues.length === 1 && (
           <StandardTable
             headers={unitSummariesHeaders}
-            data={groupedUnits}
+            data={getSummariesTable(
+              listing.unitsSummarized.byUnitTypeAndRent,
+              listing.reviewOrderType
+            )}
             responsiveCollapse={true}
           />
         )}

@@ -31,7 +31,7 @@ import {
   occupancyTable,
 } from "@bloom-housing/shared-helpers"
 import { downloadExternalPDF } from "../../lib/helpers"
-import { CardList } from "../../patterns/CardList"
+import { CardContent, CardList } from "../../patterns/CardList"
 
 import styles from "./ListingViewSeeds.module.scss"
 
@@ -460,7 +460,7 @@ export const getEligibilitySections = (listing: Listing): EligibilitySection[] =
 }
 
 export const getAdditionalInformation = (listing: Listing) => {
-  const cardContent: { title: string; description: React.ReactNode }[] = []
+  const cardContent: CardContent[] = []
   if (listing.requiredDocuments)
     cardContent.push({
       title: t("listings.requiredDocuments"),
@@ -493,31 +493,27 @@ export const dateSection = (heading: string, events: EventType[]) => {
         <Heading size={"lg"} priority={2} className={"seeds-p-be-header"}>
           {heading}
         </Heading>
-        {events.map((openHouseEvent, index) => {
+        {events.map((event, index) => {
           return (
             <div key={index}>
-              {openHouseEvent.dateString && (
+              {event.dateString && (
                 <div
                   className={`${styles["slim-heading"]} seeds-m-be-text ${
                     index > 0 && `seeds-m-bs-4`
                   }`}
                 >
-                  {openHouseEvent.dateString}
+                  {event.dateString}
                 </div>
               )}
-              {openHouseEvent.timeString && (
-                <div className={"seeds-m-be-text"}>{openHouseEvent.timeString}</div>
-              )}
-              {openHouseEvent.linkText && openHouseEvent.linkURL && (
+              {event.timeString && <div className={"seeds-m-be-text"}>{event.timeString}</div>}
+              {event.linkText && event.linkURL && (
                 <div className={"seeds-m-be-text"}>
-                  <Link href={openHouseEvent.linkURL} hideExternalLinkIcon={true}>
-                    {openHouseEvent.linkText}
+                  <Link href={event.linkURL} hideExternalLinkIcon={true}>
+                    {event.linkText}
                   </Link>
                 </div>
               )}
-              {openHouseEvent.note && (
-                <div className={"seeds-m-be-text"}>{openHouseEvent.note}</div>
-              )}
+              {event.note && <div className={"seeds-m-be-text"}>{event.note}</div>}
             </div>
           )
         })}

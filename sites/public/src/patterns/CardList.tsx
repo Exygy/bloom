@@ -23,8 +23,13 @@ export const ContentCard = (props: ContentCardProps) => {
   )
 }
 
+export interface CardContent {
+  title: string
+  description: React.ReactNode
+}
+
 interface CardListProps {
-  cardContent: { title: string; description: React.ReactNode }[]
+  cardContent: CardContent[]
   priority?: 1 | 4 | 2 | 3 | 5 | 6
   ordered?: boolean
 }

@@ -8,7 +8,7 @@
     .header-content {
       width: 100%;
       color: var(--seeds-text-color);
-      padding: var(--seeds-s6);
+      padding: var(--seeds-spacer-content);
       display: flex;
       flex-direction: column;
       align-items: flex-start;
@@ -34,7 +34,7 @@
     font-size: var(--seeds-s10);
     line-height: normal;
     font-weight: lighter;
-    padding-inline: var(--seeds-s8);
+    padding-inline: var(--seeds-spacer-section);
     display: flex;
     align-items: center;
     color: var(--seeds-color-primary);
