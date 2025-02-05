@@ -170,10 +170,10 @@ export const ListingViewSeeds = (props: ListingProps) => {
 
   // Right bar sections ----------
   const DueDate = (
-    <Card className={`${styles["muted-card"]} ${styles["application-date-card"]}`} spacing={"sm"}>
+    <Card className={`${styles["muted-card"]} ${styles["due-date-section"]}`} spacing={"sm"}>
       <Card.Section>
-        <div className={styles["application-date-content"]}>
-          <Icon size={"md"} className={styles["primary-icon"]}>
+        <div className={styles["date-content"]}>
+          <Icon size={"md"} className={styles["primary-color-icon"]}>
             <ClockIcon />
           </Icon>
           <div>
@@ -189,7 +189,7 @@ export const ListingViewSeeds = (props: ListingProps) => {
     <>
       {(listing.reservedCommunityTypes || listing.status !== ListingsStatusEnum.closed) && (
         <Card
-          className={`${styles["muted-card"]} ${styles["listing-info-card"]} ${styles["mobile-full-width-muted-card"]}`}
+          className={`${styles["muted-card"]} ${styles["listing-info-card"]} ${styles["mobile-full-width-card-with-border"]}`}
         >
           {listing.reservedCommunityTypes && (
             <Card.Section divider="inset">
@@ -301,7 +301,7 @@ export const ListingViewSeeds = (props: ListingProps) => {
         listing.status !== ListingsStatusEnum.closed && (
           <Card className={styles["mobile-full-width-card"]}>
             <Card.Section divider="flush" className={styles["card-section-background"]}>
-              <Heading priority={2} size={"lg"} className={styles["card-heading"]}>
+              <Heading priority={2} size={"lg"} className={"seeds-m-be-header"}>
                 {t("listings.apply.howToApply")}
               </Heading>
               {onlineApplicationUrl ? ApplyOnlineButton : DownloadApplicationButton}
@@ -310,7 +310,7 @@ export const ListingViewSeeds = (props: ListingProps) => {
               <Card.Section divider="flush">
                 {hasPaperApplication && onlineApplicationUrl && (
                   <>
-                    <Heading priority={2} size={"lg"} className={styles["card-heading"]}>
+                    <Heading priority={2} size={"lg"} className={"seeds-m-be-header"}>
                       {t("listings.apply.getAPaperApplication")}
                     </Heading>
                     {DownloadApplicationButton}
@@ -428,7 +428,7 @@ export const ListingViewSeeds = (props: ListingProps) => {
         </Heading>
         <div>
           {listing.leasingAgentName && (
-            <p className={`${styles["slim-heading"]} seeds-m-be-text`}>
+            <p className={`${styles["thin-heading"]} seeds-m-be-text`}>
               {listing.leasingAgentName}
             </p>
           )}
@@ -471,7 +471,7 @@ export const ListingViewSeeds = (props: ListingProps) => {
 
   // Main content sections ----------
   const ImageDetailsSection = (
-    <div className={styles["image-card"]}>
+    <div>
       <ImageCard
         images={imageUrlFromListing(listing, parseInt(process.env.listingPhotoSize)).map(
           (imageUrl: string) => {
@@ -489,8 +489,12 @@ export const ListingViewSeeds = (props: ListingProps) => {
         modalCloseInContent
         fallbackImageUrl={IMAGE_FALLBACK_URL}
       />
-      <div className={styles["listing-main-details"]}>
-        <Heading priority={1} size={"xl"} className={styles["listing-heading"]}>
+      <div className={`${styles["listing-main-details"]} seeds-m-bs-header`}>
+        <Heading
+          priority={1}
+          size={"xl"}
+          className={`${styles["listing-heading"]} seeds-m-be-text`}
+        >
           {listing.name}
         </Heading>
         <div className={styles["listing-address"]}>
@@ -566,7 +570,7 @@ export const ListingViewSeeds = (props: ListingProps) => {
       title={t("listings.sections.eligibilityTitle")}
       subtitle={t("listings.sections.eligibilitySubtitle")}
       priority={2}
-      contentClassName={styles["mobile-collapse"]}
+      contentClassName={styles["mobile-collapse-padding"]}
     >
       <ol>
         {eligibilitySections.map((section, index) => {
@@ -603,7 +607,7 @@ export const ListingViewSeeds = (props: ListingProps) => {
             <div className={styles["split-card"]}>
               {listing.applicationFee && (
                 <div className={styles["split-card-cell"]}>
-                  <Heading size={"md"} className={styles["slim-heading"]}>
+                  <Heading size={"md"} className={styles["thin-heading"]}>
                     {t("listings.applicationFee")}
                   </Heading>
                   <div className={styles.emphasized}>{`$${listing.applicationFee}`}</div>
@@ -613,7 +617,7 @@ export const ListingViewSeeds = (props: ListingProps) => {
               )}
               {(listing.depositMin || listing.depositMax) && (
                 <div className={styles["split-card-cell"]}>
-                  <Heading size={"md"} className={styles["slim-heading"]}>
+                  <Heading size={"md"} className={styles["thin-heading"]}>
                     {t("t.deposit")}
                   </Heading>
                   <div className={styles.emphasized}>
@@ -644,7 +648,7 @@ export const ListingViewSeeds = (props: ListingProps) => {
       subtitle={t("listings.sections.featuresSubtitle")}
       priority={2}
     >
-      <div className={`${styles["inline-collapse-padding"]} seeds-m-bs-section`}>
+      <div className={`${styles["mobile-inline-collapse-padding"]} seeds-m-bs-section`}>
         {features.map((feature, index) => {
           return (
             <HeadingGroup
@@ -652,7 +656,7 @@ export const ListingViewSeeds = (props: ListingProps) => {
               subheading={feature.subheading}
               size={"lg"}
               headingPriority={3}
-              className={styles["features-heading-group"]}
+              className={`${styles["heading-group"]} seeds-m-be-content`}
               key={index}
             />
           )
@@ -685,7 +689,7 @@ export const ListingViewSeeds = (props: ListingProps) => {
       subtitle={t("listings.sections.neighborhoodSubtitle")}
       priority={2}
     >
-      <div className={`${styles["inline-collapse-padding"]} seeds-m-bs-section`}>
+      <div className={`${styles["mobile-inline-collapse-padding"]} seeds-m-bs-section`}>
         <ListingMap
           address={getGenericAddress(listing.listingsBuildingAddress)}
           listingName={listing.name}
@@ -702,7 +706,7 @@ export const ListingViewSeeds = (props: ListingProps) => {
           subtitle={t("listings.sections.additionalInformationSubtitle")}
           priority={2}
         >
-          <div className={`${styles["inline-collapse-padding"]} seeds-m-bs-section`}>
+          <div className={`${styles["mobile-inline-collapse-padding"]} seeds-m-bs-section`}>
             <CardList cardContent={getAdditionalInformation(listing)} priority={3} />
           </div>
         </CollapsibleSection>
@@ -723,7 +727,7 @@ export const ListingViewSeeds = (props: ListingProps) => {
   )
 
   return (
-    <article className={styles["listing-detail-view"]}>
+    <article className={styles["listing-view"]}>
       <div className={styles["content-wrapper"]}>
         <div className={styles["left-bar"]}>
           {ImageDetailsSection}

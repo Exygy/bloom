@@ -17,7 +17,7 @@
       .heading {
         font-size: var(--seeds-type-heading-size-2xl);
         font-family: var(--seeds-font-alt-sans);
-        margin-bottom: 0;
+        margin-block-end: 0;
       }
     }
 
@@ -41,8 +41,8 @@
   }
 
   .content {
-    margin-bottom: var(--seeds-spacer-section);
-    border-top: var(--seeds-border-1) solid var(--seeds-border-color);
+    margin-block-end: var(--seeds-spacer-section);
+    border-block-start: var(--seeds-border-1) solid var(--seeds-border-color);
   }
 }
 
