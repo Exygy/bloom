@@ -236,7 +236,7 @@ export const ListingDetailView = (props: ListingProps) => {
             <HeadingGroup
               headingPriority={3}
               size={"lg"}
-              className={`${styles["heading-group"]} seeds-m-be-heading`}
+              className={`${styles["heading-group"]} seeds-m-be-header`}
               heading={t("listings.lotteryResults.header")}
               subheading={
                 lotteryResultsEvent?.startTime
@@ -244,7 +244,11 @@ export const ListingDetailView = (props: ListingProps) => {
                   : null
               }
             />
-            <Button href={lotteryResultsPdfUrl} hideExternalLinkIcon={true}>
+            <Button
+              href={lotteryResultsPdfUrl}
+              hideExternalLinkIcon={true}
+              className={styles["full-width-button"]}
+            >
               {t("listings.lotteryResults.downloadResults")}
             </Button>
           </Card.Section>
@@ -340,10 +344,13 @@ export const ListingDetailView = (props: ListingProps) => {
                 )}
                 {applicationMailingAddress && (
                   <div className={"seeds-m-bs-content"}>
-                    <Heading size={"md"} priority={3} className={"seeds-m-be-header"}>
+                    <Heading size={"lg"} priority={2} className={"seeds-m-be-header"}>
                       {t("listings.apply.submitAPaperApplication")}
                     </Heading>
                     <p>{listing.applicationOrganization}</p>
+                    <Heading size={"md"} priority={3} className={`seeds-m-be-header`}>
+                      {t("listings.apply.sendByUsMail")}
+                    </Heading>
                     <Address address={applicationMailingAddress} />
                     {postmarkString && <p className={"seeds-m-bs-label"}>{postmarkString}</p>}
                   </div>
@@ -590,14 +597,16 @@ export const ListingDetailView = (props: ListingProps) => {
 
                   return (
                     <React.Fragment key={percent}>
-                      <h2 className="mt-4 mb-2">
+                      <Heading size={"md"} priority={3} className={"seeds-m-bs-content"}>
                         {t("listings.percentAMIUnit", { percent: percent })}
-                      </h2>
-                      <StandardTable
-                        headers={unitSummariesHeaders}
-                        data={groupedUnits}
-                        responsiveCollapse={true}
-                      />
+                      </Heading>
+                      <div className={"seeds-m-bs-header"}>
+                        <StandardTable
+                          headers={unitSummariesHeaders}
+                          data={groupedUnits}
+                          responsiveCollapse={true}
+                        />
+                      </div>
                     </React.Fragment>
                   )
                 })}
