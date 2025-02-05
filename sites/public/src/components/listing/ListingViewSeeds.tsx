@@ -11,13 +11,7 @@ import {
   ListingsStatusEnum,
   ReviewOrderTypeEnum,
 } from "@bloom-housing/shared-helpers/src/types/backend-swagger"
-import {
-  ImageCard,
-  ListingMap,
-  t,
-  StandardTableData,
-  StandardTable,
-} from "@bloom-housing/ui-components"
+import { ImageCard, ListingMap, t, StandardTable } from "@bloom-housing/ui-components"
 import {
   imageUrlFromListing,
   getCurrencyRange,
@@ -28,15 +22,16 @@ import {
   AuthContext,
   getUnitTableData,
   unitsHeaders,
+  oneLineAddress,
+  Address,
 } from "@bloom-housing/shared-helpers"
 import { Card, HeadingGroup, Icon, Heading, Button, Tag, Link } from "@bloom-housing/ui-seeds"
 import { ErrorPage } from "../../pages/_error"
 import { useGetApplicationStatusProps } from "../../lib/hooks"
-import { downloadExternalPDF, getGenericAddress, oneLineAddress } from "../../lib/helpers"
+import { downloadExternalPDF, getGenericAddress } from "../../lib/helpers"
 import { CollapsibleSection } from "../../patterns/CollapsibleSection"
 import { CardList } from "../../patterns/CardList"
 import { OrderedSection } from "../../patterns/OrderedSection"
-import { Address } from "../../patterns/Address"
 import { ExpandableSection } from "../../patterns/ExpandableSection"
 
 import {
