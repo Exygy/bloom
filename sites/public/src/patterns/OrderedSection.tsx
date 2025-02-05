@@ -2,7 +2,6 @@ import React from "react"
 import { HeadingGroup } from "@bloom-housing/ui-seeds"
 import styles from "./OrderedSection.module.scss"
 
-// todo should this be a li a11y
 interface OrderedSectionProps {
   order: number
   title: string
