@@ -498,7 +498,7 @@ export const dateSection = (heading: string, events: EventType[]) => {
             <div key={index}>
               {event.dateString && (
                 <div
-                  className={`${styles["slim-heading"]} seeds-m-be-text ${
+                  className={`${styles["thin-heading"]} seeds-m-be-text ${
                     index > 0 && `seeds-m-bs-4`
                   }`}
                 >
