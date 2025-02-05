@@ -16,7 +16,7 @@ export const ContentCard = (props: ContentCardProps) => {
         <Heading size="md" priority={props.priority ?? 4} className={styles["header"]}>
           {props.title}
         </Heading>
-        {props.description && <p className={styles.description}>{props.description}</p>}
+        {props.description && <div className={styles.description}>{props.description}</div>}
         {props.children && <div>{props.children}</div>}
       </Card.Section>
     </Card>
@@ -34,7 +34,7 @@ export const CardList = (props: CardListProps) => {
     <div>
       {props.cardContent.map((card, index) => {
         return (
-          <div className={styles["card-container"]}>
+          <div className={styles["card-container"]} key={index}>
             {props.ordered && (
               <div className={styles["card-number-container"]}>
                 <div className={styles["number-circle"]}>{index + 1}</div>

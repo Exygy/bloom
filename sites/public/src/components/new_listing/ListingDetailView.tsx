@@ -572,8 +572,12 @@ export const ListingDetailView = (props: ListingProps) => {
 
               {listingTags?.length > 0 && (
                 <div className={`${styles["listing-tags"]} seeds-m-bs-3`}>
-                  {listingTags.map((tag) => {
-                    return <Tag variant={tag.variant}>{tag.title}</Tag>
+                  {listingTags.map((tag, index) => {
+                    return (
+                      <Tag variant={tag.variant} key={index}>
+                        {tag.title}
+                      </Tag>
+                    )
                   })}
                 </div>
               )}
@@ -636,7 +640,7 @@ export const ListingDetailView = (props: ListingProps) => {
               <ol>
                 {eligibilitySections.map((section, index) => {
                   return (
-                    <>
+                    <div key={index}>
                       <OrderedSection
                         order={index + 1}
                         title={section.header}
@@ -646,7 +650,7 @@ export const ListingDetailView = (props: ListingProps) => {
                         {section.content}
                       </OrderedSection>
                       {index < eligibilitySections.length - 1 && <hr />}
-                    </>
+                    </div>
                   )
                 })}
               </ol>
@@ -658,7 +662,7 @@ export const ListingDetailView = (props: ListingProps) => {
               priority={2}
             >
               <div className={`${styles["inline-collapse-padding"]} seeds-m-bs-section`}>
-                {features.map((feature) => {
+                {features.map((feature, index) => {
                   return (
                     <HeadingGroup
                       heading={feature.heading}
@@ -666,6 +670,7 @@ export const ListingDetailView = (props: ListingProps) => {
                       size={"lg"}
                       headingPriority={3}
                       className={styles["features-heading-group"]}
+                      key={index}
                     />
                   )
                 })}
@@ -675,7 +680,7 @@ export const ListingDetailView = (props: ListingProps) => {
                 {listing?.unitsSummarized?.byUnitType.map((summary, index) => {
                   const unitTableData = getUnitTableData(listing.units, summary)
                   return (
-                    <div className={index !== 0 ? "seeds-m-bs-header" : ""}>
+                    <div className={index !== 0 ? "seeds-m-bs-header" : ""} key={index}>
                       <ExpandableSection
                         title={unitTableData.barContent}
                         priority={4}

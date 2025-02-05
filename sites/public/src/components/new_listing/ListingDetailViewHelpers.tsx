@@ -496,7 +496,7 @@ export const dateSection = (heading: string, events: EventType[]) => {
         </Heading>
         {events.map((openHouseEvent, index) => {
           return (
-            <>
+            <div key={index}>
               {openHouseEvent.dateString && (
                 <div
                   className={`${styles["slim-heading"]} seeds-m-be-text ${
@@ -519,7 +519,7 @@ export const dateSection = (heading: string, events: EventType[]) => {
               {openHouseEvent.note && (
                 <div className={"seeds-m-be-text"}>{openHouseEvent.note}</div>
               )}
-            </>
+            </div>
           )
         })}
       </Card.Section>
