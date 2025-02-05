@@ -181,7 +181,6 @@ export const ListingDetailView = (props: ListingProps) => {
             <div>{appStatusSubContent}</div>
           </div>
         </div>
-        {/* todo test subcontent */}
       </Card.Section>
     </Card>
   )
