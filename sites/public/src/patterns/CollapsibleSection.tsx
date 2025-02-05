@@ -5,7 +5,7 @@ import { Heading, Icon } from "@bloom-housing/ui-seeds"
 import styles from "./CollapsibleSection.module.scss"
 
 interface CollapsibleSectionProps {
-  title: React.ReactNode
+  title: string
   priority?: 1 | 4 | 2 | 3 | 5 | 6
   subtitle?: string
   children: React.ReactNode
@@ -24,8 +24,6 @@ export const CollapsibleSection = (props: CollapsibleSectionProps) => {
     </>
   )
 
-  const sectionId = crypto.randomUUID()
-
   return (
     <div
       className={`${styles["collapsible-section"]} ${collapsed ? styles["collapsed-section"] : ""}`}
@@ -35,7 +33,7 @@ export const CollapsibleSection = (props: CollapsibleSectionProps) => {
         onClick={() => setCollapsed(!collapsed)}
         aria-label={!collapsed ? "Collapse section" : "Expand section"}
         aria-expanded={!collapsed}
-        aria-controls={sectionId}
+        aria-controls={props.title}
         className={styles["collapsible-button"]}
       >
         <div className={styles["header"]}>
@@ -58,7 +56,7 @@ export const CollapsibleSection = (props: CollapsibleSectionProps) => {
       {!collapsed && (
         <div
           className={`${styles["content"]} ${props.contentClassName ? props.contentClassName : ""}`}
-          id={sectionId}
+          id={props.title}
         >
           {props.children}
         </div>

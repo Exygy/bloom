@@ -664,6 +664,7 @@ export const ListingViewSeeds = (props: ListingProps) => {
                 title={unitTableData.barContent}
                 priority={4}
                 disableCollapse={listing.disableUnitsAccordion}
+                uniqueId={`unit-feature-${index}`}
               >
                 <StandardTable headers={unitsHeaders} data={unitTableData.unitsFormatted} />
               </ExpandableSection>

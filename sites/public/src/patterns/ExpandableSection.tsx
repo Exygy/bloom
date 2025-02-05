@@ -10,6 +10,7 @@ interface ExpandableSectionProps {
   children: React.ReactNode
   contentClassName?: string
   disableCollapse?: boolean
+  uniqueId: string
 }
 
 interface ButtonWrapperProps {
@@ -42,9 +43,8 @@ export const ExpandableSection = (props: ExpandableSectionProps) => {
     </Heading>
   )
 
-  const sectionId = crypto.randomUUID()
   const SectionContent = (
-    <div className={styles["expandable-section"]} id={sectionId}>
+    <div className={styles["expandable-section"]} id={props.uniqueId}>
       <div className={styles["header"]}>
         <div className={styles["header-content"]}>{HeadingContent}</div>
         <div className={styles["button-container"]}>
@@ -71,7 +71,11 @@ export const ExpandableSection = (props: ExpandableSectionProps) => {
       {!props.disableCollapse ? (
         <>
           <div className={"sr-only"}>{HeadingContent}</div>
-          <ButtonWrapper collapsed={collapsed} setCollapsed={setCollapsed} controlsId={sectionId}>
+          <ButtonWrapper
+            collapsed={collapsed}
+            setCollapsed={setCollapsed}
+            controlsId={props.uniqueId}
+          >
             {SectionContent}
           </ButtonWrapper>
         </>
