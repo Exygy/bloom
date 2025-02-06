@@ -176,9 +176,7 @@ export const ListingViewSeeds = (props: ListingProps) => {
   const ListingMainDetails = (
     <>
       {(listing.reservedCommunityTypes || listing.status !== ListingsStatusEnum.closed) && (
-        <Card
-          className={`${styles["muted-card"]} ${styles["listing-info-card"]} ${styles["mobile-full-width-card-with-border"]}`}
-        >
+        <Card className={`${styles["muted-card"]} ${styles["mobile-full-width-card"]}`}>
           {listing.reservedCommunityTypes && (
             <Card.Section divider="inset">
               <HeadingGroup
@@ -218,7 +216,9 @@ export const ListingViewSeeds = (props: ListingProps) => {
   const LotteryResults = (
     <>
       {lotteryResultsPdfUrl && listing.status === ListingsStatusEnum.closed && (
-        <Card className={styles["mobile-full-width-card"]}>
+        <Card
+          className={`${styles["mobile-full-width-card"]} ${styles["mobile-no-bottom-border"]}`}
+        >
           <Card.Section>
             <HeadingGroup
               headingPriority={3}
@@ -286,7 +286,9 @@ export const ListingViewSeeds = (props: ListingProps) => {
       {getHasNonReferralMethods(listing) &&
         !applicationsClosed &&
         listing.status !== ListingsStatusEnum.closed && (
-          <Card className={styles["mobile-full-width-card"]}>
+          <Card
+            className={`${styles["mobile-full-width-card"]} ${styles["mobile-no-bottom-border"]}`}
+          >
             <Card.Section divider="flush" className={styles["card-section-background"]}>
               <Heading priority={2} size={"lg"} className={"seeds-m-be-header"}>
                 {t("listings.apply.howToApply")}
@@ -370,7 +372,9 @@ export const ListingViewSeeds = (props: ListingProps) => {
   const ReferralApplication = (
     <>
       {listing?.referralApplication && (
-        <Card className={styles["mobile-full-width-card"]}>
+        <Card
+          className={`${styles["mobile-full-width-card"]} ${styles["mobile-no-bottom-border"]}`}
+        >
           <Card.Section>
             <Heading size={"lg"} priority={2} className={"seeds-m-be-header"}>
               {t("application.referralApplication.furtherInformation")}
@@ -395,7 +399,9 @@ export const ListingViewSeeds = (props: ListingProps) => {
   const WhatToExpect = (
     <>
       {listing.whatToExpect && (
-        <Card className={styles["mobile-full-width-card"]}>
+        <Card
+          className={`${styles["mobile-full-width-card"]} ${styles["mobile-no-bottom-border"]}`}
+        >
           <Card.Section>
             <Heading size={"lg"} priority={3} className={"seeds-m-be-header"}>
               {t("whatToExpect.label")}
@@ -408,7 +414,7 @@ export const ListingViewSeeds = (props: ListingProps) => {
   )
 
   const LeasingAgent = (
-    <Card className={styles["mobile-full-width-card"]}>
+    <Card className={`${styles["mobile-full-width-card"]} ${styles["mobile-no-bottom-border"]}`}>
       <Card.Section>
         <Heading size={"lg"} priority={2} className={"seeds-m-be-header"}>
           {t("leasingAgent.contact")}
@@ -687,6 +693,9 @@ export const ListingViewSeeds = (props: ListingProps) => {
           address={getGenericAddress(listing.listingsBuildingAddress)}
           listingName={listing.name}
         />
+        <Link href={googleMapsHref} newWindowTarget={true} className={"seeds-m-bs-4"}>
+          {t("t.getDirections")}
+        </Link>
       </div>
     </CollapsibleSection>
   )

@@ -5,7 +5,7 @@ import styles from "./CardList.module.scss"
 interface ContentCardProps {
   title: string
   description?: React.ReactNode
-  priority?: 1 | 4 | 2 | 3 | 5 | 6
+  priority?: 1 | 2 | 3 | 4 | 5 | 6
   children?: React.ReactNode
 }
 
@@ -30,7 +30,7 @@ export interface CardContent {
 
 interface CardListProps {
   cardContent: CardContent[]
-  priority?: 1 | 4 | 2 | 3 | 5 | 6
+  priority?: 1 | 2 | 3 | 4 | 5 | 6
   ordered?: boolean
 }
 

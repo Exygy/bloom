@@ -103,11 +103,7 @@ export const getPaperApplications = (applicationMethods: ApplicationMethod[]) =>
         if (b.language == "en") return 1
 
         // Otherwise, do regular string sort
-        const aLang = t(`languages.${a.language}`)
-        const bLang = t(`languages.${b.language}`)
-        if (aLang < bLang) return -1
-        if (aLang > bLang) return 1
-        return 0
+        return t(`languages.${a.language}`).localeCompare(t(`languages.${b.language}`))
       })
       .map((paperApp) => {
         return {
