@@ -43,6 +43,7 @@ import { User } from '../users/user.dto';
 import { requestedChangesUserMapper } from '../../utilities/requested-changes-user';
 import { LotteryDateParamValidator } from '../../utilities/lottery-date-validator';
 import { ApplicationLotteryTotal } from '../applications/application-lottery-total.dto';
+import { ListingNeighborhoodAmenities } from './listing-neighborhood-amenities.dto';
 
 class Listing extends AbstractDTO {
   @Expose()
@@ -648,6 +649,12 @@ class Listing extends AbstractDTO {
     enumName: 'HomeTypeEnum',
   })
   homeType?: HomeTypeEnum;
+
+  @Expose()
+  @ValidateNested({ groups: [ValidationsGroupsEnum.default], each: true })
+  @Type(() => ListingNeighborhoodAmenities)
+  @ApiPropertyOptional({ type: ListingNeighborhoodAmenities })
+  listingNeighborhoodAmenities?: ListingNeighborhoodAmenities;
 }
 
 export { Listing as default, Listing };

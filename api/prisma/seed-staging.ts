@@ -40,6 +40,7 @@ import { ValidationMethod } from '../src/enums/multiselect-questions/validation-
 import { randomNoun } from './seed-helpers/word-generator';
 import { householdMemberFactorySingle } from './seed-helpers/household-member-factory';
 import { featureFlagFactory } from './seed-helpers/feature-flag-factory';
+import { ListingNeighborhoodAmenities } from 'src/dtos/listings/listing-neighborhood-amenities.dto';
 
 export const stagingSeed = async (
   prismaClient: PrismaClient,
@@ -355,6 +356,16 @@ export const stagingSeed = async (
                 fileId: 'dev/apartment_building_2_b7ujdd',
               },
             },
+          },
+        },
+        listingNeighborhoodAmenities: {
+          create: {
+            groceryStores: 'There are grocery stores',
+            pharmacies: 'There are pharmacies',
+            healthCareResources: 'There is health care',
+            parksAndCommunityCenters: 'There are parks',
+            schools: 'There are schools',
+            publicTransportation: 'There is public transportation',
           },
         },
       },
