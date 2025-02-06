@@ -50,15 +50,7 @@ export const ExpandableSection = (props: ExpandableSectionProps) => {
         <div className={styles["button-container"]}>
           {!props.disableCollapse && (
             <div className={styles["header-button"]}>
-              {collapsed ? (
-                <Icon size={"md"}>
-                  <PlusIcon />
-                </Icon>
-              ) : (
-                <Icon size={"md"}>
-                  <MinusIcon />
-                </Icon>
-              )}
+              <Icon size={"md"}>{collapsed ? <PlusIcon /> : <MinusIcon />}</Icon>
             </div>
           )}
         </div>

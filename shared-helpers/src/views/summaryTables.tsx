@@ -145,10 +145,10 @@ export const getUnitTableData = (units: Unit[], unitSummary: UnitSummary) => {
   const availableUnits = units.filter(
     (unit: Unit) => unit.unitTypes?.name == unitSummary.unitTypes.name
   )
-  const unitsFormatted = [] as StandardTableData
+
   let floorSection: React.ReactNode
-  availableUnits.forEach((unit: Unit) => {
-    unitsFormatted.push({
+  const unitsFormatted = availableUnits.map((unit: Unit) => {
+    return {
       number: { content: unit.number },
       sqFeet: {
         content: (
@@ -171,7 +171,7 @@ export const getUnitTableData = (units: Unit[], unitSummary: UnitSummary) => {
         ),
       },
       floor: { content: <strong>{unit.floor}</strong> },
-    })
+    }
   })
 
   let areaRangeSection: React.ReactNode

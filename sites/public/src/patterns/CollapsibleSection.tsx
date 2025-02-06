@@ -6,7 +6,7 @@ import styles from "./CollapsibleSection.module.scss"
 
 interface CollapsibleSectionProps {
   title: string
-  priority?: 1 | 4 | 2 | 3 | 5 | 6
+  priority?: 1 | 2 | 3 | 4 | 5 | 6
   subtitle?: string
   children: React.ReactNode
   contentClassName?: string
