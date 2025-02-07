@@ -3,10 +3,7 @@ import { t, MinimalTable } from "@bloom-housing/ui-components"
 import { FieldValue } from "@bloom-housing/ui-seeds"
 import { ListingContext } from "../../ListingContext"
 import { listingSectionQuestions } from "@bloom-housing/shared-helpers"
-import {
-  Listing,
-  MultiselectQuestionsApplicationSectionEnum,
-} from "@bloom-housing/shared-helpers/src/types/backend-swagger"
+import { MultiselectQuestionsApplicationSectionEnum } from "@bloom-housing/shared-helpers/src/types/backend-swagger"
 import SectionWithGrid from "../../../shared/SectionWithGrid"
 
 const DetailPreferences = () => {
@@ -20,14 +17,13 @@ const DetailPreferences = () => {
 
   const preferenceTableData = useMemo(
     () =>
-      listingSectionQuestions(
-        listing as unknown as Listing,
-        MultiselectQuestionsApplicationSectionEnum.preferences
-      )?.map((listingPreference, index) => ({
-        order: { content: index + 1 },
-        name: { content: listingPreference?.multiselectQuestions?.text },
-        description: { content: listingPreference?.multiselectQuestions?.description },
-      })),
+      listingSectionQuestions(listing, MultiselectQuestionsApplicationSectionEnum.preferences)?.map(
+        (listingPreference, index) => ({
+          order: { content: index + 1 },
+          name: { content: listingPreference?.multiselectQuestions?.text },
+          description: { content: listingPreference?.multiselectQuestions?.description },
+        })
+      ),
     [listing]
   )
 

@@ -16,7 +16,10 @@ const DetailApplicationAddress = () => {
   return (
     <SectionWithGrid heading={t("listings.sections.applicationAddressTitle")} inset>
       <Grid.Row columns={3}>
-        <FieldValue id="applicationMailingSection" label={"Can applications be mailed in?"}>
+        <FieldValue
+          id="applicationMailingSection"
+          label={t("listings.applicationAddress.mailApplication")}
+        >
           {listing.listingsApplicationMailingAddress || listing.applicationMailingAddressType
             ? t("t.yes")
             : t("t.no")}
@@ -25,7 +28,7 @@ const DetailApplicationAddress = () => {
           <FieldValue
             id="applicationMailingAddressType"
             className="seeds-grid-span-2"
-            label={"Where can applications be mailed in?"}
+            label={t("listings.applicationAddress.mailApplicationType")}
           >
             {t("listings.leasingAgentAddress")}
           </FieldValue>

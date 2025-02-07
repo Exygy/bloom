@@ -567,4 +567,5 @@ export const listing: Listing = {
       monthlyRentAsPercentOfIncome: undefined,
     },
   ],
+  listingImages: [],
 }
