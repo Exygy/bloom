@@ -54,19 +54,8 @@
   }
 }
 
-.rent-summary {
-  margin-block-start: var(--seeds-spacer-content);
-  @media (--sm-only) {
-    margin-inline: var(--seeds-s4);
-  }
-}
-
 .main-content {
   margin-block-start: var(--seeds-spacer-content);
-}
-
-.primary-color-icon {
-  color: var(--seeds-color-primary-dark);
 }
 
 .mobile-full-width-card {
@@ -85,12 +74,6 @@
   }
 }
 
-.mobile-collapse-padding {
-  @media (--sm-only) {
-    padding-inline: var(--seeds-s4);
-  }
-}
-
 .mobile-inline-collapse-padding {
   padding-inline-start: var(--seeds-spacer-section);
   @media (--sm-only) {
@@ -98,80 +81,10 @@
   }
 }
 
-.listing-heading {
-  font-size: var(--seeds-type-heading-size-3xl);
-  @media (--sm-only) {
-    font-size: var(--seeds-type-heading-size-2xl);
-  }
-}
-
-.listing-tags {
-  span {
-    &:not(:last-child) {
-      margin-inline-end: var(--seeds-s2);
-    }
-  }
-}
-
-.listing-main-details {
-  @media (--sm-only) {
-    padding-inline: var(--seeds-s4);
-  }
-}
-
-.listing-address {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-}
-
-.due-date-section {
-  font-size: var(--seeds-type-label-size);
-  svg {
-    margin-inline-end: var(--seeds-s2);
-  }
-  .date-content {
-    display: flex;
-  }
-}
-
-.emphasized-heading-group {
-  p {
-    font-weight: var(--seeds-font-weight-semibold);
-  }
-}
-
-.card-section-background {
-  background-color: var(--seeds-bg-color-surface-primary);
-}
-
 .thin-heading {
   font-size: var(--seeds-type-heading-size-lg);
   color: var(--seeds-text-color-darker);
   font-weight: var(--seeds-font-weight-regular);
-}
-
-.split-card {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-}
-
-.split-card-cell {
-  @media (--md-and-up) {
-    flex-basis: 50%;
-  }
-  &:not(:last-child) {
-    padding-inline-end: var(--seeds-s4);
-  }
-  margin-block-end: var(--seeds-spacer-content);
-}
-
-.emphasized {
-  font-weight: var(--seeds-font-weight-bold);
-  font-size: var(--seeds-type-heading-size-lg);
-  margin-block: var(--seeds-spacer-text);
-  font-family: var(--seeds-font-sans);
 }
 
 .full-width-button {

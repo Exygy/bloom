@@ -1,0 +1,13 @@
+.primary-color-icon {
+  color: var(--seeds-color-primary-dark);
+}
+
+.due-date-section {
+  font-size: var(--seeds-type-label-size);
+  svg {
+    margin-inline-end: var(--seeds-s2);
+  }
+  .date-content {
+    display: flex;
+  }
+}

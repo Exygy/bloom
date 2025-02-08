@@ -1,0 +1,22 @@
+.emphasized {
+  font-weight: var(--seeds-font-weight-bold);
+  font-size: var(--seeds-type-heading-size-lg);
+  margin-block: var(--seeds-spacer-text);
+  font-family: var(--seeds-font-sans);
+}
+
+.split-card {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.split-card-cell {
+  @media (--md-and-up) {
+    flex-basis: 50%;
+  }
+  &:not(:last-child) {
+    padding-inline-end: var(--seeds-s4);
+  }
+  margin-block-end: var(--seeds-spacer-content);
+}

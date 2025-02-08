@@ -1,397 +1,89 @@
-import React, { useContext, useState } from "react"
-import Markdown from "markdown-to-jsx"
+import React, { useState } from "react"
 import { useForm } from "react-hook-form"
 import dayjs from "dayjs"
-import ClockIcon from "@heroicons/react/24/solid/ClockIcon"
 import {
-  ApplicationMethodsTypeEnum,
   Jurisdiction,
   Listing,
   ListingEventsTypeEnum,
-  ListingsStatusEnum,
-  ReviewOrderTypeEnum,
 } from "@bloom-housing/shared-helpers/src/types/backend-swagger"
-import { ImageCard, ListingMap, t, StandardTable } from "@bloom-housing/ui-components"
-import {
-  imageUrlFromListing,
-  getCurrencyRange,
-  getPostmarkString,
-  getSummariesTable,
-  IMAGE_FALLBACK_URL,
-  pdfUrlFromListingEvents,
-  AuthContext,
-  getUnitTableData,
-  unitsHeaders,
-  oneLineAddress,
-  Address,
-} from "@bloom-housing/shared-helpers"
-import { Card, HeadingGroup, Icon, Heading, Button, Tag, Link } from "@bloom-housing/ui-seeds"
+import { t } from "@bloom-housing/ui-components"
+import { pdfUrlFromListingEvents } from "@bloom-housing/shared-helpers"
+import { Heading } from "@bloom-housing/ui-seeds"
 import { ErrorPage } from "../../pages/_error"
-import { useGetApplicationStatusProps } from "../../lib/hooks"
-import { downloadExternalPDF, getGenericAddress } from "../../lib/helpers"
-import { CollapsibleSection } from "../../patterns/CollapsibleSection"
-import { CardList } from "../../patterns/CardList"
-import { OrderedSection } from "../../patterns/OrderedSection"
-import { ExpandableSection } from "../../patterns/ExpandableSection"
-
+import { getListingApplicationStatus } from "../../lib/helpers"
 import {
-  dateSection,
   getAdditionalInformation,
-  getAddress,
   getAmiValues,
-  getAvailabilityContent,
-  getAvailabilitySubheading,
-  getDateString,
   getEligibilitySections,
-  getEvent,
   getFeatures,
-  getHasNonReferralMethods,
-  getListingTags,
-  getMethod,
-  getOnlineApplicationURL,
   getPaperApplications,
-  getReservedTitle,
   getUtilitiesIncluded,
   PaperApplicationDialog,
 } from "./ListingViewSeedsHelpers"
-
+import { AdditionalFees } from "./listing_sections/AdditionalFees"
+import { AdditionalInformation } from "./listing_sections/AdditionalInformation"
+import { Apply } from "./listing_sections/Apply"
+import { Availability } from "./listing_sections/Availability"
+import { DateSection, getEvent } from "./listing_sections/DateSection"
+import { DueDate } from "./listing_sections/DueDate"
+import { Eligibility } from "./listing_sections/Eligibility"
+import { Features } from "./listing_sections/Features"
+import { FurtherInformation } from "./listing_sections/FurtherInformation"
+import { InfoCard } from "./listing_sections/InfoCard"
+import { LeasingAgent } from "./listing_sections/LeasingAgent"
+import { LotteryEvent } from "./listing_sections/LotteryEvent"
+import { LotteryResults } from "./listing_sections/LotteryResults"
+import { MainDetails } from "./listing_sections/MainDetails"
+import { Neighborhood } from "./listing_sections/Neighborhood"
+import { RentSummary } from "./listing_sections/RentSummary"
+import { UnitSummaries } from "./listing_sections/UnitSummaries"
 import styles from "./ListingViewSeeds.module.scss"
 
 interface ListingProps {
+  jurisdiction?: Jurisdiction
   listing: Listing
   preview?: boolean
-  jurisdiction?: Jurisdiction
 }
 
-const unitSummariesHeaders = {
-  unitType: "t.unitType",
-  minimumIncome: "t.minimumIncome",
-  rent: "t.rent",
-  availability: "t.availability",
-}
-
-export const ListingViewSeeds = (props: ListingProps) => {
-  const { initialStateLoaded, profile } = useContext(AuthContext)
-  const [showDownloadModal, setShowDownloadModal] = useState(false)
-
-  const { listing } = props
-  const { content: appStatusContent, subContent: appStatusSubContent } =
-    useGetApplicationStatusProps(listing)
-
+export const ListingViewSeeds = ({ jurisdiction, listing, preview }: ListingProps) => {
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const { register, watch } = useForm()
+
+  const [showDownloadModal, setShowDownloadModal] = useState(false)
 
   if (!listing) {
     return <ErrorPage />
   }
 
-  // Massage listing data ----------
-  const googleMapsHref =
-    "https://www.google.com/maps/place/" + oneLineAddress(listing.listingsBuildingAddress)
-  const applicationsClosed = dayjs() > dayjs(listing.applicationDueDate)
-  const amiValues = getAmiValues(listing)
-  const redirectIfSignedOut = () =>
-    process.env.showMandatedAccounts && initialStateLoaded && !profile
-  const onlineApplicationUrl = redirectIfSignedOut()
-    ? `/sign-in?redirectUrl=/applications/start/choose-language&listingId=${listing.id}`
-    : getOnlineApplicationURL(listing.applicationMethods, listing.id, props.preview)
-  const disableApplyButton = !props.preview && listing.status !== ListingsStatusEnum.active
-  const eligibilitySections = getEligibilitySections(listing)
+  const lotteryResultsEvent = listing.listingEvents?.find(
+    (event) => event.type === ListingEventsTypeEnum.lotteryResults
+  )
   const paperApplications = getPaperApplications(listing.applicationMethods)
   const paperApplicationURL: string = watch(
     "paperApplicationLanguage",
     paperApplications?.length ? paperApplications[0].fileURL : undefined
   )
-  const hasPaperApplication =
-    !!getMethod(listing.applicationMethods, ApplicationMethodsTypeEnum.FileDownload) &&
-    paperApplications.length > 0
-
-  const applicationPickUpAddress = getAddress(
-    listing.applicationPickUpAddressType,
-    "pickUp",
-    listing
-  )
-  const applicationMailingAddress = getAddress(
-    listing.applicationMailingAddressType,
-    "mailIn",
-    listing
-  )
-  const applicationDropOffAddress = getAddress(
-    listing.applicationDropOffAddressType,
-    "dropOff",
-    listing
-  )
-  const postmarkString = getPostmarkString(
-    listing.applicationDueDate
-      ? getDateString(listing.applicationDueDate, `MMM DD, YYYY [${t("t.at")}] hh:mm A`)
-      : null,
-    listing.postmarkedApplicationsReceivedByDate
-      ? getDateString(
-          listing.postmarkedApplicationsReceivedByDate,
-          `MMM DD, YYYY [${t("t.at")}] hh:mm A`
-        )
-      : null,
-    listing.developer
-  )
-  const openHouseEvents = listing.listingEvents
-    ?.filter((event) => event.type === ListingEventsTypeEnum.openHouse)
-    .map((event) => getEvent(event))
   const publicLotteryEvent = listing.listingEvents?.find(
     (event) => event.type === ListingEventsTypeEnum.publicLottery
   )
-  const lotteryResultsEvent = listing.listingEvents?.find(
-    (event) => event.type === ListingEventsTypeEnum.lotteryResults
-  )
-  const lotteryRanNoResultsPosted =
-    dayjs(publicLotteryEvent?.startTime) < dayjs() && !lotteryResultsEvent
-  const listingTags = getListingTags(listing)
-  const features = getFeatures(listing, props?.jurisdiction)
-  const lotteryResultsPdfUrl = pdfUrlFromListingEvents(
-    [lotteryResultsEvent],
-    ListingEventsTypeEnum.lotteryResults,
-    process.env.cloudinaryCloudName
-  )
-  const enableUtilitiesIncluded = props.jurisdiction.featureFlags?.some(
-    (flag) => flag.name === "enableUtilitiesIncluded" && flag.active
-  )
-  const utilitiesIncluded = getUtilitiesIncluded(listing)
+  const statusContent = getListingApplicationStatus(listing)
 
-  // Right bar sections ----------
-  const DueDate = (
-    <Card className={`${styles["muted-card"]} ${styles["due-date-section"]}`} spacing={"sm"}>
-      <Card.Section>
-        <div className={styles["date-content"]}>
-          <Icon size={"md"} className={styles["primary-color-icon"]}>
-            <ClockIcon />
-          </Icon>
-          <div>
-            <div>{appStatusContent}</div>
-            <div>{appStatusSubContent}</div>
-          </div>
-        </div>
-      </Card.Section>
-    </Card>
-  )
-
-  const ListingMainDetails = (
-    <>
-      {(listing.reservedCommunityTypes || listing.status !== ListingsStatusEnum.closed) && (
-        <Card className={`${styles["muted-card"]} ${styles["mobile-full-width-card"]}`}>
-          {listing.reservedCommunityTypes && (
-            <Card.Section divider="inset">
-              <HeadingGroup
-                heading={getReservedTitle(listing)}
-                subheading={t(
-                  `listings.reservedCommunityTypes.${listing.reservedCommunityTypes.name}`
-                )}
-                size={"lg"}
-                className={`${styles["heading-group"]} ${styles["emphasized-heading-group"]}`}
-              />
-              <p>{listing.reservedCommunityDescription}</p>
-            </Card.Section>
-          )}
-          {listing.status !== ListingsStatusEnum.closed && (
-            <Card.Section>
-              <HeadingGroup
-                heading={
-                  props.listing.reviewOrderType === ReviewOrderTypeEnum.waitlist
-                    ? t("listings.waitlist.isOpen")
-                    : t("listings.vacantUnitsAvailable")
-                }
-                subheading={getAvailabilitySubheading(
-                  listing.waitlistOpenSpots,
-                  listing.unitsAvailable
-                )}
-                size={"lg"}
-                className={`${styles["heading-group"]} ${styles["emphasized-heading-group"]}`}
-              />
-              <p>{getAvailabilityContent(props.listing.reviewOrderType)}</p>
-            </Card.Section>
-          )}
-        </Card>
-      )}
-    </>
-  )
-
-  const LotteryResults = (
-    <>
-      {lotteryResultsPdfUrl && listing.status === ListingsStatusEnum.closed && (
-        <Card
-          className={`${styles["mobile-full-width-card"]} ${styles["mobile-no-bottom-border"]}`}
-        >
-          <Card.Section>
-            <HeadingGroup
-              headingPriority={3}
-              size={"lg"}
-              className={`${styles["heading-group"]} seeds-m-be-header`}
-              heading={t("listings.lotteryResults.header")}
-              subheading={
-                lotteryResultsEvent?.startTime
-                  ? dayjs(lotteryResultsEvent?.startTime).format("MMMM D, YYYY")
-                  : null
-              }
-            />
-            <Button
-              href={lotteryResultsPdfUrl}
-              hideExternalLinkIcon={true}
-              className={styles["full-width-button"]}
-            >
-              {t("listings.lotteryResults.downloadResults")}
-            </Button>
-          </Card.Section>
-        </Card>
-      )}
-    </>
-  )
-
-  const LotterySection =
-    publicLotteryEvent &&
-    (!lotteryResultsEvent || lotteryRanNoResultsPosted) &&
-    dateSection(t("listings.publicLottery.header"), [
-      getEvent(
-        publicLotteryEvent,
-        lotteryRanNoResultsPosted ? t("listings.lotteryResults.completeResultsWillBePosted") : ""
-      ),
-    ])
-
-  const OpenHouses = dateSection(t("listings.openHouseEvent.header"), openHouseEvents)
-
-  const ApplyOnlineButton = (
-    <Button
-      disabled={disableApplyButton}
-      className={styles["full-width-button"]}
-      href={onlineApplicationUrl}
-      id={"listing-view-apply-button"}
-    >
-      {t("listings.apply.applyOnline")}
-    </Button>
-  )
-
-  const DownloadApplicationButton = (
-    <Button
-      variant={onlineApplicationUrl ? "primary-outlined" : "primary"}
-      onClick={async () => {
-        paperApplications.length === 1
-          ? await downloadExternalPDF(paperApplications[0].fileURL, listing.name)
-          : setShowDownloadModal(true)
-      }}
-      className={styles["full-width-button"]}
-    >
-      {t("listings.apply.downloadApplication")}
-    </Button>
-  )
-
-  const Apply = (
-    <>
-      {getHasNonReferralMethods(listing) &&
-        !applicationsClosed &&
-        listing.status !== ListingsStatusEnum.closed && (
-          <Card
-            className={`${styles["mobile-full-width-card"]} ${styles["mobile-no-bottom-border"]}`}
-          >
-            <Card.Section divider="flush" className={styles["card-section-background"]}>
-              <Heading priority={2} size={"lg"} className={"seeds-m-be-header"}>
-                {t("listings.apply.howToApply")}
-              </Heading>
-              {onlineApplicationUrl ? ApplyOnlineButton : DownloadApplicationButton}
-            </Card.Section>
-            {(hasPaperApplication || !!applicationPickUpAddress) && (
-              <Card.Section divider="flush">
-                {hasPaperApplication && onlineApplicationUrl && (
-                  <>
-                    <Heading priority={2} size={"lg"} className={"seeds-m-be-header"}>
-                      {t("listings.apply.getAPaperApplication")}
-                    </Heading>
-                    {DownloadApplicationButton}
-                  </>
-                )}
-                {applicationPickUpAddress && (
-                  <div>
-                    <Heading
-                      size={"md"}
-                      priority={3}
-                      className={`${
-                        hasPaperApplication && onlineApplicationUrl ? "seeds-m-bs-content" : ""
-                      } seeds-m-be-header`}
-                    >
-                      {t("listings.apply.pickUpAnApplication")}
-                    </Heading>
-                    <Address address={applicationPickUpAddress} getDirections={true} />
-                    {listing.applicationPickUpAddressOfficeHours && (
-                      <div className={"seeds-m-bs-content"}>
-                        <Heading size={"md"} priority={4} className={"seeds-m-be-header"}>
-                          {t("leasingAgent.officeHours")}
-                        </Heading>
-                        <Markdown
-                          children={listing.applicationPickUpAddressOfficeHours}
-                          options={{ disableParsingRawHTML: true }}
-                        />
-                      </div>
-                    )}
-                  </div>
-                )}
-                {applicationMailingAddress && (
-                  <div className={"seeds-m-bs-content"}>
-                    <Heading size={"lg"} priority={2} className={"seeds-m-be-header"}>
-                      {t("listings.apply.submitAPaperApplication")}
-                    </Heading>
-                    <p>{listing.applicationOrganization}</p>
-                    <Heading size={"md"} priority={3} className={`seeds-m-be-header`}>
-                      {t("listings.apply.sendByUsMail")}
-                    </Heading>
-                    <Address address={applicationMailingAddress} />
-                    {postmarkString && <p className={"seeds-m-bs-label"}>{postmarkString}</p>}
-                  </div>
-                )}
-                {applicationDropOffAddress && (
-                  <div className={"seeds-m-bs-content"}>
-                    <Heading size={"md"} priority={3} className={`seeds-m-be-header`}>
-                      {t("listings.apply.dropOffApplication")}
-                    </Heading>
-                    <Address address={applicationPickUpAddress} getDirections={true} />
-                    {listing.applicationDropOffAddressOfficeHours && (
-                      <div className={"seeds-m-bs-content"}>
-                        <Heading size={"md"} priority={4} className={"seeds-m-be-header"}>
-                          {t("leasingAgent.officeHours")}
-                        </Heading>
-                        <Markdown
-                          children={listing.applicationDropOffAddressOfficeHours}
-                          options={{ disableParsingRawHTML: true }}
-                        />
-                      </div>
-                    )}
-                  </div>
-                )}
-              </Card.Section>
-            )}
-          </Card>
-        )}
-    </>
+  const OpenHouses = (
+    <DateSection
+      heading={t("listings.openHouseEvent.header")}
+      events={listing.listingEvents
+        ?.filter((event) => event.type === ListingEventsTypeEnum.openHouse)
+        .map((event) => getEvent(event))}
+    />
   )
 
   const ReferralApplication = (
     <>
-      {listing?.referralApplication && (
-        <Card
-          className={`${styles["mobile-full-width-card"]} ${styles["mobile-no-bottom-border"]}`}
-        >
-          <Card.Section>
-            <Heading size={"lg"} priority={2} className={"seeds-m-be-header"}>
-              {t("application.referralApplication.furtherInformation")}
-            </Heading>
-            {listing.referralApplication.phoneNumber && (
-              <p className={"seeds-m-be-text"}>
-                <a href={`tel:${listing.leasingAgentPhone.replace(/[-()]/g, "")}`}>{`${t(
-                  "t.call"
-                )} ${listing.referralApplication.phoneNumber}`}</a>
-              </p>
-            )}
-            <p>
-              {listing.referralApplication.externalReference ||
-                t("application.referralApplication.instructions")}
-            </p>
-          </Card.Section>
-        </Card>
+      {listing.referralApplication && (
+        <FurtherInformation
+          instructions={listing.referralApplication.externalReference}
+          phoneNumber={listing.referralApplication.phoneNumber}
+        />
       )}
     </>
   )
@@ -399,332 +91,69 @@ export const ListingViewSeeds = (props: ListingProps) => {
   const WhatToExpect = (
     <>
       {listing.whatToExpect && (
-        <Card
-          className={`${styles["mobile-full-width-card"]} ${styles["mobile-no-bottom-border"]}`}
-        >
-          <Card.Section>
-            <Heading size={"lg"} priority={3} className={"seeds-m-be-header"}>
-              {t("whatToExpect.label")}
-            </Heading>
-            <div>{listing.whatToExpect}</div>
-          </Card.Section>
-        </Card>
+        <InfoCard heading={t("whatToExpect.label")}>
+          <div>{listing.whatToExpect}</div>
+        </InfoCard>
       )}
     </>
   )
 
-  const LeasingAgent = (
-    <Card className={`${styles["mobile-full-width-card"]} ${styles["mobile-no-bottom-border"]}`}>
-      <Card.Section>
-        <Heading size={"lg"} priority={2} className={"seeds-m-be-header"}>
-          {t("leasingAgent.contact")}
-        </Heading>
-        <div>
-          {listing.leasingAgentName && (
-            <p className={`${styles["thin-heading"]} seeds-m-be-text`}>
-              {listing.leasingAgentName}
-            </p>
-          )}
-        </div>
-        <div>{listing.leasingAgentTitle && <p>{listing.leasingAgentTitle}</p>}</div>
-        <div>
-          {listing.leasingAgentPhone && (
-            <p className={"seeds-m-bs-header seeds-m-be-text"}>
-              <a href={`tel:${listing.leasingAgentPhone.replace(/[-()]/g, "")}`}>{`${t("t.call")} ${
-                listing.leasingAgentPhone
-              }`}</a>
-            </p>
-          )}
-        </div>
-        <div>{listing.leasingAgentPhone && <p>{t("leasingAgent.dueToHighCallVolume")}</p>}</div>
-        <div>
-          {listing.leasingAgentEmail && (
-            <p className={"seeds-m-bs-header"}>
-              <a href={`mailto:${listing.leasingAgentEmail}`}>{t("t.email")}</a>
-            </p>
-          )}
-        </div>
-        {listing.listingsLeasingAgentAddress && (
-          <div className={"seeds-m-bs-header"}>
-            <Address address={listing.listingsLeasingAgentAddress} getDirections={true} />
-          </div>
-        )}
-
-        {listing.leasingAgentOfficeHours && (
-          <div className={"seeds-m-bs-header"}>
-            <Heading size={"md"} priority={3} className={"seeds-m-be-header"}>
-              {t("leasingAgent.officeHours")}
-            </Heading>
-            <p>{listing.leasingAgentOfficeHours}</p>
-          </div>
-        )}
-      </Card.Section>
-    </Card>
-  )
-
-  // Main content sections ----------
-  const ImageDetailsSection = (
-    <div>
-      <ImageCard
-        images={imageUrlFromListing(listing, parseInt(process.env.listingPhotoSize)).map(
-          (imageUrl: string) => {
-            return {
-              url: imageUrl,
-            }
-          }
-        )}
-        description={t("listings.buildingImageAltText")}
-        moreImagesLabel={t("listings.moreImagesLabel")}
-        moreImagesDescription={t("listings.moreImagesAltDescription", {
-          listingName: listing.name,
-        })}
-        modalCloseLabel={t("t.backToListing")}
-        modalCloseInContent
-        fallbackImageUrl={IMAGE_FALLBACK_URL}
+  const UnitFeatures = (
+    <>
+      <Heading size={"lg"} className={"seeds-m-be-header"} priority={3}>
+        {t("t.unitFeatures")}
+      </Heading>
+      <UnitSummaries
+        disableUnitsAccordion={listing.disableUnitsAccordion}
+        units={listing.units}
+        unitsSummarized={listing.unitsSummarized}
       />
-      <div className={`${styles["listing-main-details"]} seeds-m-bs-header`}>
-        <Heading
-          priority={1}
-          size={"xl"}
-          className={`${styles["listing-heading"]} seeds-m-be-text`}
-        >
-          {listing.name}
-        </Heading>
-        <div className={styles["listing-address"]}>
-          <div className={"seeds-m-ie-4"}>{oneLineAddress(listing.listingsBuildingAddress)}</div>
-          <div>
-            <Link href={googleMapsHref} newWindowTarget={true}>
-              {t("t.viewOnMap")}
-            </Link>
-          </div>
-        </div>
-
-        {listingTags?.length > 0 && (
-          <div className={`${styles["listing-tags"]} seeds-m-bs-3`}>
-            {listingTags.map((tag, index) => {
-              return (
-                <Tag variant={tag.variant} key={index}>
-                  {tag.title}
-                </Tag>
-              )
-            })}
-          </div>
-        )}
-
-        <p className={"seeds-m-bs-3"}>{listing.developer}</p>
-        <div className={`${styles["hide-desktop"]} seeds-m-b-3`}>{DueDate}</div>
-      </div>
-      <div className={styles["hide-desktop"]}>{ListingMainDetails}</div>
-    </div>
-  )
-
-  const RentSummary = (
-    <div className={styles["rent-summary"]}>
-      <div>
-        <Heading size={"lg"} className={"seeds-m-be-header"} priority={2}>
-          {t("t.rent")}
-        </Heading>
-        {amiValues.length > 1 &&
-          amiValues.map((percent) => {
-            const byAMI = listing.unitsSummarized.byAMI.find((item) => {
-              return parseInt(item.percent, 10) == percent
-            })
-
-            const groupedUnits = byAMI
-              ? getSummariesTable(byAMI.byUnitType, listing.reviewOrderType)
-              : []
-
-            return (
-              <React.Fragment key={percent}>
-                <Heading size={"md"} priority={3} className={"seeds-m-bs-content"}>
-                  {t("listings.percentAMIUnit", { percent: percent })}
-                </Heading>
-                <div className={"seeds-m-bs-header"}>
-                  <StandardTable
-                    headers={unitSummariesHeaders}
-                    data={groupedUnits}
-                    responsiveCollapse={true}
-                  />
-                </div>
-              </React.Fragment>
-            )
-          })}
-        {amiValues.length === 1 && (
-          <StandardTable
-            headers={unitSummariesHeaders}
-            data={getSummariesTable(
-              listing.unitsSummarized.byUnitTypeAndRent,
-              listing.reviewOrderType
-            )}
-            responsiveCollapse={true}
-          />
-        )}
-      </div>
-    </div>
-  )
-
-  const EligibilitySection = (
-    <CollapsibleSection
-      title={t("listings.sections.eligibilityTitle")}
-      subtitle={t("listings.sections.eligibilitySubtitle")}
-      priority={2}
-      contentClassName={styles["mobile-collapse-padding"]}
-    >
-      <ol>
-        {eligibilitySections.map((section, index) => {
-          return (
-            <div key={index}>
-              <OrderedSection
-                order={index + 1}
-                title={section.header}
-                subtitle={section.subheader}
-                note={section.note}
-              >
-                {section.content}
-              </OrderedSection>
-              {index < eligibilitySections.length - 1 && <hr />}
-            </div>
+      <AdditionalFees
+        applicationFee={listing.applicationFee}
+        costsNotIncluded={listing.costsNotIncluded}
+        depositHelperText={listing.depositHelperText}
+        depositMax={listing.depositMax}
+        depositMin={listing.depositMin}
+        utilitiesIncluded={
+          jurisdiction?.featureFlags?.some(
+            (flag) => flag.name === "enableUtilitiesIncluded" && flag.active
           )
-        })}
-      </ol>
-    </CollapsibleSection>
-  )
-
-  const AdditionalFees = (
-    <>
-      {(listing.applicationFee ||
-        listing.depositMin ||
-        listing.depositMax ||
-        listing.costsNotIncluded ||
-        (enableUtilitiesIncluded && utilitiesIncluded?.length)) && (
-        <Card className={"seeds-m-bs-content"}>
-          <Card.Section>
-            <Heading size={"lg"} priority={3} className={"seeds-m-be-header"}>
-              {t("listings.sections.additionalFees")}
-            </Heading>
-            <div className={styles["split-card"]}>
-              {listing.applicationFee && (
-                <div className={styles["split-card-cell"]}>
-                  <Heading size={"md"} className={styles["thin-heading"]}>
-                    {t("listings.applicationFee")}
-                  </Heading>
-                  <div className={styles.emphasized}>{`$${listing.applicationFee}`}</div>
-                  <div>{t("listings.applicationPerApplicantAgeDescription")}</div>
-                  <div>{t("listings.applicationFeeDueAt")}</div>
-                </div>
-              )}
-              {(listing.depositMin || listing.depositMax) && (
-                <div className={styles["split-card-cell"]}>
-                  <Heading size={"md"} className={styles["thin-heading"]}>
-                    {t("t.deposit")}
-                  </Heading>
-                  <div className={styles.emphasized}>
-                    {getCurrencyRange(parseInt(listing.depositMin), parseInt(listing.depositMax))}
-                  </div>
-                  <div>{listing.depositHelperText}</div>
-                </div>
-              )}
-            </div>
-            {listing.costsNotIncluded && (
-              <div className={"seeds-m-be-content"}>{listing.costsNotIncluded}</div>
-            )}
-            {enableUtilitiesIncluded && utilitiesIncluded?.length && (
-              <div className={"seeds-m-be-content"}>
-                <Heading size={"md"}>{t("listings.sections.utilities")}</Heading>
-                {utilitiesIncluded}
-              </div>
-            )}
-          </Card.Section>
-        </Card>
-      )}
-    </>
-  )
-
-  const FeaturesSection = (
-    <CollapsibleSection
-      title={t("listings.sections.featuresTitle")}
-      subtitle={t("listings.sections.featuresSubtitle")}
-      priority={2}
-    >
-      <div className={`${styles["mobile-inline-collapse-padding"]} seeds-m-bs-section`}>
-        {features.map((feature, index) => {
-          return (
-            <HeadingGroup
-              heading={feature.heading}
-              subheading={feature.subheading}
-              size={"lg"}
-              headingPriority={3}
-              className={`${styles["heading-group"]} seeds-m-be-content`}
-              key={index}
-            />
-          )
-        })}
-        <Heading size={"lg"} className={"seeds-m-be-header"} priority={3}>
-          {t("t.unitFeatures")}
-        </Heading>
-        {listing?.unitsSummarized?.byUnitType.map((summary, index) => {
-          const unitTableData = getUnitTableData(listing.units, summary)
-          return (
-            <div className={index !== 0 ? "seeds-m-bs-header" : ""} key={index}>
-              <ExpandableSection
-                title={unitTableData.barContent}
-                priority={4}
-                disableCollapse={listing.disableUnitsAccordion}
-                uniqueId={`unit-feature-${index}`}
-              >
-                <StandardTable headers={unitsHeaders} data={unitTableData.unitsFormatted} />
-              </ExpandableSection>
-            </div>
-          )
-        })}
-        {AdditionalFees}
-      </div>
-    </CollapsibleSection>
-  )
-
-  const NeighborhoodSection = (
-    <CollapsibleSection
-      title={t("t.neighborhood")}
-      subtitle={t("listings.sections.neighborhoodSubtitle")}
-      priority={2}
-    >
-      <div className={`${styles["mobile-inline-collapse-padding"]} seeds-m-bs-section`}>
-        <ListingMap
-          address={getGenericAddress(listing.listingsBuildingAddress)}
-          listingName={listing.name}
-        />
-        <Link href={googleMapsHref} newWindowTarget={true} className={"seeds-m-bs-4"}>
-          {t("t.getDirections")}
-        </Link>
-      </div>
-    </CollapsibleSection>
-  )
-
-  const AdditionalInformationSection = (
-    <>
-      {(listing.requiredDocuments || listing.programRules || listing.specialNotes) && (
-        <CollapsibleSection
-          title={t("listings.additionalInformation")}
-          subtitle={t("listings.sections.additionalInformationSubtitle")}
-          priority={2}
-        >
-          <div className={`${styles["mobile-inline-collapse-padding"]} seeds-m-bs-section`}>
-            <CardList cardContent={getAdditionalInformation(listing)} priority={3} />
-          </div>
-        </CollapsibleSection>
-      )}
+            ? getUtilitiesIncluded(listing)
+            : []
+        }
+      />
     </>
   )
 
   const ApplyBar = (
     <>
-      {LotteryResults}
-      {Apply}
+      <LotteryResults
+        listingStatus={listing.status}
+        lotteryResultsPdfUrl={pdfUrlFromListingEvents(
+          [lotteryResultsEvent],
+          ListingEventsTypeEnum.lotteryResults,
+          process.env.cloudinaryCloudName
+        )}
+        lotteryResultsEvent={lotteryResultsEvent}
+      />
+      <Apply listing={listing} preview={preview} setShowDownloadModal={setShowDownloadModal} />
       {ReferralApplication}
       {OpenHouses}
-      {LotterySection}
+      <LotteryEvent
+        event={publicLotteryEvent}
+        lotteryRanNoResultsPosted={
+          dayjs(publicLotteryEvent?.startTime) < dayjs() && !lotteryResultsEvent
+        }
+      />
       {WhatToExpect}
-      {LeasingAgent}
+      <LeasingAgent
+        address={listing.listingsLeasingAgentAddress}
+        email={listing.leasingAgentEmail}
+        name={listing.leasingAgentName}
+        officeHours={listing.leasingAgentOfficeHours}
+        phone={listing.leasingAgentPhone}
+        title={listing.leasingAgentTitle}
+      />
     </>
   )
 
@@ -732,29 +161,48 @@ export const ListingViewSeeds = (props: ListingProps) => {
     <article className={styles["listing-view"]}>
       <div className={styles["content-wrapper"]}>
         <div className={styles["left-bar"]}>
-          {ImageDetailsSection}
-          {RentSummary}
+          <MainDetails
+            listing={listing}
+            dueDateContent={[statusContent?.content, statusContent?.subContent]}
+          />
+          <RentSummary
+            amiValues={getAmiValues(listing)}
+            reviewOrderType={listing.reviewOrderType}
+            unitsSummarized={listing.unitsSummarized}
+          />
           <div className={styles["main-content"]}>
             <div className={styles["hide-desktop"]}>{ApplyBar}</div>
-            {EligibilitySection}
-            {FeaturesSection}
-            {NeighborhoodSection}
-            {AdditionalInformationSection}
+            <Eligibility eligibilitySections={getEligibilitySections(listing)} />
+            <Features features={getFeatures(listing, jurisdiction)}>{UnitFeatures}</Features>
+            <Neighborhood address={listing.listingsBuildingAddress} name={listing.name} />
+            <AdditionalInformation
+              additionalInformation={getAdditionalInformation(listing)}
+              programRules={listing.programRules}
+              requiredDocuments={listing.requiredDocuments}
+              specialNotes={listing.specialNotes}
+            />
           </div>
         </div>
         <div className={`${styles["right-bar"]} ${styles["hide-mobile"]}`}>
-          {DueDate}
-          {ListingMainDetails}
+          <DueDate content={[statusContent?.content, statusContent?.subContent]} />
+          <Availability
+            reservedCommunityDescription={listing.reservedCommunityDescription}
+            reservedCommunityType={listing.reservedCommunityTypes}
+            reviewOrder={listing.reviewOrderType}
+            status={listing.status}
+            unitsAvailable={listing.unitsAvailable}
+            waitlistOpenSpots={listing.waitlistOpenSpots}
+          />
           {ApplyBar}
         </div>
       </div>
       <PaperApplicationDialog
-        showDialog={showDownloadModal}
-        setShowDialog={setShowDownloadModal}
-        register={register}
+        listingName={listing.name}
         paperApplications={paperApplications}
         paperApplicationUrl={paperApplicationURL}
-        listingName={listing.name}
+        register={register}
+        setShowDialog={setShowDownloadModal}
+        showDialog={showDownloadModal}
       />
     </article>
   )

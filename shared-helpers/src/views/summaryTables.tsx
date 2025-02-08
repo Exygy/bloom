@@ -14,6 +14,13 @@ const getTranslationFromCurrencyString = (value: string) => {
   return value
 }
 
+export const unitsHeaders = {
+  number: "t.unit",
+  sqFeet: "t.area",
+  numBathrooms: "listings.bath",
+  floor: "t.floor",
+}
+
 export const unitSummariesTable = (
   summaries: UnitSummary[],
   listingReviewOrder: ReviewOrderTypeEnum
@@ -200,13 +207,6 @@ export const getUnitTableData = (units: Unit[], unitSummary: UnitSummary) => {
     unitsFormatted,
     barContent,
   }
-}
-
-export const unitsHeaders = {
-  number: "t.unit",
-  sqFeet: "t.area",
-  numBathrooms: "listings.bath",
-  floor: "t.floor",
 }
 
 export const UnitTables = (props: UnitTablesProps) => {

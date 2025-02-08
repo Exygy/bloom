@@ -5,19 +5,25 @@ import { Heading, Icon } from "@bloom-housing/ui-seeds"
 import styles from "./ExpandableSection.module.scss"
 
 interface ExpandableSectionProps {
-  title: React.ReactNode
-  priority?: 1 | 4 | 2 | 3 | 5 | 6
+  /** All content under the title */
   children: React.ReactNode
+  /** Class name applied around children */
   contentClassName?: string
+  /** Toggles if the sections should expand or not */
   disableCollapse?: boolean
+  /** Heading priority level */
+  priority?: 1 | 4 | 2 | 3 | 5 | 6
+  /** Title within the expandable section */
+  title: React.ReactNode
+  /** Unique ID for accessibility */
   uniqueId: string
 }
 
 interface ButtonWrapperProps {
   children: React.ReactNode
   collapsed: boolean
-  setCollapsed: React.Dispatch<React.SetStateAction<boolean>>
   controlsId: string
+  setCollapsed: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 const ButtonWrapper = (props: ButtonWrapperProps) => {

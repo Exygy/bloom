@@ -5,11 +5,16 @@ import { Heading, Icon } from "@bloom-housing/ui-seeds"
 import styles from "./CollapsibleSection.module.scss"
 
 interface CollapsibleSectionProps {
-  title: string
-  priority?: 1 | 2 | 3 | 4 | 5 | 6
-  subtitle?: string
+  /** All content under the title */
   children: React.ReactNode
+  /** Class name applied around children */
   contentClassName?: string
+  /** Heading priority level */
+  priority?: 1 | 2 | 3 | 4 | 5 | 6
+  /** Appears below the title */
+  subtitle?: string
+  /** Title of the section */
+  title: string
 }
 
 export const CollapsibleSection = (props: CollapsibleSectionProps) => {
