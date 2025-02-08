@@ -2,11 +2,15 @@ import React from "react"
 import { Heading, Card } from "@bloom-housing/ui-seeds"
 import styles from "./CardList.module.scss"
 
-interface ContentCardProps {
-  title: string
-  description?: React.ReactNode
-  priority?: 1 | 2 | 3 | 4 | 5 | 6
+export interface ContentCardProps {
+  /** Content within the card */
   children?: React.ReactNode
+  /** Description below the heading */
+  description?: React.ReactNode
+  /** Heading priority */
+  priority?: 1 | 2 | 3 | 4 | 5 | 6
+  /** Heading at the top of the card */
+  heading: string
 }
 
 export const ContentCard = (props: ContentCardProps) => {
@@ -14,7 +18,7 @@ export const ContentCard = (props: ContentCardProps) => {
     <Card spacing="sm" className={styles["content-card"]}>
       <Card.Section>
         <Heading size="md" priority={props.priority ?? 4} className={styles["header"]}>
-          {props.title}
+          {props.heading}
         </Heading>
         {props.description && <div className={styles.description}>{props.description}</div>}
         {props.children && <div>{props.children}</div>}
@@ -23,15 +27,11 @@ export const ContentCard = (props: ContentCardProps) => {
   )
 }
 
-export interface CardContent {
-  title: string
-  description: React.ReactNode
-}
-
-interface CardListProps {
-  cardContent: CardContent[]
+export interface CardListProps {
+  /** An array of ContentCards */
+  cardContent: ContentCardProps[]
+  /** Heading priority level for each card */
   priority?: 1 | 2 | 3 | 4 | 5 | 6
-  ordered?: boolean
 }
 
 export const CardList = (props: CardListProps) => {
@@ -40,13 +40,8 @@ export const CardList = (props: CardListProps) => {
       {props.cardContent.map((card, index) => {
         return (
           <div className={styles["card-container"]} key={index}>
-            {props.ordered && (
-              <div className={styles["card-number-container"]}>
-                <div className={styles["number-circle"]}>{index + 1}</div>
-              </div>
-            )}
             <ContentCard
-              title={card.title}
+              heading={card.heading}
               description={card.description}
               key={index}
               priority={props.priority}

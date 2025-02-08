@@ -1,12 +1,10 @@
-import { useContext, useEffect, useState } from "react"
+import { useContext, useEffect } from "react"
 import axios from "axios"
 import qs from "qs"
 import { useRouter } from "next/router"
-import { ApplicationStatusProps } from "@bloom-housing/ui-components"
 import {
   EnumListingFilterParamsComparison,
   Jurisdiction,
-  Listing,
   ListingFilterParams,
   ListingOrderByKeys,
   ListingsStatusEnum,
@@ -14,7 +12,6 @@ import {
 } from "@bloom-housing/shared-helpers/src/types/backend-swagger"
 import { ParsedUrlQuery } from "querystring"
 import { AppSubmissionContext } from "./applications/AppSubmissionContext"
-import { getListingApplicationStatus } from "./helpers"
 import { useRequireLoggedInUser, isInternalLink } from "@bloom-housing/shared-helpers"
 
 export const useRedirectToPrevPage = (defaultPath = "/") => {
@@ -43,20 +40,6 @@ export const useFormConductor = (stepName: string) => {
     conductor.skipCurrentStepIfNeeded()
   }, [conductor])
   return context
-}
-
-export const useGetApplicationStatusProps = (listing: Listing): ApplicationStatusProps => {
-  const [props, setProps] = useState({ content: "", subContent: "" })
-
-  useEffect(() => {
-    if (!listing) return
-
-    const { content, subContent } = getListingApplicationStatus(listing)
-
-    setProps({ content, subContent })
-  }, [listing])
-
-  return props
 }
 
 export async function fetchBaseListingData(

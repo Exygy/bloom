@@ -1,0 +1,26 @@
+.card-number-container {
+  @media (--sm-only) {
+    margin-block-end: var(--seeds-s3);
+  }
+  @media (--sm-and-up) {
+    margin-inline-end: var(--seeds-s3);
+  }
+
+  .number-circle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: var(--seeds-border-2) solid var(--seeds-border-color);
+    font-size: var(--seeds-s5);
+    width: var(--seeds-s10);
+    height: var(--seeds-s10);
+    border-radius: var(--seeds-rounded-full);
+    color: var(--seeds-text-color-darker);
+  }
+}
+
+.list-item {
+  &:not(:last-child) {
+    margin-block-end: var(--seeds-spacer-content);
+  }
+}

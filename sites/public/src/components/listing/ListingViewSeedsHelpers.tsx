@@ -2,21 +2,18 @@ import React from "react"
 import { UseFormMethods } from "react-hook-form"
 import dayjs from "dayjs"
 import Markdown from "markdown-to-jsx"
-import { Button, Card, Dialog, Heading, Link } from "@bloom-housing/ui-seeds"
+import { Button, Dialog, Link } from "@bloom-housing/ui-seeds"
 import {
   ApplicationAddressTypeEnum,
   ApplicationMethod,
   ApplicationMethodsTypeEnum,
+  IdDTO,
   Jurisdiction,
   Listing,
-  ListingEventCreate,
   ListingMultiselectQuestion,
   MultiselectQuestionsApplicationSectionEnum,
-  ReviewOrderTypeEnum,
 } from "@bloom-housing/shared-helpers/src/types/backend-swagger"
-import { TagVariant } from "@bloom-housing/ui-seeds/src/text/Tag"
 import {
-  EventType,
   FieldGroup,
   Form,
   StandardTable,
@@ -27,13 +24,11 @@ import {
 import {
   cloudinaryPdfFromId,
   getOccupancyDescription,
-  getTimeRangeString,
   occupancyTable,
 } from "@bloom-housing/shared-helpers"
 import { downloadExternalPDF } from "../../lib/helpers"
-import { CardContent, CardList } from "../../patterns/CardList"
-
-import styles from "./ListingViewSeeds.module.scss"
+import { CardList, ContentCardProps } from "../../patterns/CardList"
+import { OrderedCardList } from "../../patterns/OrderedCardList"
 
 export const getFilteredMultiselectQuestions = (
   multiselectQuestions: ListingMultiselectQuestion[],
@@ -55,29 +50,6 @@ export const getMultiselectQuestionData = (multiselectQuestions: ListingMultisel
       description: listingMultiselectQuestion?.multiselectQuestions?.description,
     }
   })
-}
-
-export const getAvailabilitySubheading = (waitlistOpenSpots: number, unitsAvailable: number) => {
-  if (waitlistOpenSpots) {
-    return `${waitlistOpenSpots} ${t("listings.waitlist.openSlots")}`
-  }
-  if (unitsAvailable) {
-    return `${unitsAvailable} ${
-      unitsAvailable === 1 ? t("listings.vacantUnit") : t("listings.vacantUnits")
-    }`
-  }
-  return null
-}
-
-export const getAvailabilityContent = (reviewOrderType: ReviewOrderTypeEnum) => {
-  switch (reviewOrderType) {
-    case ReviewOrderTypeEnum.waitlist:
-      return t("listings.waitlist.submitForWaitlist")
-    case ReviewOrderTypeEnum.firstComeFirstServe:
-      return t("listings.eligibleApplicants.FCFS")
-    default:
-      return t("listings.availableUnitsDescription")
-  }
 }
 
 export const hasMethod = (
@@ -142,16 +114,6 @@ export const getHasNonReferralMethods = (listing: Listing) => {
         (method) => method.type !== ApplicationMethodsTypeEnum.Referral
       )
     : false
-}
-
-export const getEvent = (event: ListingEventCreate, note?: string | React.ReactNode): EventType => {
-  return {
-    timeString: getTimeRangeString(event.startTime, event.endTime),
-    dateString: dayjs(event.startDate).format("MMMM D, YYYY"),
-    linkURL: event.url,
-    linkText: event.label || t("listings.openHouseEvent.seeVideo"),
-    note: note || event.note,
-  }
 }
 
 export const getAccessibilityFeatures = (listing: Listing) => {
@@ -270,11 +232,11 @@ export const getAddress = (
   return addressMap[location]
 }
 
-export const getReservedTitle = (listing: Listing) => {
+export const getReservedTitle = (reservedCommunityType: IdDTO) => {
   if (
-    listing.reservedCommunityTypes.name === "senior55" ||
-    listing.reservedCommunityTypes.name === "senior62" ||
-    listing.reservedCommunityTypes.name === "senior"
+    reservedCommunityType.name === "senior55" ||
+    reservedCommunityType.name === "senior62" ||
+    reservedCommunityType.name === "senior"
   ) {
     return t("listings.reservedCommunitySeniorTitle")
   } else return t("listings.reservedCommunityTitleDefault")
@@ -322,12 +284,12 @@ export const getEligibilitySections = (listing: Listing): EligibilitySection[] =
   // Reserved community type
   if (listing.reservedCommunityTypes) {
     eligibilityFeatures.push({
-      header: getReservedTitle(listing),
+      header: getReservedTitle(listing.reservedCommunityTypes),
       content: (
         <CardList
           cardContent={[
             {
-              title: t(`listings.reservedCommunityTypes.${listing.reservedCommunityTypes.name}`),
+              heading: t(`listings.reservedCommunityTypes.${listing.reservedCommunityTypes.name}`),
               description: listing.reservedCommunityDescription,
             },
           ]}
@@ -387,14 +349,13 @@ export const getEligibilitySections = (listing: Listing): EligibilitySection[] =
       subheader: t("listings.sections.housingPreferencesSubtitle"),
       note: t("listings.remainingUnitsAfterPreferenceConsideration"),
       content: (
-        <CardList
+        <OrderedCardList
           cardContent={preferences.map((question) => {
             return {
-              title: question.multiselectQuestions.text,
+              heading: question.multiselectQuestions.text,
               description: question.multiselectQuestions.description,
             }
           })}
-          ordered={true}
         />
       ),
     })
@@ -414,7 +375,7 @@ export const getEligibilitySections = (listing: Listing): EligibilitySection[] =
         <CardList
           cardContent={programs.map((question) => {
             return {
-              title: question.multiselectQuestions.text,
+              heading: question.multiselectQuestions.text,
               description: question.multiselectQuestions.description,
             }
           })}
@@ -431,14 +392,14 @@ export const getEligibilitySections = (listing: Listing): EligibilitySection[] =
     listing.listingsBuildingSelectionCriteriaFile ||
     listing.buildingSelectionCriteria
   ) {
-    const cardContent: { title: string; description: React.ReactNode }[] = []
+    const cardContent: ContentCardProps[] = []
     if (listing.creditHistory)
-      cardContent.push({ title: t("listings.creditHistory"), description: listing.creditHistory })
+      cardContent.push({ heading: t("listings.creditHistory"), description: listing.creditHistory })
     if (listing.rentalHistory)
-      cardContent.push({ title: t("listings.rentalHistory"), description: listing.rentalHistory })
+      cardContent.push({ heading: t("listings.rentalHistory"), description: listing.rentalHistory })
     if (listing.criminalBackground)
       cardContent.push({
-        title: t("listings.criminalBackground"),
+        heading: t("listings.criminalBackground"),
         description: listing.criminalBackground,
       })
     eligibilityFeatures.push({
@@ -456,98 +417,29 @@ export const getEligibilitySections = (listing: Listing): EligibilitySection[] =
 }
 
 export const getAdditionalInformation = (listing: Listing) => {
-  const cardContent: CardContent[] = []
+  const cardContent: ContentCardProps[] = []
   if (listing.requiredDocuments)
     cardContent.push({
-      title: t("listings.requiredDocuments"),
+      heading: t("listings.requiredDocuments"),
       description: (
         <Markdown children={listing.requiredDocuments} options={{ disableParsingRawHTML: true }} />
       ),
     })
   if (listing.programRules)
     cardContent.push({
-      title: t("listings.importantProgramRules"),
+      heading: t("listings.importantProgramRules"),
       description: (
         <Markdown children={listing.programRules} options={{ disableParsingRawHTML: true }} />
       ),
     })
   if (listing.specialNotes)
     cardContent.push({
-      title: t("listings.specialNotes"),
+      heading: t("listings.specialNotes"),
       description: (
         <Markdown children={listing.specialNotes} options={{ disableParsingRawHTML: true }} />
       ),
     })
   return cardContent
-}
-
-export const dateSection = (heading: string, events: EventType[]) => {
-  if (!events.length) return
-  return (
-    <Card className={styles["mobile-full-width-card"]}>
-      <Card.Section>
-        <Heading size={"lg"} priority={2} className={"seeds-p-be-header"}>
-          {heading}
-        </Heading>
-        {events.map((event, index) => {
-          return (
-            <div key={index}>
-              {event.dateString && (
-                <div
-                  className={`${styles["thin-heading"]} seeds-m-be-text ${
-                    index > 0 && `seeds-m-bs-4`
-                  }`}
-                >
-                  {event.dateString}
-                </div>
-              )}
-              {event.timeString && <div className={"seeds-m-be-text"}>{event.timeString}</div>}
-              {event.linkText && event.linkURL && (
-                <div className={"seeds-m-be-text"}>
-                  <Link href={event.linkURL} hideExternalLinkIcon={true}>
-                    {event.linkText}
-                  </Link>
-                </div>
-              )}
-              {event.note && (
-                <div className={`${index < events.length - 1 ? "seeds-m-be-text" : ""}`}>
-                  {event.note}
-                </div>
-              )}
-            </div>
-          )
-        })}
-      </Card.Section>
-    </Card>
-  )
-}
-
-type ListingTag = {
-  title: string
-  variant: TagVariant
-}
-
-export const getListingTags = (listing: Listing): ListingTag[] => {
-  const listingTags: ListingTag[] = []
-  if (listing.reservedCommunityTypes) {
-    listingTags.push({
-      title: t(`listings.reservedCommunityTypes.${listing.reservedCommunityTypes.name}`),
-      variant: "highlight-warm",
-    })
-  }
-  if (listing.reviewOrderType === ReviewOrderTypeEnum.waitlist) {
-    listingTags.push({
-      title: t("listings.waitlist.open"),
-      variant: "primary",
-    })
-  }
-  if (listing.reviewOrderType === ReviewOrderTypeEnum.firstComeFirstServe) {
-    listingTags.push({
-      title: t("listings.availableUnits"),
-      variant: "primary",
-    })
-  }
-  return listingTags
 }
 
 interface PaperApplicationDialogProps {

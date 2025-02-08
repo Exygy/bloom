@@ -3,11 +3,16 @@ import { HeadingGroup } from "@bloom-housing/ui-seeds"
 import styles from "./OrderedSection.module.scss"
 
 interface OrderedSectionProps {
-  order: number
-  title: string
-  subtitle?: string
-  note?: string
+  /** Appears after the heading */
   children?: React.ReactNode
+  /** Appears after the children */
+  note?: string
+  /** Number order, appears as a circle on the left */
+  order: number
+  /** Appears under the title */
+  subtitle?: string
+  /** Title of the section */
+  title: string
 }
 
 export const OrderedSection = (props: OrderedSectionProps) => {
