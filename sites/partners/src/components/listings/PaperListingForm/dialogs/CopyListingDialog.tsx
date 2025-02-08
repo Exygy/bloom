@@ -4,7 +4,6 @@ import { Button, Dialog } from "@bloom-housing/ui-seeds"
 import { Field, Form, t } from "@bloom-housing/ui-components"
 import { useForm } from "react-hook-form"
 import { AuthContext, MessageContext } from "@bloom-housing/shared-helpers"
-import { useRouter } from "next/router"
 
 export interface CopyListingDialogProps {
   isOpen: boolean
