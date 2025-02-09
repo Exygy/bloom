@@ -15,7 +15,7 @@ export const OrderedCardList = (props: OrderedCardListProps) => {
     <ol>
       {props.cardContent.map((card, index) => {
         return (
-          <li className={styles["list-item"]}>
+          <li className={styles["list-item"]} key={index}>
             <div className={cardListStyles["card-container"]} key={index}>
               <div className={styles["card-number-container"]}>
                 <div className={styles["number-circle"]}>{index + 1}</div>
@@ -24,7 +24,6 @@ export const OrderedCardList = (props: OrderedCardListProps) => {
               <ContentCard
                 heading={card.heading}
                 description={card.description}
-                key={index}
                 priority={props.priority}
               />
             </div>

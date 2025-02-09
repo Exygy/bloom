@@ -20,6 +20,13 @@ window.matchMedia = jest.fn().mockImplementation((query) => {
   }
 })
 
+const intersectionObserverMock = () => ({
+  observe: () => null,
+  disconnect: () => null,
+  unobserve: () => null,
+})
+window.IntersectionObserver = jest.fn().mockImplementation(intersectionObserverMock)
+
 process.env.backendApiBase = "http://localhost:3100"
 
 // Need to set __next on base div to handle the overlay

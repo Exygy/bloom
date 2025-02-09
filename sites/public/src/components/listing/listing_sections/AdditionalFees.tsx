@@ -28,7 +28,7 @@ export const AdditionalFees = ({
         depositMin ||
         depositMax ||
         costsNotIncluded ||
-        utilitiesIncluded?.length) && (
+        utilitiesIncluded.length) && (
         <Card className={"seeds-m-bs-content"}>
           <Card.Section>
             <Heading size={"lg"} priority={3} className={"seeds-m-be-header"}>
@@ -37,7 +37,7 @@ export const AdditionalFees = ({
             <div className={styles["split-card"]}>
               {applicationFee && (
                 <div className={styles["split-card-cell"]}>
-                  <Heading size={"md"} className={listingStyles["thin-heading"]}>
+                  <Heading size={"md"} className={listingStyles["thin-heading"]} priority={4}>
                     {t("listings.applicationFee")}
                   </Heading>
                   <div className={styles.emphasized}>{`$${applicationFee}`}</div>
@@ -47,7 +47,7 @@ export const AdditionalFees = ({
               )}
               {(depositMin || depositMax) && (
                 <div className={styles["split-card-cell"]}>
-                  <Heading size={"md"} className={listingStyles["thin-heading"]}>
+                  <Heading size={"md"} className={listingStyles["thin-heading"]} priority={4}>
                     {t("t.deposit")}
                   </Heading>
                   <div className={styles.emphasized}>
@@ -58,7 +58,7 @@ export const AdditionalFees = ({
               )}
             </div>
             {costsNotIncluded && <div className={"seeds-m-be-content"}>{costsNotIncluded}</div>}
-            {utilitiesIncluded?.length && (
+            {utilitiesIncluded.length && (
               <div className={"seeds-m-be-content"}>
                 <Heading size={"md"}>{t("listings.sections.utilities")}</Heading>
                 {utilitiesIncluded}

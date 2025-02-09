@@ -175,12 +175,7 @@ export const ListingViewSeeds = ({ jurisdiction, listing, preview }: ListingProp
             <Eligibility eligibilitySections={getEligibilitySections(listing)} />
             <Features features={getFeatures(listing, jurisdiction)}>{UnitFeatures}</Features>
             <Neighborhood address={listing.listingsBuildingAddress} name={listing.name} />
-            <AdditionalInformation
-              additionalInformation={getAdditionalInformation(listing)}
-              programRules={listing.programRules}
-              requiredDocuments={listing.requiredDocuments}
-              specialNotes={listing.specialNotes}
-            />
+            <AdditionalInformation additionalInformation={getAdditionalInformation(listing)} />
           </div>
         </div>
         <div className={`${styles["right-bar"]} ${styles["hide-mobile"]}`}>

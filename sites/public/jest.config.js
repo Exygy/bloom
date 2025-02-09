@@ -40,5 +40,6 @@ module.exports = {
   setupFilesAfterEnv: ["../public/.jest/setup-tests.js"],
   moduleNameMapper: {
     "\\.(scss|css|less)$": "identity-obj-proxy",
+    "\\.module\\.scss$": "identity-obj-proxy",
   },
 }

@@ -46,7 +46,7 @@ export const DateSection = ({ events, heading }: DateSectionProps) => {
               {event.dateString && (
                 <div
                   className={`${styles["thin-heading"]} seeds-m-be-text ${
-                    index > 0 && `seeds-m-bs-4`
+                    index > 0 && `seeds-m-bs-header`
                   }`}
                 >
                   {event.dateString}
