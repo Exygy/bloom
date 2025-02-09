@@ -139,7 +139,7 @@ export const getUtilitiesIncluded = (listing: Listing) => {
       }`
     }
   })
-  return utilitiesExist ? utilities : null
+  return utilitiesExist ? utilities : []
 }
 
 export const getFeatures = (
