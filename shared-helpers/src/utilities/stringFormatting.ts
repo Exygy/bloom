@@ -1,9 +1,9 @@
 import dayjs from "dayjs"
 
 export const getTimeRangeString = (start: Date, end: Date) => {
-  const startTime = dayjs(start).format("hh:mma")
+  const startTime = dayjs(start).format("h:mma")
   const startString = start ? startTime : ""
-  const endTime = dayjs(end).format("hh:mma")
+  const endTime = dayjs(end).format("h:mma")
   const endString = end && start ? ` - ${endTime}` : ""
   return startTime === endTime ? startString : `${startString}${endString}`
 }

@@ -5,6 +5,7 @@ import "@testing-library/jest-dom/extend-expect"
 import general from "../page_content/locale_overrides/general.json"
 addTranslation({ ...generalTranslations, ...general })
 import "@testing-library/jest-dom"
+import "whatwg-fetch"
 
 // see: https://jestjs.io/docs/en/manual-mocks#mocking-methods-which-are-not-implemented-in-jsdom
 window.matchMedia = jest.fn().mockImplementation((query) => {

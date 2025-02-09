@@ -98,6 +98,7 @@ export const Apply = ({ listing, preview, setShowDownloadModal }: ApplyProps) =>
       {t("listings.apply.downloadApplication")}
     </Button>
   )
+
   return (
     <>
       {getHasNonReferralMethods(listing) &&
@@ -112,7 +113,12 @@ export const Apply = ({ listing, preview, setShowDownloadModal }: ApplyProps) =>
               </Heading>
               {onlineApplicationUrl ? ApplyOnlineButton : DownloadApplicationButton}
             </Card.Section>
-            {(hasPaperApplication || !!applicationPickUpAddress) && (
+            {((hasPaperApplication &&
+              (onlineApplicationUrl ||
+                applicationMailingAddress ||
+                applicationPickUpAddress ||
+                applicationDropOffAddress)) ||
+              !!applicationPickUpAddress) && (
               <Card.Section divider="flush">
                 {hasPaperApplication && onlineApplicationUrl && (
                   <>
@@ -152,7 +158,6 @@ export const Apply = ({ listing, preview, setShowDownloadModal }: ApplyProps) =>
                     <Heading size={"lg"} priority={2} className={"seeds-m-be-header"}>
                       {t("listings.apply.submitAPaperApplication")}
                     </Heading>
-                    <p>{listing.applicationOrganization}</p>
                     <Heading size={"md"} priority={3} className={`seeds-m-be-header`}>
                       {t("listings.apply.sendByUsMail")}
                     </Heading>
@@ -165,7 +170,7 @@ export const Apply = ({ listing, preview, setShowDownloadModal }: ApplyProps) =>
                     <Heading size={"md"} priority={3} className={`seeds-m-be-header`}>
                       {t("listings.apply.dropOffApplication")}
                     </Heading>
-                    <Address address={applicationPickUpAddress} getDirections={true} />
+                    <Address address={applicationDropOffAddress} getDirections={true} />
                     {listing.applicationDropOffAddressOfficeHours && (
                       <div className={"seeds-m-bs-content"}>
                         <Heading size={"md"} priority={4} className={"seeds-m-be-header"}>

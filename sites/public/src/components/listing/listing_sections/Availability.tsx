@@ -50,40 +50,35 @@ export const Availability = ({
   unitsAvailable,
   waitlistOpenSpots,
 }: AvailabilityProps) => {
+  if (status === ListingsStatusEnum.closed && !reservedCommunityType) return
   return (
-    <>
-      {(reservedCommunityType || status !== ListingsStatusEnum.closed) && (
-        <Card
-          className={`${listingStyles["muted-card"]} ${listingStyles["mobile-full-width-card"]}`}
-        >
-          {reservedCommunityType && (
-            <Card.Section divider="inset">
-              <HeadingGroup
-                heading={getReservedTitle(reservedCommunityType)}
-                subheading={t(`listings.reservedCommunityTypes.${reservedCommunityType.name}`)}
-                size={"lg"}
-                className={`${listingStyles["heading-group"]} ${styles["emphasized-heading-group"]}`}
-              />
-              <p>{reservedCommunityDescription}</p>
-            </Card.Section>
-          )}
-          {status !== ListingsStatusEnum.closed && (
-            <Card.Section>
-              <HeadingGroup
-                heading={
-                  reviewOrder === ReviewOrderTypeEnum.waitlist
-                    ? t("listings.waitlist.isOpen")
-                    : t("listings.vacantUnitsAvailable")
-                }
-                subheading={getAvailabilitySubheading(waitlistOpenSpots, unitsAvailable)}
-                size={"lg"}
-                className={`${listingStyles["heading-group"]} ${styles["emphasized-heading-group"]}`}
-              />
-              <p>{getAvailabilityContent(reviewOrder)}</p>
-            </Card.Section>
-          )}
-        </Card>
+    <Card className={`${listingStyles["muted-card"]} ${listingStyles["mobile-full-width-card"]}`}>
+      {reservedCommunityType && (
+        <Card.Section divider="inset">
+          <HeadingGroup
+            heading={getReservedTitle(reservedCommunityType)}
+            subheading={t(`listings.reservedCommunityTypes.${reservedCommunityType.name}`)}
+            size={"lg"}
+            className={`${listingStyles["heading-group"]} ${styles["emphasized-heading-group"]}`}
+          />
+          <p>{reservedCommunityDescription}</p>
+        </Card.Section>
       )}
-    </>
+      {status !== ListingsStatusEnum.closed && (
+        <Card.Section>
+          <HeadingGroup
+            heading={
+              reviewOrder === ReviewOrderTypeEnum.waitlist
+                ? t("listings.waitlist.isOpen")
+                : t("listings.vacantUnitsAvailable")
+            }
+            subheading={getAvailabilitySubheading(waitlistOpenSpots, unitsAvailable)}
+            size={"lg"}
+            className={`${listingStyles["heading-group"]} ${styles["emphasized-heading-group"]}`}
+          />
+          <p>{getAvailabilityContent(reviewOrder)}</p>
+        </Card.Section>
+      )}
+    </Card>
   )
 }

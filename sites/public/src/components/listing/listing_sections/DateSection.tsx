@@ -6,29 +6,8 @@ import { ListingEventCreate } from "@bloom-housing/shared-helpers/src/types/back
 import { t } from "@bloom-housing/ui-components"
 import styles from "../ListingViewSeeds.module.scss"
 
-export type DateSectionEventType = {
-  dateString?: string
-  linkText?: string
-  linkURL?: string
-  note?: string | React.ReactNode
-  timeString?: string
-}
-
-export const getEvent = (
-  event: ListingEventCreate,
-  note?: string | React.ReactNode
-): DateSectionEventType => {
-  return {
-    timeString: getTimeRangeString(event.startTime, event.endTime),
-    dateString: dayjs(event.startDate).format("MMMM D, YYYY"),
-    linkURL: event.url,
-    linkText: event.label || t("listings.openHouseEvent.seeVideo"),
-    note: note || event.note,
-  }
-}
-
 type DateSectionProps = {
-  events: DateSectionEventType[]
+  events: ListingEventCreate[]
   heading: string
 }
 
@@ -41,30 +20,24 @@ export const DateSection = ({ events, heading }: DateSectionProps) => {
           {heading}
         </Heading>
         {events.map((event, index) => {
+          const dateString = dayjs(event.startDate).format("MMMM D, YYYY")
+          const timeString = getTimeRangeString(event.startTime, event.endTime)
           return (
             <div key={index}>
-              {event.dateString && (
-                <div
-                  className={`${styles["thin-heading"]} seeds-m-be-text ${
-                    index > 0 && `seeds-m-bs-header`
-                  }`}
-                >
-                  {event.dateString}
+              {dateString && (
+                <div className={`${styles["thin-heading"]} ${index > 0 && `seeds-m-bs-header`}`}>
+                  {dateString}
                 </div>
               )}
-              {event.timeString && <div className={"seeds-m-be-text"}>{event.timeString}</div>}
-              {event?.linkText && event.linkURL && (
-                <div className={"seeds-m-be-text"}>
-                  <Link href={event.linkURL} hideExternalLinkIcon={true}>
-                    {event.linkText}
+              {timeString && <div className={"seeds-m-bs-text"}>{timeString}</div>}
+              {event.url && (
+                <div className={"seeds-m-bs-text"}>
+                  <Link href={event.url} hideExternalLinkIcon={true}>
+                    {event.label || t("listings.openHouseEvent.seeVideo")}
                   </Link>
                 </div>
               )}
-              {event.note && (
-                <div className={`${index < events.length - 1 ? "seeds-m-be-text" : ""}`}>
-                  {event.note}
-                </div>
-              )}
+              {event.note && <div className={"seeds-m-bs-text"}>{event.note}</div>}
             </div>
           )
         })}

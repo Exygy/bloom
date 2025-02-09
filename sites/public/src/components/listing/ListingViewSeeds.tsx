@@ -1,6 +1,5 @@
 import React, { useState } from "react"
 import { useForm } from "react-hook-form"
-import dayjs from "dayjs"
 import {
   Jurisdiction,
   Listing,
@@ -24,14 +23,13 @@ import { AdditionalFees } from "./listing_sections/AdditionalFees"
 import { AdditionalInformation } from "./listing_sections/AdditionalInformation"
 import { Apply } from "./listing_sections/Apply"
 import { Availability } from "./listing_sections/Availability"
-import { DateSection, getEvent } from "./listing_sections/DateSection"
+import { DateSection } from "./listing_sections/DateSection"
 import { DueDate } from "./listing_sections/DueDate"
 import { Eligibility } from "./listing_sections/Eligibility"
 import { Features } from "./listing_sections/Features"
 import { FurtherInformation } from "./listing_sections/FurtherInformation"
 import { InfoCard } from "./listing_sections/InfoCard"
 import { LeasingAgent } from "./listing_sections/LeasingAgent"
-import { LotteryEvent } from "./listing_sections/LotteryEvent"
 import { LotteryResults } from "./listing_sections/LotteryResults"
 import { MainDetails } from "./listing_sections/MainDetails"
 import { Neighborhood } from "./listing_sections/Neighborhood"
@@ -63,17 +61,23 @@ export const ListingViewSeeds = ({ jurisdiction, listing, preview }: ListingProp
     "paperApplicationLanguage",
     paperApplications?.length ? paperApplications[0].fileURL : undefined
   )
-  const publicLotteryEvent = listing.listingEvents?.find(
-    (event) => event.type === ListingEventsTypeEnum.publicLottery
-  )
   const statusContent = getListingApplicationStatus(listing)
 
   const OpenHouses = (
     <DateSection
       heading={t("listings.openHouseEvent.header")}
-      events={listing.listingEvents
-        ?.filter((event) => event.type === ListingEventsTypeEnum.openHouse)
-        .map((event) => getEvent(event))}
+      events={listing.listingEvents?.filter(
+        (event) => event.type === ListingEventsTypeEnum.openHouse
+      )}
+    />
+  )
+
+  const LotteryEvent = (
+    <DateSection
+      heading={t("listings.publicLottery.header")}
+      events={listing.listingEvents?.filter(
+        (event) => event.type === ListingEventsTypeEnum.publicLottery
+      )}
     />
   )
 
@@ -139,12 +143,7 @@ export const ListingViewSeeds = ({ jurisdiction, listing, preview }: ListingProp
       <Apply listing={listing} preview={preview} setShowDownloadModal={setShowDownloadModal} />
       {ReferralApplication}
       {OpenHouses}
-      <LotteryEvent
-        event={publicLotteryEvent}
-        lotteryRanNoResultsPosted={
-          dayjs(publicLotteryEvent?.startTime) < dayjs() && !lotteryResultsEvent
-        }
-      />
+      {LotteryEvent}
       {WhatToExpect}
       <LeasingAgent
         address={listing.listingsLeasingAgentAddress}

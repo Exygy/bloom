@@ -488,7 +488,7 @@ export const listing: Listing = {
   unitsSummary: [],
   unitsSummarized: undefined,
   unitAmenities: "Dishwasher",
-  developer: "Charities Housing ",
+  developer: "Charities Housing",
   yearBuilt: 2012,
   accessibility:
     "There is a total of 5 ADA units in the complex, all others are adaptable. Exterior Wheelchair ramp (front entry)",
