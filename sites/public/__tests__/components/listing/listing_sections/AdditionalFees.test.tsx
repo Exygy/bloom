@@ -60,26 +60,6 @@ describe("<AdditionalFees>", () => {
     expect(queryByText("Utilities Included")).toBeNull()
   })
   it("renders just deposit min", () => {
-    const { getByText, queryByText } = render(
-      <AdditionalFees
-        applicationFee={"50"}
-        costsNotIncluded={"Costs not included"}
-        depositHelperText={"Deposit helper text"}
-        depositMax={"200"}
-        depositMin={"100"}
-        utilitiesIncluded={[]}
-      />
-    )
-    expect(getByText("Additional Fees")).toBeDefined()
-    expect(getByText("Application Fee")).toBeDefined()
-    expect(getByText("per applicant age 18 and over")).toBeDefined()
-    expect(getByText("Due at interview")).toBeDefined()
-    expect(getByText("$50")).toBeDefined()
-    expect(getByText("Deposit")).toBeDefined()
-    expect(getByText("$100 – $200", { exact: false })).toBeDefined()
-    expect(queryByText("Utilities Included")).toBeNull()
-  })
-  it("renders just deposit min", () => {
     const { getByText } = render(
       <AdditionalFees
         applicationFee={null}
