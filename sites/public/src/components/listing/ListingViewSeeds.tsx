@@ -4,6 +4,7 @@ import {
   Jurisdiction,
   Listing,
   ListingEventsTypeEnum,
+  ListingsStatusEnum,
 } from "@bloom-housing/shared-helpers/src/types/backend-swagger"
 import { t } from "@bloom-housing/ui-components"
 import { pdfUrlFromListingEvents } from "@bloom-housing/shared-helpers"
@@ -73,12 +74,17 @@ export const ListingViewSeeds = ({ jurisdiction, listing, preview }: ListingProp
   )
 
   const LotteryEvent = (
-    <DateSection
-      heading={t("listings.publicLottery.header")}
-      events={listing.listingEvents?.filter(
-        (event) => event.type === ListingEventsTypeEnum.publicLottery
-      )}
-    />
+    <>
+      {!lotteryResultsEvent ||
+        (listing.status === ListingsStatusEnum.active && (
+          <DateSection
+            heading={t("listings.publicLottery.header")}
+            events={listing.listingEvents?.filter(
+              (event) => event.type === ListingEventsTypeEnum.publicLottery
+            )}
+          />
+        ))}
+    </>
   )
 
   const ReferralApplication = (
