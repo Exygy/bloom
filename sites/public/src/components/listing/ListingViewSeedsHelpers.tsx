@@ -249,7 +249,7 @@ export const getDateString = (date: Date, format: string) => {
 export const getBuildingSelectionCriteria = (listing: Listing) => {
   if (listing.listingsBuildingSelectionCriteriaFile) {
     return (
-      <p className={"seeds-m-bs-content"}>
+      <div className={"seeds-m-bs-content"}>
         <Link
           href={cloudinaryPdfFromId(
             listing.listingsBuildingSelectionCriteriaFile.fileId,
@@ -258,15 +258,15 @@ export const getBuildingSelectionCriteria = (listing: Listing) => {
         >
           {t("listings.moreBuildingSelectionCriteria")}
         </Link>
-      </p>
+      </div>
     )
   } else if (listing.buildingSelectionCriteria) {
     return (
-      <p className={"seeds-m-bs-content"}>
+      <div className={"seeds-m-bs-content"}>
         <Link href={listing.buildingSelectionCriteria}>
           {t("listings.moreBuildingSelectionCriteria")}
         </Link>
-      </p>
+      </div>
     )
   }
 }

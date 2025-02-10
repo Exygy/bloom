@@ -19,7 +19,10 @@ type AvailabilityProps = {
   waitlistOpenSpots: number
 }
 
-export const getAvailabilitySubheading = (waitlistOpenSpots: number, unitsAvailable: number) => {
+export const getAvailabilitySubheading = (
+  waitlistOpenSpots: number,
+  unitsAvailable: number
+): string => {
   if (waitlistOpenSpots) {
     return `${waitlistOpenSpots} ${t("listings.waitlist.openSlots")}`
   }
