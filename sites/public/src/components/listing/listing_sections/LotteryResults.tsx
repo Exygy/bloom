@@ -19,34 +19,29 @@ export const LotteryResults = ({
   lotteryResultsEvent,
   lotteryResultsPdfUrl,
 }: LotteryResultsProps) => {
+  if (!lotteryResultsPdfUrl || listingStatus !== ListingsStatusEnum.closed) return
   return (
-    <>
-      {lotteryResultsPdfUrl && listingStatus === ListingsStatusEnum.closed && (
-        <Card
-          className={`${styles["mobile-full-width-card"]} ${styles["mobile-no-bottom-border"]}`}
+    <Card className={`${styles["mobile-full-width-card"]} ${styles["mobile-no-bottom-border"]}`}>
+      <Card.Section>
+        <HeadingGroup
+          headingPriority={3}
+          size={"lg"}
+          className={`${styles["heading-group"]} seeds-m-be-header`}
+          heading={t("listings.lotteryResults.header")}
+          subheading={
+            lotteryResultsEvent?.startTime
+              ? dayjs(lotteryResultsEvent.startTime).format("MMMM D, YYYY")
+              : null
+          }
+        />
+        <Button
+          href={lotteryResultsPdfUrl}
+          hideExternalLinkIcon={true}
+          className={styles["full-width-button"]}
         >
-          <Card.Section>
-            <HeadingGroup
-              headingPriority={3}
-              size={"lg"}
-              className={`${styles["heading-group"]} seeds-m-be-header`}
-              heading={t("listings.lotteryResults.header")}
-              subheading={
-                lotteryResultsEvent?.startTime
-                  ? dayjs(lotteryResultsEvent?.startTime).format("MMMM D, YYYY")
-                  : null
-              }
-            />
-            <Button
-              href={lotteryResultsPdfUrl}
-              hideExternalLinkIcon={true}
-              className={styles["full-width-button"]}
-            >
-              {t("listings.lotteryResults.downloadResults")}
-            </Button>
-          </Card.Section>
-        </Card>
-      )}
-    </>
+          {t("listings.lotteryResults.downloadResults")}
+        </Button>
+      </Card.Section>
+    </Card>
   )
 }

@@ -9,11 +9,12 @@ type DueDateProps = {
 }
 
 export const DueDate = (props: DueDateProps) => {
+  if (!props.content.length) return
   return (
     <Card className={`${listingStyles["muted-card"]} ${styles["due-date-section"]}`} spacing={"sm"}>
       <Card.Section>
         <div className={styles["date-content"]}>
-          <Icon size={"md"} className={styles["primary-color-icon"]}>
+          <Icon size={"md"} className={styles["primary-color-icon"]} aria-hidden={true}>
             <ClockIcon />
           </Icon>
           <div>

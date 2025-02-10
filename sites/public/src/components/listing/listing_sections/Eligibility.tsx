@@ -10,6 +10,7 @@ type EligibilityProps = {
 }
 
 export const Eligibility = ({ eligibilitySections }: EligibilityProps) => {
+  if (!eligibilitySections.length) return
   return (
     <CollapsibleSection
       title={t("listings.sections.eligibilityTitle")}
