@@ -12,7 +12,7 @@ interface CollapsibleSectionProps {
   /** Heading priority level */
   priority?: 1 | 2 | 3 | 4 | 5 | 6
   /** Appears below the title */
-  subtitle?: string
+  subtitle?: string | React.ReactNode
   /** Title of the section */
   title: string
 }
@@ -25,7 +25,7 @@ export const CollapsibleSection = (props: CollapsibleSectionProps) => {
       <Heading priority={props.priority} size={"xl"} className={styles["heading"]}>
         {props.title}
       </Heading>
-      {props.subtitle && <p>{props.subtitle}</p>}
+      {props.subtitle && <div>{props.subtitle}</div>}
     </>
   )
 

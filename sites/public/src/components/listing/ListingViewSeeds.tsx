@@ -75,15 +75,14 @@ export const ListingViewSeeds = ({ jurisdiction, listing, preview }: ListingProp
 
   const LotteryEvent = (
     <>
-      {!lotteryResultsEvent ||
-        (listing.status === ListingsStatusEnum.active && (
-          <DateSection
-            heading={t("listings.publicLottery.header")}
-            events={listing.listingEvents?.filter(
-              (event) => event.type === ListingEventsTypeEnum.publicLottery
-            )}
-          />
-        ))}
+      {(!lotteryResultsEvent || listing.status === ListingsStatusEnum.active) && (
+        <DateSection
+          heading={t("listings.publicLottery.header")}
+          events={listing.listingEvents?.filter(
+            (event) => event.type === ListingEventsTypeEnum.publicLottery
+          )}
+        />
+      )}
     </>
   )
 
