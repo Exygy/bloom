@@ -110,7 +110,7 @@ export const ListingViewSeeds = ({ jurisdiction, listing, preview }: ListingProp
       <UnitSummaries
         disableUnitsAccordion={listing.disableUnitsAccordion}
         units={listing.units}
-        unitSummary={listing.unitsSummarized.byUnitType}
+        unitSummary={listing.unitsSummarized?.byUnitType}
       />
       <AdditionalFees
         applicationFee={listing.applicationFee}

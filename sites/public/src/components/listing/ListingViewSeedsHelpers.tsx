@@ -246,7 +246,7 @@ export const getDateString = (date: Date, format: string) => {
   return date ? dayjs(date).format(format) : null
 }
 
-const getBuildingSelectionCriteria = (listing: Listing) => {
+export const getBuildingSelectionCriteria = (listing: Listing) => {
   if (listing.listingsBuildingSelectionCriteriaFile) {
     return (
       <p className={"seeds-m-bs-content"}>

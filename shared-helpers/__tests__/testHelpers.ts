@@ -445,8 +445,9 @@ export const listing: Listing = {
   costsNotIncluded:
     "Resident responsible for PG&E, internet and phone.  Owner pays for water, trash, and sewage.  Residents encouraged to obtain renter's insurance but this is not a requirement.  Rent is due by the 5th of each month. Late fee $35 and returned check fee is $35 additional.",
   creditHistory:
-    "Applications will be rated on a score system for housing. An applicant's score may be impacted by negative tenant peformance information provided to the credit reporting agency.  All applicants are expected have a passing acore of 70 points out of 100 to be considered for housing.  Applicants with no credit history will receive a maximum of 80 points to fairly outweigh positive and/or negative trades as would an applicant with established credit history. Refer to Tenant Selection Criteria or Qualification Criteria for details related to the qualification process. ",
+    "Applications will be rated on a score system for housing. An applicant's score may be impacted by negative tenant peformance information provided to the credit reporting agency.  All applicants are expected have a passing acore of 70 points out of 100 to be considered for housing.  Applicants with no credit history will receive a maximum of 80 points to fairly outweigh positive and/or negative trades as would an applicant with established credit history. Refer to Tenant Selection Criteria or Qualification Criteria for details related to the qualification process.",
   depositMin: "1140.0",
+  specialNotes: "Special notes description",
   programRules:
     "Applicants must adhere to minimum & maximum income limits. Tenant Selection Criteria applies.",
   waitlistMaxSize: 300,
@@ -477,7 +478,68 @@ export const listing: Listing = {
   leasingAgentOfficeHours: "Monday, Tuesday & Friday, 9:00AM - 5:00PM",
   leasingAgentPhone: "(408) 217-8562",
   leasingAgentTitle: "",
-  listingMultiselectQuestions: [],
+  listingFeatures: {
+    elevator: true,
+    wheelchairRamp: true,
+    serviceAnimalsAllowed: true,
+    accessibleParking: true,
+  },
+  reservedCommunityTypes: {
+    id: "id",
+    name: "veteran",
+  },
+  servicesOffered: "Services offered description",
+  listingUtilities: {
+    water: true,
+    gas: true,
+    electricity: true,
+  },
+  listingMultiselectQuestions: [
+    {
+      ordinal: 1,
+      multiselectQuestions: {
+        id: "id",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        text: "Preference 1",
+        jurisdictions: [],
+        applicationSection: MultiselectQuestionsApplicationSectionEnum.preferences,
+      },
+    },
+    {
+      ordinal: 2,
+      multiselectQuestions: {
+        id: "id",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        text: "Preference 2",
+        jurisdictions: [],
+        applicationSection: MultiselectQuestionsApplicationSectionEnum.preferences,
+      },
+    },
+    {
+      ordinal: 1,
+      multiselectQuestions: {
+        id: "id",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        text: "Program 1",
+        jurisdictions: [],
+        applicationSection: MultiselectQuestionsApplicationSectionEnum.programs,
+      },
+    },
+    {
+      ordinal: 2,
+      multiselectQuestions: {
+        id: "id",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        text: "Program 2",
+        jurisdictions: [],
+        applicationSection: MultiselectQuestionsApplicationSectionEnum.programs,
+      },
+    },
+  ],
   rentalAssistance: "Custom rental assistance",
   rentalHistory:
     "Two years of rental history will be verified with all applicable landlords.  Household family members and/or personal friends are not acceptable landlord references.  Two professional character references may be used in lieu of rental history for applicants with no prior rental history.  An unlawful detainer report will be processed thourhg the U.D. Registry, Inc. Applicants will be disqualified if they have any evictions filing within the last 7 years.  Refer to Tenant Selection Criteria or Qualification Criteria for details related to the qualification process.",

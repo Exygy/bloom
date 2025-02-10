@@ -25,7 +25,11 @@ describe("<MainDetails>", () => {
   it("shows no tags", () => {
     const { queryByTestId } = render(
       <MainDetails
-        listing={{ ...listing, reviewOrderType: ReviewOrderTypeEnum.lottery }}
+        listing={{
+          ...listing,
+          reviewOrderType: ReviewOrderTypeEnum.lottery,
+          reservedCommunityTypes: null,
+        }}
         dueDateContent={[]}
       />
     )
