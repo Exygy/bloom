@@ -50,10 +50,10 @@ export const getListingTags = (listing: Listing): ListingTag[] => {
 }
 
 export const MainDetails = ({ dueDateContent, listing }: MainDetailsProps) => {
+  if (!listing) return
   const googleMapsHref =
     "https://www.google.com/maps/place/" + oneLineAddress(listing.listingsBuildingAddress)
   const listingTags = getListingTags(listing)
-
   return (
     <div>
       <ImageCard
@@ -90,8 +90,8 @@ export const MainDetails = ({ dueDateContent, listing }: MainDetailsProps) => {
           </div>
         </div>
 
-        {listingTags?.length > 0 && (
-          <div className={`${styles["listing-tags"]} seeds-m-bs-3`}>
+        {listingTags.length > 0 && (
+          <div className={`${styles["listing-tags"]} seeds-m-bs-3`} data-testid={"listing-tags"}>
             {listingTags.map((tag, index) => {
               return (
                 <Tag variant={tag.variant} key={index}>

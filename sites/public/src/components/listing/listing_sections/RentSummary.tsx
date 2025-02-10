@@ -31,7 +31,7 @@ export const RentSummary = ({ amiValues, reviewOrderType, unitsSummarized }: Ren
         {amiValues.length > 1 &&
           amiValues.map((percent) => {
             const byAMI = unitsSummarized.byAMI.find((item) => {
-              return parseInt(item.percent, 10) == percent
+              return parseInt(item.percent, 10) === percent
             })
 
             const groupedUnits = byAMI ? getSummariesTable(byAMI.byUnitType, reviewOrderType) : []
