@@ -145,10 +145,7 @@ export const Apply = ({ listing, preview, setShowDownloadModal }: ApplyProps) =>
                         <Heading size={"md"} priority={4} className={"seeds-m-be-header"}>
                           {t("leasingAgent.officeHours")}
                         </Heading>
-                        <Markdown
-                          children={listing.applicationPickUpAddressOfficeHours}
-                          options={{ disableParsingRawHTML: true }}
-                        />
+                        <Markdown children={listing.applicationPickUpAddressOfficeHours} />
                       </div>
                     )}
                   </div>
@@ -176,10 +173,7 @@ export const Apply = ({ listing, preview, setShowDownloadModal }: ApplyProps) =>
                         <Heading size={"md"} priority={4} className={"seeds-m-be-header"}>
                           {t("leasingAgent.officeHours")}
                         </Heading>
-                        <Markdown
-                          children={listing.applicationDropOffAddressOfficeHours}
-                          options={{ disableParsingRawHTML: true }}
-                        />
+                        <Markdown children={listing.applicationDropOffAddressOfficeHours} />
                       </div>
                     )}
                   </div>

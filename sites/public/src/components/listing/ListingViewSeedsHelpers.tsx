@@ -29,6 +29,7 @@ import {
 import { downloadExternalPDF } from "../../lib/helpers"
 import { CardList, ContentCardProps } from "../../patterns/CardList"
 import { OrderedCardList } from "../../patterns/OrderedCardList"
+import { ReadMore } from "../../patterns/ReadMore"
 
 export const getFilteredMultiselectQuestions = (
   multiselectQuestions: ListingMultiselectQuestion[],
@@ -394,13 +395,19 @@ export const getEligibilitySections = (listing: Listing): EligibilitySection[] =
   ) {
     const cardContent: ContentCardProps[] = []
     if (listing.creditHistory)
-      cardContent.push({ heading: t("listings.creditHistory"), description: listing.creditHistory })
+      cardContent.push({
+        heading: t("listings.creditHistory"),
+        description: <ReadMore content={listing.creditHistory} />,
+      })
     if (listing.rentalHistory)
-      cardContent.push({ heading: t("listings.rentalHistory"), description: listing.rentalHistory })
+      cardContent.push({
+        heading: t("listings.rentalHistory"),
+        description: <ReadMore content={listing.rentalHistory} />,
+      })
     if (listing.criminalBackground)
       cardContent.push({
         heading: t("listings.criminalBackground"),
-        description: listing.criminalBackground,
+        description: <ReadMore content={listing.criminalBackground} />,
       })
     eligibilityFeatures.push({
       header: t("listings.sections.additionalEligibilityTitle"),
@@ -421,23 +428,17 @@ export const getAdditionalInformation = (listing: Listing) => {
   if (listing.requiredDocuments)
     cardContent.push({
       heading: t("listings.requiredDocuments"),
-      description: (
-        <Markdown children={listing.requiredDocuments} options={{ disableParsingRawHTML: true }} />
-      ),
+      description: <ReadMore content={listing.requiredDocuments} />,
     })
   if (listing.programRules)
     cardContent.push({
       heading: t("listings.importantProgramRules"),
-      description: (
-        <Markdown children={listing.programRules} options={{ disableParsingRawHTML: true }} />
-      ),
+      description: <ReadMore content={listing.programRules} />,
     })
   if (listing.specialNotes)
     cardContent.push({
       heading: t("listings.specialNotes"),
-      description: (
-        <Markdown children={listing.specialNotes} options={{ disableParsingRawHTML: true }} />
-      ),
+      description: <ReadMore content={listing.specialNotes} />,
     })
   return cardContent
 }
