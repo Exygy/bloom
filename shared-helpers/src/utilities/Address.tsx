@@ -1,6 +1,7 @@
 import React from "react"
 import { t } from "@bloom-housing/ui-components"
 import { Address as AddressType } from "@bloom-housing/shared-helpers/src/types/backend-swagger"
+import { Link } from "@bloom-housing/ui-seeds"
 
 interface AddressProps {
   address: AddressType
@@ -35,7 +36,7 @@ export const Address = ({ address, getDirections }: AddressProps) => {
       </div>
       {getDirections && (
         <p className={"seeds-m-bs-text"}>
-          <a href={googleMapsHref}>{t("t.getDirections")}</a>
+          <Link href={googleMapsHref}>{t("t.getDirections")}</Link>
         </p>
       )}
     </>

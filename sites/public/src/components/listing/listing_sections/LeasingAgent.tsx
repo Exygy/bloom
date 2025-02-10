@@ -1,5 +1,5 @@
 import * as React from "react"
-import { Card, Heading } from "@bloom-housing/ui-seeds"
+import { Card, Heading, Link } from "@bloom-housing/ui-seeds"
 import { Address as AddressType } from "@bloom-housing/shared-helpers/src/types/backend-swagger"
 import { Address } from "@bloom-housing/shared-helpers"
 import { t } from "@bloom-housing/ui-components"
@@ -34,7 +34,7 @@ export const LeasingAgent = ({
         <div>
           {phone && (
             <p className={"seeds-m-bs-header seeds-m-be-text"}>
-              <a href={`tel:${phone.replace(/[-()]/g, "")}`}>{`${t("t.call")} ${phone}`}</a>
+              <Link href={`tel:${phone.replace(/[-()]/g, "")}`}>{`${t("t.call")} ${phone}`}</Link>
             </p>
           )}
         </div>
@@ -42,7 +42,7 @@ export const LeasingAgent = ({
         <div>
           {email && (
             <p className={"seeds-m-bs-header"}>
-              <a href={`mailto:${email}`}>{t("t.email")}</a>
+              <Link href={`mailto:${email}`}>{t("t.email")}</Link>
             </p>
           )}
         </div>
@@ -54,7 +54,11 @@ export const LeasingAgent = ({
 
         {officeHours && (
           <div className={"seeds-m-bs-header"}>
-            <Heading size={"md"} priority={3} className={"seeds-m-be-header"}>
+            <Heading
+              size={"md"}
+              priority={3}
+              className={`seeds-m-be-text ${styles["thin-heading-sm"]}`}
+            >
               {t("leasingAgent.officeHours")}
             </Heading>
             <p>{officeHours}</p>
