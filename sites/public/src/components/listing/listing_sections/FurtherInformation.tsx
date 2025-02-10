@@ -1,5 +1,6 @@
 import * as React from "react"
 import { t } from "@bloom-housing/ui-components"
+import { Link } from "@bloom-housing/ui-seeds"
 import { InfoCard } from "./InfoCard"
 
 type FurtherInformationProps = {
@@ -13,9 +14,9 @@ export const FurtherInformation = ({ instructions, phoneNumber }: FurtherInforma
       <>
         {phoneNumber && (
           <p className={"seeds-m-be-text"}>
-            <a href={`tel:${phoneNumber.replace(/[-()]/g, "")}`}>{`${t(
+            <Link href={`tel:${phoneNumber.replace(/[-()]/g, "")}`}>{`${t(
               "t.call"
-            )} ${phoneNumber}`}</a>
+            )} ${phoneNumber}`}</Link>
           </p>
         )}
         <p>{instructions || t("application.referralApplication.instructions")}</p>
