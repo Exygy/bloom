@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import Markdown from "markdown-to-jsx"
 import styles from "./ReadMore.module.scss"
+import { t } from "@bloom-housing/ui-components"
 
 interface ReadMoreProps {
   /** Full content to display */
@@ -34,11 +35,11 @@ export const ReadMore = (props: ReadMoreProps) => {
           onClick={() => {
             setExpanded(!expanded)
           }}
-          aria-label={"Read more"}
+          aria-label={t("t.readMore")}
           aria-expanded={expanded}
           aria-controls={"read-more-content"}
         >
-          {expanded ? "Read less" : "Read more"}
+          {expanded ? t("t.readLess") : t("t.readMore")}
         </button>
       )}
     </div>
