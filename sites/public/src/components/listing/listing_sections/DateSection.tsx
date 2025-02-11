@@ -14,7 +14,9 @@ type DateSectionProps = {
 export const DateSection = ({ events, heading }: DateSectionProps) => {
   if (!events.length) return
   return (
-    <Card className={styles["mobile-full-width-card"]}>
+    <Card
+      className={`${styles["mobile-full-width-card"]} ${styles["mobile-no-bottom-border"]} seeds-m-bs-content`}
+    >
       <Card.Section>
         <Heading size={"lg"} priority={2} className={"seeds-p-be-header"}>
           {heading}

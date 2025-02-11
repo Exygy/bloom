@@ -9,7 +9,9 @@ type InfoCardProps = {
 
 export const InfoCard = ({ children, heading }: InfoCardProps) => {
   return (
-    <Card className={`${styles["mobile-full-width-card"]} ${styles["mobile-no-bottom-border"]}`}>
+    <Card
+      className={`${styles["mobile-full-width-card"]} ${styles["mobile-no-bottom-border"]} seeds-m-bs-content`}
+    >
       <Card.Section>
         <Heading size={"lg"} priority={2} className={"seeds-m-be-header"}>
           {heading}

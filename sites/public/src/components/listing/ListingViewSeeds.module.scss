@@ -59,7 +59,6 @@
 }
 
 .mobile-full-width-card {
-  margin-block-start: var(--seeds-spacer-content);
   @media (--sm-only) {
     margin-block-start: 0;
     border-radius: 0;
