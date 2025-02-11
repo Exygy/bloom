@@ -1,6 +1,10 @@
 import React from "react"
 import { cleanup } from "@testing-library/react"
-import { occupancyTable, getOccupancyDescription } from "../src/views/occupancyFormatting"
+import {
+  occupancyTable,
+  getOccupancyDescription,
+  getOccupancy,
+} from "../src/views/occupancyFormatting"
 import { t } from "@bloom-housing/ui-components"
 import { Listing, UnitType, UnitsSummarized } from "../src/types/backend-swagger"
 
@@ -85,7 +89,7 @@ const unitsSummarized = {
         max: "20",
       },
       occupancyRange: {
-        min: 2,
+        min: 1,
         max: 1,
       },
       rentAsPercentIncomeRange: {
@@ -109,7 +113,7 @@ testListing.unitsSummarized = unitsSummarized
 afterEach(cleanup)
 
 describe("occupancy formatting helper", () => {
-  it("properly creates occupany table", () => {
+  it("properly creates occupancy table", () => {
     expect(occupancyTable(testListing)).toStrictEqual([
       {
         occupancy: { content: "2-6 people" },
@@ -125,10 +129,10 @@ describe("occupancy formatting helper", () => {
       },
     ])
   })
-  it("properly creates occupany description for some SRO", () => {
+  it("properly creates occupancy description for some SRO", () => {
     expect(getOccupancyDescription(testListing)).toBe(t("listings.occupancyDescriptionSomeSro"))
   })
-  it("properly creates occupany description for no SRO", () => {
+  it("properly creates occupancy description for no SRO", () => {
     const testListing2 = testListing
     testListing2.unitsSummarized = {
       ...unitsSummarized,
@@ -145,7 +149,7 @@ describe("occupancy formatting helper", () => {
     }
     expect(getOccupancyDescription(testListing2)).toBe(t("listings.occupancyDescriptionNoSro"))
   })
-  it("properly creates occupany description for all SRO", () => {
+  it("properly creates occupancy description for all SRO", () => {
     const testListing3 = testListing
     testListing3.unitsSummarized = {
       ...unitsSummarized,
@@ -157,5 +161,26 @@ describe("occupancy formatting helper", () => {
       ] as UnitType[],
     }
     expect(getOccupancyDescription(testListing3)).toBe(t("listings.occupancyDescriptionAllSro"))
+  })
+})
+
+describe("getOccupancy", () => {
+  it("returns correctly for no data", () => {
+    expect(getOccupancy(null, null)).toBe("n/a")
+  })
+  it("returns correctly for both min and max", () => {
+    expect(getOccupancy(1, 5)).toBe("1-5 people")
+  })
+  it("returns correctly for just min plural", () => {
+    expect(getOccupancy(2, null)).toBe("at least 2 people")
+  })
+  it("returns correctly for just min singular", () => {
+    expect(getOccupancy(1, null)).toBe("at least 1 person")
+  })
+  it("returns correctly for just max plural", () => {
+    expect(getOccupancy(null, 2)).toBe("no more than 2 people")
+  })
+  it("returns correctly for just max singular", () => {
+    expect(getOccupancy(null, 1)).toBe("no more than 1 person")
   })
 })
