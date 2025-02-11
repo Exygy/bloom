@@ -145,8 +145,8 @@ export const ListingViewSeeds = ({ jurisdiction, listing, preview }: ListingProp
         )}
         lotteryResultsEvent={lotteryResultsEvent}
       />
-      <Apply listing={listing} preview={preview} setShowDownloadModal={setShowDownloadModal} />
       {OpenHouses}
+      <Apply listing={listing} preview={preview} setShowDownloadModal={setShowDownloadModal} />
       {LotteryEvent}
       {ReferralApplication}
       {WhatToExpect}
