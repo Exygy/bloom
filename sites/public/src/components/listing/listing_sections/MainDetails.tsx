@@ -83,7 +83,7 @@ export const MainDetails = ({ dueDateContent, listing }: MainDetailsProps) => {
         </Heading>
         <div className={styles["listing-address"]}>
           <div className={"seeds-m-ie-4"}>{oneLineAddress(listing.listingsBuildingAddress)}</div>
-          <div>
+          <div className={styles["view-on-map"]}>
             <Link href={googleMapsHref} newWindowTarget={true}>
               {t("t.viewOnMap")}
             </Link>
