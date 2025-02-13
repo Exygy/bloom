@@ -1,6 +1,6 @@
 import { PaginationAllowsAllQueryParams } from '../shared/pagination.dto';
 import { Expose, Transform, Type } from 'class-transformer';
-import { ApiPropertyOptional, getSchemaPath } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 import { ListingFilterParams } from './listings-filter-params.dto';
 import {
   ArrayMaxSize,
@@ -17,13 +17,11 @@ import { ListingViews } from '../../enums/listings/view-enum';
 import { OrderByEnum } from '../../enums/shared/order-by-enum';
 import { OrderQueryParamValidator } from '../../utilities/order-by-validator';
 
-export class ListingsQueryParams extends PaginationAllowsAllQueryParams {
+export class ListingsQueryBody extends PaginationAllowsAllQueryParams {
   @Expose()
   @ApiPropertyOptional({
-    type: [String],
-    items: {
-      $ref: getSchemaPath(ListingFilterParams),
-    },
+    type: ListingFilterParams,
+    isArray: true,
     example: [
       { $comparison: '=', status: 'active' },
       { $comparison: '=', bedrooms: 1 },

@@ -66,3 +66,19 @@ export const reservedCommunityTypeFactoryGet = async (
   }
   return reservedCommunityType;
 };
+
+export const reservedCommunityTypesFindOrCreate = async (
+  jurisdictionId: string,
+  prismaClient: PrismaClient,
+): Promise<ReservedCommunityTypes> => {
+  const reservedCommunityType = await reservedCommunityTypeFactoryGet(
+    prismaClient,
+    jurisdictionId,
+  );
+  if (reservedCommunityType) {
+    return await reservedCommunityTypeFactoryGet(prismaClient, jurisdictionId);
+  }
+
+  await reservedCommunityTypeFactoryAll(jurisdictionId, prismaClient);
+  return await reservedCommunityTypeFactoryGet(prismaClient, jurisdictionId);
+};

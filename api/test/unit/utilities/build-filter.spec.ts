@@ -175,6 +175,40 @@ describe('Testing constructFilter', () => {
     ]);
   });
 
+  it('should correctly build LIKE filter when includes null is false', () => {
+    expect(
+      buildFilter({
+        $comparison: Compare.LIKE,
+        $include_nulls: false,
+        value: 'Capital',
+        key: 'a key',
+      }),
+    ).toEqual([
+      {
+        contains: 'Capital',
+        mode: 'insensitive',
+      },
+    ]);
+  });
+  it('should correctly build LIKE filter when includes null is true', () => {
+    expect(
+      buildFilter({
+        $comparison: Compare.LIKE,
+        $include_nulls: true,
+        value: 'Capital',
+        key: 'a key',
+      }),
+    ).toEqual([
+      {
+        contains: 'Capital',
+        mode: 'insensitive',
+      },
+      {
+        equals: null,
+      },
+    ]);
+  });
+
   it('should error if NA filter', () => {
     expect(() =>
       buildFilter({

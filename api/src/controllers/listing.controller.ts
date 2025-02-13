@@ -36,6 +36,7 @@ import { ListingDuplicate } from '../dtos/listings/listing-duplicate.dto';
 import { ListingCsvQueryParams } from '../dtos/listings/listing-csv-query-params.dto';
 import { ListingFilterParams } from '../dtos/listings/listings-filter-params.dto';
 import { ListingMapMarker } from '../dtos/listings/listing-map-marker.dto';
+import { ListingsQueryBody } from '../dtos/listings/listings-query-body.dto';
 import { ListingsQueryParams } from '../dtos/listings/listings-query-params.dto';
 import { ListingsRetrieveParams } from '../dtos/listings/listings-retrieve-params.dto';
 import { ListingUpdate } from '../dtos/listings/listing-update.dto';
@@ -60,6 +61,7 @@ import { ListingCreateUpdateValidationPipe } from '../validation-pipes/listing-c
 @Controller('listings')
 @ApiTags('listings')
 @ApiExtraModels(
+  ListingsQueryBody,
   ListingsQueryParams,
   ListingFilterParams,
   ListingsRetrieveParams,
@@ -98,7 +100,7 @@ export class ListingController {
   @UseInterceptors(ClassSerializerInterceptor)
   @ApiOkResponse({ type: PaginatedListingDto })
   public async getFilterablePaginatedSet(
-    @Body() queryParams: ListingsQueryParams,
+    @Body() queryParams: ListingsQueryBody,
   ) {
     return await this.listingService.list(queryParams);
   }

@@ -10,6 +10,7 @@ export enum Compare {
   'IN' = 'IN',
   '>=' = '>=',
   '<=' = '<=',
+  'LIKE' = 'LIKE',
   'NA' = 'NA', // For filters that don't use the comparison param
 }
 

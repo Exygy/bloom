@@ -31,7 +31,12 @@ export function buildFilter(filter: filter): any {
     toReturn.push({
       in: String(filterValue)
         .split(',')
-        .map((s) => s.trim().toLowerCase())
+        .map((s) => {
+          if (!filter.caseSensitive) {
+            return s.trim().toLowerCase();
+          }
+          return s.trim();
+        })
         .filter((s) => s.length !== 0),
       ...mode,
     });
@@ -55,6 +60,11 @@ export function buildFilter(filter: filter): any {
   } else if (comparison === Compare['<=']) {
     toReturn.push({
       lte: filterValue,
+      ...mode,
+    });
+  } else if (comparison === Compare['LIKE']) {
+    toReturn.push({
+      contains: filterValue,
       ...mode,
     });
   } else if (Compare.NA) {

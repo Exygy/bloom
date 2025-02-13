@@ -2,9 +2,11 @@ import { Test, TestingModule } from '@nestjs/testing';
 import {
   ApplicationAddressTypeEnum,
   ApplicationMethodsTypeEnum,
+  HomeTypeEnum,
   LanguagesEnum,
   ListingEventsTypeEnum,
   ListingsStatusEnum,
+  RegionEnum,
   ReviewOrderTypeEnum,
   UnitTypeEnum,
   UserRoleEnum,
@@ -572,7 +574,6 @@ describe('Testing listing service', () => {
                     some: {
                       numBedrooms: {
                         gte: 2,
-                        mode: 'insensitive',
                       },
                     },
                   },
@@ -632,7 +633,6 @@ describe('Testing listing service', () => {
                     some: {
                       numBedrooms: {
                         gte: 2,
-                        mode: 'insensitive',
                       },
                     },
                   },
@@ -741,7 +741,6 @@ describe('Testing listing service', () => {
                   some: {
                     numBedrooms: {
                       gte: 2,
-                      mode: 'insensitive',
                     },
                   },
                 },
@@ -796,7 +795,6 @@ describe('Testing listing service', () => {
                   some: {
                     numBedrooms: {
                       gte: 2,
-                      mode: 'insensitive',
                     },
                   },
                 },
@@ -999,7 +997,6 @@ describe('Testing listing service', () => {
                     some: {
                       numBedrooms: {
                         gte: 2,
-                        mode: 'insensitive',
                       },
                     },
                   },
@@ -1059,7 +1056,6 @@ describe('Testing listing service', () => {
                     some: {
                       numBedrooms: {
                         gte: 2,
-                        mode: 'insensitive',
                       },
                     },
                   },
@@ -1074,6 +1070,480 @@ describe('Testing listing service', () => {
             },
           ],
         },
+      });
+    });
+  });
+
+  describe('Test buildWhereClause helper', () => {
+    it('should return a where clause for filter bathrooms', () => {
+      const filter = [
+        { $comparison: '=', bathrooms: 2 } as ListingFilterParams,
+      ];
+      const whereClause = service.buildWhereClause(filter, '');
+
+      expect(whereClause).toStrictEqual({
+        AND: [
+          {
+            OR: [
+              {
+                units: {
+                  some: {
+                    numBathrooms: {
+                      equals: 2,
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        ],
+      });
+    });
+
+    it('should return a where clause for filter bedrooms', () => {
+      const filter = [{ $comparison: '=', bedrooms: 2 } as ListingFilterParams];
+      const whereClause = service.buildWhereClause(filter, '');
+
+      expect(whereClause).toStrictEqual({
+        AND: [
+          {
+            OR: [
+              {
+                units: {
+                  some: {
+                    numBedrooms: {
+                      equals: 2,
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        ],
+      });
+    });
+
+    it('should return a where clause for filter city', () => {
+      const cityName = 'cityName';
+      const filter = [
+        { $comparison: '=', city: cityName } as ListingFilterParams,
+      ];
+      const whereClause = service.buildWhereClause(filter, '');
+
+      expect(whereClause).toStrictEqual({
+        AND: [
+          {
+            OR: [
+              {
+                listingsBuildingAddress: {
+                  city: {
+                    equals: cityName,
+                    mode: 'insensitive',
+                  },
+                },
+              },
+            ],
+          },
+        ],
+      });
+    });
+
+    it('should return a where clause for filter counties', () => {
+      const counties = ['county1', 'county2'];
+      const filter = [
+        {
+          $comparison: 'IN',
+          counties: counties,
+        } as ListingFilterParams,
+      ];
+      const whereClause = service.buildWhereClause(filter, '');
+
+      expect(whereClause).toStrictEqual({
+        AND: [
+          {
+            OR: [
+              {
+                listingsBuildingAddress: {
+                  county: {
+                    in: counties,
+                    mode: 'insensitive',
+                  },
+                },
+              },
+            ],
+          },
+        ],
+      });
+    });
+
+    it('should return a where clause for filter homeTypes', () => {
+      const homeTypes = [HomeTypeEnum.apartment, HomeTypeEnum.house];
+      const filter = [
+        {
+          $comparison: 'IN',
+          homeTypes: homeTypes,
+        } as ListingFilterParams,
+      ];
+      const whereClause = service.buildWhereClause(filter, '');
+
+      expect(whereClause).toStrictEqual({
+        AND: [
+          {
+            OR: [
+              {
+                homeType: {
+                  in: homeTypes,
+                },
+              },
+            ],
+          },
+        ],
+      });
+    });
+
+    it('should return a where clause for filter ids', () => {
+      const uuids = [randomUUID(), randomUUID()];
+      const filter = [
+        {
+          $comparison: 'IN',
+          ids: uuids,
+        } as ListingFilterParams,
+      ];
+      const whereClause = service.buildWhereClause(filter, '');
+
+      expect(whereClause).toStrictEqual({
+        AND: [
+          {
+            OR: [
+              {
+                id: {
+                  in: uuids,
+                },
+              },
+            ],
+          },
+        ],
+      });
+    });
+
+    it('should return a where clause for filter isVerified', () => {
+      const filter = [
+        {
+          $comparison: '=',
+          isVerified: false,
+        } as ListingFilterParams,
+      ];
+      const whereClause = service.buildWhereClause(filter, '');
+
+      expect(whereClause).toStrictEqual({
+        AND: [
+          {
+            OR: [
+              {
+                isVerified: {
+                  equals: false,
+                },
+              },
+            ],
+          },
+        ],
+      });
+    });
+
+    it('should return a where clause for filter jurisdiction', () => {
+      const jurisdictionId = randomUUID();
+      const filter = [
+        {
+          $comparison: '=',
+          jurisdiction: jurisdictionId,
+        } as ListingFilterParams,
+      ];
+      const whereClause = service.buildWhereClause(filter, '');
+
+      expect(whereClause).toStrictEqual({
+        AND: [
+          {
+            OR: [
+              {
+                jurisdictionId: {
+                  equals: jurisdictionId,
+                },
+              },
+            ],
+          },
+        ],
+      });
+    });
+
+    it('should return a where clause for filter leasingAgent', () => {
+      const leasingAgentId = randomUUID();
+      const filter = [
+        {
+          $comparison: '=',
+          leasingAgent: leasingAgentId,
+        } as ListingFilterParams,
+      ];
+      const whereClause = service.buildWhereClause(filter, '');
+
+      expect(whereClause).toStrictEqual({
+        AND: [
+          {
+            OR: [
+              {
+                userAccounts: {
+                  some: {
+                    id: {
+                      equals: leasingAgentId,
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        ],
+      });
+    });
+
+    it('should return a where clause for filter listingFeatures', () => {
+      const listingFeatures = ['hearing', 'acInUnit'];
+      const filter = [
+        {
+          $comparison: '=',
+          listingFeatures: listingFeatures,
+        } as ListingFilterParams,
+      ];
+      const whereClause = service.buildWhereClause(filter, '');
+
+      expect(whereClause).toStrictEqual({
+        AND: [
+          {
+            OR: [
+              {
+                listingFeatures: {
+                  hearing: true,
+                },
+              },
+              {
+                listingFeatures: {
+                  acInUnit: true,
+                },
+              },
+            ],
+          },
+        ],
+      });
+    });
+
+    it('should return a where clause for filter monthlyRent', () => {
+      const monthlyRent = '1500';
+      const filter = [
+        { $comparison: '=', monthlyRent: monthlyRent } as ListingFilterParams,
+      ];
+      const whereClause = service.buildWhereClause(filter, '');
+
+      expect(whereClause).toStrictEqual({
+        AND: [
+          {
+            OR: [
+              {
+                units: {
+                  some: {
+                    monthlyRent: {
+                      equals: monthlyRent,
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        ],
+      });
+    });
+
+    it('should return a where clause for filter name', () => {
+      const name = 'listingName';
+      const filter = [
+        { $comparison: 'LIKE', name: name } as ListingFilterParams,
+      ];
+      const whereClause = service.buildWhereClause(filter, '');
+
+      expect(whereClause).toStrictEqual({
+        AND: [
+          {
+            OR: [
+              {
+                name: {
+                  contains: name,
+                  mode: 'insensitive',
+                },
+              },
+            ],
+          },
+        ],
+      });
+    });
+
+    it('should return a where clause for filter neighborhood', () => {
+      const neighborhood = 'neighborhoodName';
+      const filter = [
+        { $comparison: '=', neighborhood: neighborhood } as ListingFilterParams,
+      ];
+      const whereClause = service.buildWhereClause(filter, '');
+
+      expect(whereClause).toStrictEqual({
+        AND: [
+          {
+            OR: [
+              {
+                neighborhood: {
+                  equals: neighborhood,
+                  mode: 'insensitive',
+                },
+              },
+            ],
+          },
+        ],
+      });
+    });
+
+    it('should return a where clause for filter regions', () => {
+      const regions = [RegionEnum.Eastside, RegionEnum.Greater_Downtown];
+      const filter = [
+        { $comparison: 'IN', regions: regions } as ListingFilterParams,
+      ];
+      const whereClause = service.buildWhereClause(filter, '');
+
+      expect(whereClause).toStrictEqual({
+        AND: [
+          {
+            OR: [
+              {
+                region: {
+                  in: regions,
+                },
+              },
+            ],
+          },
+        ],
+      });
+    });
+
+    it('should return a where clause for filter reservedCommunityTypes', () => {
+      const reservedCommunityTypes = ['Seniors', 'Veterans'];
+      const reservedLowerCase = reservedCommunityTypes.map((rct) =>
+        rct.toLowerCase(),
+      );
+      const filter = [
+        {
+          $comparison: 'IN',
+          reservedCommunityTypes: reservedCommunityTypes,
+        } as ListingFilterParams,
+      ];
+      const whereClause = service.buildWhereClause(filter, '');
+
+      expect(whereClause).toStrictEqual({
+        AND: [
+          {
+            OR: [
+              {
+                reservedCommunityTypes: {
+                  name: {
+                    in: reservedLowerCase,
+                    mode: 'insensitive',
+                  },
+                },
+              },
+            ],
+          },
+        ],
+      });
+    });
+
+    it('should return a where clause for filter section8Acceptance', () => {
+      const filter = [
+        {
+          $comparison: '=',
+          section8Acceptance: false,
+        } as ListingFilterParams,
+      ];
+      const whereClause = service.buildWhereClause(filter, '');
+
+      expect(whereClause).toStrictEqual({
+        AND: [
+          {
+            OR: [
+              {
+                section8Acceptance: {
+                  equals: false,
+                },
+              },
+            ],
+          },
+        ],
+      });
+    });
+
+    it('should return a where clause for filter status', () => {
+      const status = ListingsStatusEnum.active;
+      const filter = [
+        { $comparison: '=', status: status } as ListingFilterParams,
+      ];
+      const whereClause = service.buildWhereClause(filter, '');
+
+      expect(whereClause).toStrictEqual({
+        AND: [
+          {
+            OR: [
+              {
+                status: {
+                  equals: status,
+                },
+              },
+            ],
+          },
+        ],
+      });
+    });
+
+    it('should return a where clause for filter zipCode', () => {
+      const zipCode = '10101';
+      const filter = [
+        { $comparison: '=', zipCode: zipCode } as ListingFilterParams,
+      ];
+      const whereClause = service.buildWhereClause(filter, '');
+
+      expect(whereClause).toStrictEqual({
+        AND: [
+          {
+            OR: [
+              {
+                listingsBuildingAddress: {
+                  zipCode: {
+                    equals: zipCode,
+                    mode: 'insensitive',
+                  },
+                },
+              },
+            ],
+          },
+        ],
+      });
+    });
+
+    it('should return a where clause for search', () => {
+      const search = 'searchName';
+
+      const whereClause = service.buildWhereClause([], search);
+
+      expect(whereClause).toStrictEqual({
+        AND: [
+          {
+            name: {
+              contains: search,
+              mode: 'insensitive',
+            },
+          },
+        ],
       });
     });
   });

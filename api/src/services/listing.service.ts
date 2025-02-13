@@ -32,6 +32,7 @@ import { ListingCreate } from '../dtos/listings/listing-create.dto';
 import { ListingDuplicate } from '../dtos/listings/listing-duplicate.dto';
 import { ListingMapMarker } from '../dtos/listings/listing-map-marker.dto';
 import { ListingFilterParams } from '../dtos/listings/listings-filter-params.dto';
+import { ListingsQueryBody } from '../dtos/listings/listings-query-body.dto';
 import { ListingsQueryParams } from '../dtos/listings/listings-query-params.dto';
 import { ListingUpdate } from '../dtos/listings/listing-update.dto';
 import { IdDTO } from '../dtos/shared/id.dto';
@@ -171,7 +172,7 @@ export class ListingService implements OnModuleInit {
     this set can either be paginated or not depending on the params
     it will return both the set of listings, and some meta information to help with pagination
   */
-  async list(params: ListingsQueryParams): Promise<{
+  async list(params: ListingsQueryBody | ListingsQueryParams): Promise<{
     items: Listing[];
     meta: {
       currentPage: number;
@@ -357,6 +358,205 @@ export class ListingService implements OnModuleInit {
 
     if (params?.length) {
       params.forEach((filter) => {
+        // TODO: handling availibility for units and unitGroups
+        // if (
+        //   filter[ListingFilterKeys.availability] ===
+        //   FilterAvailabilityEnum.waitlistOpen
+        // ) {
+        //   const builtFilter = buildFilter({
+        //     $comparison: filter.$comparison,
+        //     $include_nulls: false,
+        //     value: ReviewOrderTypeEnum.waitlist,
+        //     key: 'reviewOrderType',
+        //   });
+        //   filters.push({
+        //     OR: builtFilter.map((filt) => ({
+        //       reviewOrderType: filt,
+        //     })),
+        //   });
+        // } else if (
+        //   filter[ListingFilterKeys.availability] ===
+        //   FilterAvailabilityEnum.unitsAvailable
+        // ) {
+        //   const builtFilter = buildFilter({
+        //     $comparison: Compare['>='],
+        //     $include_nulls: false,
+        //     value: 1,
+        //     key: 'reviewOrderType',
+        //   });
+        //   filters.push({
+        //     OR: builtFilter.map((filt) => ({
+        //       reviewOrderType: filt,
+        //     })),
+        //   });
+        // }
+        if (filter[ListingFilterKeys.bathrooms]) {
+          const builtFilter = buildFilter({
+            $comparison: filter.$comparison,
+            $include_nulls: false,
+            value: filter[ListingFilterKeys.bathrooms],
+            key: ListingFilterKeys.bathrooms,
+            caseSensitive: true,
+          });
+          filters.push({
+            OR: builtFilter.map((filt) => ({
+              units: {
+                some: {
+                  numBathrooms: filt,
+                },
+              },
+            })),
+          });
+        }
+        if (filter[ListingFilterKeys.bedrooms]) {
+          const builtFilter = buildFilter({
+            $comparison: filter.$comparison,
+            $include_nulls: false,
+            value: filter[ListingFilterKeys.bedrooms],
+            key: ListingFilterKeys.bedrooms,
+            caseSensitive: true,
+          });
+          filters.push({
+            OR: builtFilter.map((filt) => ({
+              units: {
+                some: {
+                  numBedrooms: filt,
+                },
+              },
+            })),
+          });
+        }
+        if (filter[ListingFilterKeys.city]) {
+          const builtFilter = buildFilter({
+            $comparison: filter.$comparison,
+            $include_nulls: false,
+            value: filter[ListingFilterKeys.city],
+            key: ListingFilterKeys.city,
+          });
+          filters.push({
+            OR: builtFilter.map((filt) => ({
+              listingsBuildingAddress: {
+                city: filt,
+              },
+            })),
+          });
+        }
+        if (filter[ListingFilterKeys.counties]) {
+          const builtFilter = buildFilter({
+            $comparison: filter.$comparison,
+            $include_nulls: false,
+            value: filter[ListingFilterKeys.counties],
+            key: ListingFilterKeys.counties,
+          });
+          filters.push({
+            OR: builtFilter.map((filt) => ({
+              listingsBuildingAddress: {
+                county: filt,
+              },
+            })),
+          });
+        }
+        if (filter[ListingFilterKeys.homeTypes]) {
+          const builtFilter = buildFilter({
+            $comparison: filter.$comparison,
+            $include_nulls: false,
+            value: filter[ListingFilterKeys.homeTypes],
+            key: ListingFilterKeys.homeTypes,
+            caseSensitive: true,
+          });
+          filters.push({
+            OR: builtFilter.map((filt) => ({
+              homeType: filt,
+            })),
+          });
+        }
+        if (filter[ListingFilterKeys.ids]) {
+          const builtFilter = buildFilter({
+            $comparison: filter.$comparison,
+            $include_nulls: false,
+            value: filter[ListingFilterKeys.ids],
+            key: ListingFilterKeys.ids,
+            caseSensitive: true,
+          });
+          filters.push({
+            OR: builtFilter.map((filt) => ({
+              id: filt,
+            })),
+          });
+        }
+        if (filter[ListingFilterKeys.isVerified] !== undefined) {
+          const builtFilter = buildFilter({
+            $comparison: filter.$comparison,
+            $include_nulls: false,
+            value: filter[ListingFilterKeys.isVerified],
+            key: ListingFilterKeys.isVerified,
+            caseSensitive: true,
+          });
+          filters.push({
+            OR: builtFilter.map((filt) => ({
+              [ListingFilterKeys.isVerified]: filt,
+            })),
+          });
+        }
+        if (filter[ListingFilterKeys.jurisdiction]) {
+          const builtFilter = buildFilter({
+            $comparison: filter.$comparison,
+            $include_nulls: false,
+            value: filter[ListingFilterKeys.jurisdiction],
+            key: ListingFilterKeys.jurisdiction,
+            caseSensitive: true,
+          });
+          filters.push({
+            OR: builtFilter.map((filt) => ({
+              jurisdictionId: filt,
+            })),
+          });
+        }
+        if (filter[ListingFilterKeys.leasingAgent]) {
+          const builtFilter = buildFilter({
+            $comparison: filter.$comparison,
+            $include_nulls: false,
+            value: filter[ListingFilterKeys.leasingAgent],
+            key: ListingFilterKeys.leasingAgent,
+            caseSensitive: true,
+          });
+          filters.push({
+            OR: builtFilter.map((filt) => ({
+              userAccounts: {
+                some: {
+                  id: filt,
+                },
+              },
+            })),
+          });
+        }
+        if (filter[ListingFilterKeys.listingFeatures]) {
+          filters.push({
+            OR: filter[ListingFilterKeys.listingFeatures].map((feature) => ({
+              listingFeatures: {
+                [feature]: true,
+              },
+            })),
+          });
+        }
+        if (filter[ListingFilterKeys.monthlyRent]) {
+          const builtFilter = buildFilter({
+            $comparison: filter.$comparison,
+            $include_nulls: false,
+            value: filter[ListingFilterKeys.monthlyRent],
+            key: ListingFilterKeys.monthlyRent,
+            caseSensitive: true,
+          });
+          filters.push({
+            OR: builtFilter.map((filt) => ({
+              units: {
+                some: {
+                  [ListingFilterKeys.monthlyRent]: filt,
+                },
+              },
+            })),
+          });
+        }
         if (filter[ListingFilterKeys.name]) {
           const builtFilter = buildFilter({
             $comparison: filter.$comparison,
@@ -368,7 +568,64 @@ export class ListingService implements OnModuleInit {
           filters.push({
             OR: builtFilter.map((filt) => ({ [ListingFilterKeys.name]: filt })),
           });
-        } else if (filter[ListingFilterKeys.status]) {
+        }
+        if (filter[ListingFilterKeys.neighborhood]) {
+          const builtFilter = buildFilter({
+            $comparison: filter.$comparison,
+            $include_nulls: false,
+            value: filter[ListingFilterKeys.neighborhood],
+            key: ListingFilterKeys.neighborhood,
+          });
+          filters.push({
+            OR: builtFilter.map((filt) => ({
+              [ListingFilterKeys.neighborhood]: filt,
+            })),
+          });
+        }
+        if (filter[ListingFilterKeys.regions]) {
+          const builtFilter = buildFilter({
+            $comparison: filter.$comparison,
+            $include_nulls: false,
+            value: filter[ListingFilterKeys.regions],
+            key: ListingFilterKeys.regions,
+            caseSensitive: true,
+          });
+          filters.push({
+            OR: builtFilter.map((filt) => ({
+              region: filt,
+            })),
+          });
+        }
+        if (filter[ListingFilterKeys.reservedCommunityTypes]) {
+          const builtFilter = buildFilter({
+            $comparison: filter.$comparison,
+            $include_nulls: false,
+            value: filter[ListingFilterKeys.reservedCommunityTypes],
+            key: ListingFilterKeys.reservedCommunityTypes,
+          });
+          filters.push({
+            OR: builtFilter.map((filt) => ({
+              [ListingFilterKeys.reservedCommunityTypes]: {
+                name: filt,
+              },
+            })),
+          });
+        }
+        if (filter[ListingFilterKeys.section8Acceptance] !== undefined) {
+          const builtFilter = buildFilter({
+            $comparison: filter.$comparison,
+            $include_nulls: false,
+            value: filter[ListingFilterKeys.section8Acceptance],
+            key: ListingFilterKeys.section8Acceptance,
+            caseSensitive: true,
+          });
+          filters.push({
+            OR: builtFilter.map((filt) => ({
+              [ListingFilterKeys.section8Acceptance]: filt,
+            })),
+          });
+        }
+        if (filter[ListingFilterKeys.status]) {
           const builtFilter = buildFilter({
             $comparison: filter.$comparison,
             $include_nulls: false,
@@ -381,76 +638,19 @@ export class ListingService implements OnModuleInit {
               [ListingFilterKeys.status]: filt,
             })),
           });
-        } else if (filter[ListingFilterKeys.neighborhood]) {
+        }
+        if (filter[ListingFilterKeys.zipCode]) {
           const builtFilter = buildFilter({
             $comparison: filter.$comparison,
             $include_nulls: false,
-            value: filter[ListingFilterKeys.neighborhood],
-            key: ListingFilterKeys.neighborhood,
-          });
-          filters.push({
-            OR: builtFilter.map((filt) => ({
-              [ListingFilterKeys.neighborhood]: filt,
-            })),
-          });
-        } else if (filter[ListingFilterKeys.bedrooms]) {
-          const builtFilter = buildFilter({
-            $comparison: filter.$comparison,
-            $include_nulls: false,
-            value: filter[ListingFilterKeys.bedrooms],
-            key: ListingFilterKeys.bedrooms,
-          });
-          filters.push({
-            OR: builtFilter.map((filt) => ({
-              units: {
-                some: {
-                  numBedrooms: filt,
-                },
-              },
-            })),
-          });
-        } else if (filter[ListingFilterKeys.zipcode]) {
-          const builtFilter = buildFilter({
-            $comparison: filter.$comparison,
-            $include_nulls: false,
-            value: filter[ListingFilterKeys.zipcode],
-            key: ListingFilterKeys.zipcode,
+            value: filter[ListingFilterKeys.zipCode],
+            key: ListingFilterKeys.zipCode,
           });
           filters.push({
             OR: builtFilter.map((filt) => ({
               listingsBuildingAddress: {
-                zipCode: filt,
+                [ListingFilterKeys.zipCode]: filt,
               },
-            })),
-          });
-        } else if (filter[ListingFilterKeys.leasingAgents]) {
-          const builtFilter = buildFilter({
-            $comparison: filter.$comparison,
-            $include_nulls: false,
-            value: filter[ListingFilterKeys.leasingAgents],
-            key: ListingFilterKeys.leasingAgents,
-            caseSensitive: true,
-          });
-          filters.push({
-            OR: builtFilter.map((filt) => ({
-              userAccounts: {
-                some: {
-                  id: filt,
-                },
-              },
-            })),
-          });
-        } else if (filter[ListingFilterKeys.jurisdiction]) {
-          const builtFilter = buildFilter({
-            $comparison: filter.$comparison,
-            $include_nulls: false,
-            value: filter[ListingFilterKeys.jurisdiction],
-            key: ListingFilterKeys.jurisdiction,
-            caseSensitive: true,
-          });
-          filters.push({
-            OR: builtFilter.map((filt) => ({
-              jurisdictionId: filt,
             })),
           });
         }
