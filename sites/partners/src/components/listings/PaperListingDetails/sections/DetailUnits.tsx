@@ -68,6 +68,11 @@ const DetailUnits = ({ setUnitDrawer }: DetailUnitsProps) => {
     listing.jurisdictions.id
   )
 
+  const enableSection8Question = doJurisdictionsHaveFeatureFlagOn(
+    FeatureFlagEnum.enableSection8Question,
+    listing.jurisdictions.id
+  )
+
   return (
     <SectionWithGrid heading={t("listings.units")} inset>
       {enableHomeType && (
@@ -107,6 +112,17 @@ const DetailUnits = ({ setUnitDrawer }: DetailUnitsProps) => {
           )}
         </Grid.Cell>
       </Grid.Row>
+      {enableSection8Question && (
+        <Grid.Row>
+          <FieldValue
+            id="listings.section8Title"
+            testId="listing-section-8-acceptance"
+            label={t("listings.section8Title")}
+          >
+            {listing.section8Acceptance ? t("t.yes") : t("t.no")}
+          </FieldValue>
+        </Grid.Row>
+      )}
     </SectionWithGrid>
   )
 }

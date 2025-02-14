@@ -329,6 +329,7 @@
   "listings.reservedCommunityDisclaimerTitle": "Reserved Community Disclaimer Title",
   "listings.includeCommunityDisclaimer": "Do you want to include a community type disclaimer as the first page of the application?",
   "listings.reviewOrderQuestion": "How is the application review order determined?",
+  "listings.section8Title": "Do you accept Section 8 Housing Choice Vouchers",
   "listings.sections.addOpenHouse": "Add Open House",
   "listings.sections.additionalDetails": "Additional Details",
   "listings.sections.additionalDetailsSubtitle": "Are there any other required documents and selection criteria?",

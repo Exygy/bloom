@@ -88,5 +88,10 @@ export default class BooleansFormatter extends Formatter {
       falseCase: () =>
         this.data.includeCommunityDisclaimerQuestion === YesNoEnum.no ? false : null,
     })
+
+    this.processBoolean("section8Acceptance", {
+      when: this.data.listingSection8Acceptance === YesNoEnum.yes,
+      falseCase: () => (this.data.listingSection8Acceptance === YesNoEnum.no ? false : null),
+    })
   }
 }

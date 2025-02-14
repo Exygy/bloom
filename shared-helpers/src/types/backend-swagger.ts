@@ -3685,6 +3685,9 @@ export interface Listing {
 
   /**  */
   homeType?: HomeTypeEnum
+
+  /**  */
+  section8Acceptance?: boolean
 }
 
 export interface PaginationMeta {
@@ -4160,6 +4163,9 @@ export interface ListingCreate {
   homeType?: HomeTypeEnum
 
   /**  */
+  section8Acceptance?: boolean
+
+  /**  */
   listingMultiselectQuestions?: IdDTO[]
 
   /**  */
@@ -4444,6 +4450,9 @@ export interface ListingUpdate {
 
   /**  */
   homeType?: HomeTypeEnum
+
+  /**  */
+  section8Acceptance?: boolean
 
   /**  */
   listingMultiselectQuestions?: IdDTO[]
@@ -6474,6 +6483,7 @@ export enum FeatureFlagEnum {
   "enableAccessibilityFeatures" = "enableAccessibilityFeatures",
   "enableUtilitiesIncluded" = "enableUtilitiesIncluded",
   "hideCloseListingButton" = "hideCloseListingButton",
+  "enableSection8Question" = "enableSection8Question",
 }
 export enum EnumMultiselectQuestionFilterParamsComparison {
   "=" = "=",
