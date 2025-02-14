@@ -3426,6 +3426,9 @@ export interface Listing {
   neighborhood?: string
 
   /**  */
+  region?: RegionEnum
+
+  /**  */
   petPolicy?: string
 
   /**  */
@@ -3977,6 +3980,9 @@ export interface ListingCreate {
   neighborhood?: string
 
   /**  */
+  region?: RegionEnum
+
+  /**  */
   petPolicy?: string
 
   /**  */
@@ -4261,6 +4267,9 @@ export interface ListingUpdate {
 
   /**  */
   neighborhood?: string
+
+  /**  */
+  region?: RegionEnum
 
   /**  */
   petPolicy?: string
@@ -6310,6 +6319,13 @@ export enum EnumListingFilterParamsComparison {
   "<=" = "<=",
   "NA" = "NA",
 }
+export enum RegionEnum {
+  "Greater_Downtown" = "Greater_Downtown",
+  "Eastside" = "Eastside",
+  "Southwest" = "Southwest",
+  "Westside" = "Westside",
+}
+
 export enum ApplicationAddressTypeEnum {
   "leasingAgent" = "leasingAgent",
 }
@@ -6474,6 +6490,7 @@ export enum FeatureFlagEnum {
   "enableAccessibilityFeatures" = "enableAccessibilityFeatures",
   "enableUtilitiesIncluded" = "enableUtilitiesIncluded",
   "hideCloseListingButton" = "hideCloseListingButton",
+  "enableRegions" = "enableRegions",
 }
 export enum EnumMultiselectQuestionFilterParamsComparison {
   "=" = "=",
