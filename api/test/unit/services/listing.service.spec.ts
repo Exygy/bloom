@@ -434,6 +434,14 @@ describe('Testing listing service', () => {
         internet: true,
       },
       homeType: 'apartment',
+      listingNeighborhoodAmenities: {
+        groceryStores: 'stores',
+        pharmacies: 'pharmacies',
+        healthCareResources: 'health care',
+        parksAndCommunityCenters: 'parks',
+        schools: 'schools',
+        publicTransportation: 'public transportation',
+      },
     };
   };
 
@@ -473,6 +481,7 @@ describe('Testing listing service', () => {
           },
           listingFeatures: true,
           listingUtilities: true,
+          listingNeighborhoodAmenities: true,
           applicationMethods: {
             include: {
               paperApplications: {
@@ -603,6 +612,7 @@ describe('Testing listing service', () => {
           },
           listingFeatures: true,
           listingUtilities: true,
+          listingNeighborhoodAmenities: true,
           units: {
             include: {
               unitTypes: true,
@@ -694,6 +704,7 @@ describe('Testing listing service', () => {
           },
           listingFeatures: true,
           listingUtilities: true,
+          listingNeighborhoodAmenities: true,
           units: {
             include: {
               unitTypes: true,
@@ -1030,6 +1041,7 @@ describe('Testing listing service', () => {
           },
           listingFeatures: true,
           listingUtilities: true,
+          listingNeighborhoodAmenities: true,
           units: {
             include: {
               unitTypes: true,
@@ -1104,6 +1116,7 @@ describe('Testing listing service', () => {
           },
           listingFeatures: true,
           listingUtilities: true,
+          listingNeighborhoodAmenities: true,
           units: {
             include: {
               unitTypes: true,
@@ -1147,6 +1160,7 @@ describe('Testing listing service', () => {
           },
           listingFeatures: true,
           listingUtilities: true,
+          listingNeighborhoodAmenities: true,
           applicationMethods: {
             include: {
               paperApplications: {
@@ -1530,6 +1544,7 @@ describe('Testing listing service', () => {
           },
           listingFeatures: true,
           listingUtilities: true,
+          listingNeighborhoodAmenities: true,
           units: {
             include: {
               unitTypes: true,
@@ -1632,6 +1647,7 @@ describe('Testing listing service', () => {
           },
           listingFeatures: true,
           listingUtilities: true,
+          listingNeighborhoodAmenities: true,
           applicationMethods: {
             include: {
               paperApplications: {
@@ -1769,6 +1785,7 @@ describe('Testing listing service', () => {
             },
           },
           listingUtilities: true,
+          listingNeighborhoodAmenities: true,
           listingsApplicationDropOffAddress: true,
           listingsApplicationPickUpAddress: true,
           listingsApplicationMailingAddress: true,
@@ -1869,6 +1886,7 @@ describe('Testing listing service', () => {
             },
           },
           listingUtilities: true,
+          listingNeighborhoodAmenities: true,
           listingsApplicationDropOffAddress: true,
           listingsApplicationPickUpAddress: true,
           listingsApplicationMailingAddress: true,
@@ -2019,6 +2037,16 @@ describe('Testing listing service', () => {
               hearing: true,
               visual: false,
               mobility: true,
+            },
+          },
+          listingNeighborhoodAmenities: {
+            create: {
+              groceryStores: 'stores',
+              pharmacies: 'pharmacies',
+              healthCareResources: 'health care',
+              parksAndCommunityCenters: 'parks',
+              schools: 'schools',
+              publicTransportation: 'public transportation',
             },
           },
           jurisdictions: {
@@ -2192,6 +2220,7 @@ describe('Testing listing service', () => {
             },
           },
           listingUtilities: true,
+          listingNeighborhoodAmenities: true,
           listingsApplicationDropOffAddress: true,
           listingsApplicationPickUpAddress: true,
           listingsApplicationMailingAddress: true,
@@ -2324,6 +2353,7 @@ describe('Testing listing service', () => {
             },
           },
           listingUtilities: true,
+          listingNeighborhoodAmenities: true,
           listingsApplicationDropOffAddress: true,
           listingsApplicationPickUpAddress: true,
           listingsBuildingAddress: true,
@@ -2416,6 +2446,7 @@ describe('Testing listing service', () => {
             },
           },
           listingUtilities: true,
+          listingNeighborhoodAmenities: true,
           listingsApplicationDropOffAddress: true,
           listingsApplicationPickUpAddress: true,
           listingsBuildingAddress: true,
@@ -2499,6 +2530,7 @@ describe('Testing listing service', () => {
             },
           },
           listingUtilities: true,
+          listingNeighborhoodAmenities: true,
           listingsApplicationDropOffAddress: true,
           listingsApplicationPickUpAddress: true,
           listingsBuildingAddress: true,
@@ -2615,6 +2647,7 @@ describe('Testing listing service', () => {
             },
           },
           listingUtilities: true,
+          listingNeighborhoodAmenities: true,
           listingsBuildingAddress: true,
           reservedCommunityTypes: true,
         },
@@ -2714,6 +2747,7 @@ describe('Testing listing service', () => {
             },
           },
           listingUtilities: true,
+          listingNeighborhoodAmenities: true,
           listingsApplicationDropOffAddress: true,
           listingsApplicationPickUpAddress: true,
           listingsBuildingAddress: true,
@@ -2852,6 +2886,7 @@ describe('Testing listing service', () => {
             },
           },
           listingUtilities: true,
+          listingNeighborhoodAmenities: true,
           listingsApplicationDropOffAddress: true,
           listingsApplicationPickUpAddress: true,
           listingsApplicationMailingAddress: true,
@@ -2997,6 +3032,16 @@ describe('Testing listing service', () => {
               hearing: true,
               visual: false,
               mobility: true,
+            },
+          },
+          listingNeighborhoodAmenities: {
+            update: {
+              groceryStores: 'stores',
+              pharmacies: 'pharmacies',
+              healthCareResources: 'health care',
+              parksAndCommunityCenters: 'parks',
+              schools: 'schools',
+              publicTransportation: 'public transportation',
             },
           },
           jurisdictions: {
