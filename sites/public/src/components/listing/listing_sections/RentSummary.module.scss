@@ -1,0 +1,6 @@
+.rent-summary {
+  margin-block-start: var(--seeds-spacer-content);
+  @media (--sm-only) {
+    margin-inline: var(--seeds-s4);
+  }
+}

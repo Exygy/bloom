@@ -16,6 +16,7 @@ import {
   Unit,
   UnitTypeEnum,
   YesNoEnum,
+  ListingEventsTypeEnum,
 } from "../src/types/backend-swagger"
 
 export const multiselectQuestionPreference: MultiselectQuestion = {
@@ -270,6 +271,17 @@ export const jurisdiction: Jurisdiction = {
   languages: [LanguagesEnum.en],
   partnerTerms: undefined,
   publicUrl: "",
+  featureFlags: [
+    {
+      name: "enableUtilitiesIncluded",
+      id: "id",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      active: true,
+      description: "",
+      jurisdictions: [],
+    },
+  ],
   emailFromAddress: "Alameda: Housing Bay Area <bloom-no-reply@exygy.dev>",
   rentalAssistanceDefault:
     "Housing Choice Vouchers, Section 8 and other valid rental assistance programs will be considered for this property. In the case of a valid rental subsidy, the required minimum income will be based on the portion of the rent that the tenant pays after use of the subsidy.",
@@ -321,13 +333,49 @@ export const listing: Listing = {
   listingsApplicationDropOffAddress: undefined,
   applicationDropOffAddressOfficeHours: undefined,
   listingsApplicationMailingAddress: undefined,
+  applicationLotteryTotals: [],
   jurisdictions: {
     id: "id",
     name: "San Jose",
   },
   depositMax: "",
   disableUnitsAccordion: false,
-  listingEvents: [],
+  listingEvents: [
+    {
+      id: "id",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      type: ListingEventsTypeEnum.openHouse,
+      startDate: new Date(),
+      startTime: new Date(),
+      endTime: new Date(),
+      url: "https://www.exygy.com",
+      label: "Open house 1 link label",
+      note: "Open house 1 note",
+    },
+    {
+      id: "id",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      type: ListingEventsTypeEnum.openHouse,
+      startDate: new Date(),
+      startTime: new Date(),
+      endTime: new Date(),
+      url: "https://www.exygy.com",
+      label: "Open house 2 link label",
+      note: "Open house 2 note",
+    },
+    {
+      id: "id",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      type: ListingEventsTypeEnum.publicLottery,
+      startDate: new Date(),
+      startTime: new Date(),
+      endTime: new Date(),
+      note: "Lottery event notes",
+    },
+  ],
   showWaitlist: false,
   reviewOrderType: ReviewOrderTypeEnum.firstComeFirstServe,
   urlSlug: "listing-slug-abcdef",
@@ -337,15 +385,48 @@ export const listing: Listing = {
   applicationDueDate: new Date("2019-12-31T15:22:57.000-07:00"),
   applicationMethods: [
     {
+      type: ApplicationMethodsTypeEnum.Referral,
+      id: "id",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
       type: ApplicationMethodsTypeEnum.Internal,
       label: "Label",
       externalReference: "",
       acceptsPostmarkedApplications: false,
       phoneNumber: "123",
-      id: "cd42843a-c251-4bcd-97ed-8f6c34752f01",
+      id: "id",
       createdAt: new Date(),
       updatedAt: new Date(),
-      paperApplications: [],
+      paperApplications: [
+        {
+          id: "id",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          language: LanguagesEnum.en,
+          assets: {
+            id: "id",
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            fileId: "id",
+            label: "Asset label",
+          },
+        },
+        {
+          id: "id",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          language: LanguagesEnum.es,
+          assets: {
+            id: "id",
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            fileId: "id",
+            label: "Asset label",
+          },
+        },
+      ],
     },
   ],
   applicationOrganization: "98 Archer Street",
@@ -364,8 +445,9 @@ export const listing: Listing = {
   costsNotIncluded:
     "Resident responsible for PG&E, internet and phone.  Owner pays for water, trash, and sewage.  Residents encouraged to obtain renter's insurance but this is not a requirement.  Rent is due by the 5th of each month. Late fee $35 and returned check fee is $35 additional.",
   creditHistory:
-    "Applications will be rated on a score system for housing. An applicant's score may be impacted by negative tenant peformance information provided to the credit reporting agency.  All applicants are expected have a passing acore of 70 points out of 100 to be considered for housing.  Applicants with no credit history will receive a maximum of 80 points to fairly outweigh positive and/or negative trades as would an applicant with established credit history. Refer to Tenant Selection Criteria or Qualification Criteria for details related to the qualification process. ",
+    "Applications will be rated on a score system for housing. An applicant's score may be impacted by negative tenant peformance information provided to the credit reporting agency.  All applicants are expected have a passing acore of 70 points out of 100 to be considered for housing.  Applicants with no credit history will receive a maximum of 80 points to fairly outweigh positive and/or negative trades as would an applicant with established credit history. Refer to Tenant Selection Criteria or Qualification Criteria for details related to the qualification process.",
   depositMin: "1140.0",
+  specialNotes: "Special notes description",
   programRules:
     "Applicants must adhere to minimum & maximum income limits. Tenant Selection Criteria applies.",
   waitlistMaxSize: 300,
@@ -396,7 +478,68 @@ export const listing: Listing = {
   leasingAgentOfficeHours: "Monday, Tuesday & Friday, 9:00AM - 5:00PM",
   leasingAgentPhone: "(408) 217-8562",
   leasingAgentTitle: "",
-  listingMultiselectQuestions: [],
+  listingFeatures: {
+    elevator: true,
+    wheelchairRamp: true,
+    serviceAnimalsAllowed: true,
+    accessibleParking: true,
+  },
+  reservedCommunityTypes: {
+    id: "id",
+    name: "veteran",
+  },
+  servicesOffered: "Services offered description",
+  listingUtilities: {
+    water: true,
+    gas: true,
+    electricity: true,
+  },
+  listingMultiselectQuestions: [
+    {
+      ordinal: 1,
+      multiselectQuestions: {
+        id: "id",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        text: "Preference 1",
+        jurisdictions: [],
+        applicationSection: MultiselectQuestionsApplicationSectionEnum.preferences,
+      },
+    },
+    {
+      ordinal: 2,
+      multiselectQuestions: {
+        id: "id",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        text: "Preference 2",
+        jurisdictions: [],
+        applicationSection: MultiselectQuestionsApplicationSectionEnum.preferences,
+      },
+    },
+    {
+      ordinal: 1,
+      multiselectQuestions: {
+        id: "id",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        text: "Program 1",
+        jurisdictions: [],
+        applicationSection: MultiselectQuestionsApplicationSectionEnum.programs,
+      },
+    },
+    {
+      ordinal: 2,
+      multiselectQuestions: {
+        id: "id",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        text: "Program 2",
+        jurisdictions: [],
+        applicationSection: MultiselectQuestionsApplicationSectionEnum.programs,
+      },
+    },
+  ],
   rentalAssistance: "Custom rental assistance",
   rentalHistory:
     "Two years of rental history will be verified with all applicable landlords.  Household family members and/or personal friends are not acceptable landlord references.  Two professional character references may be used in lieu of rental history for applicants with no prior rental history.  An unlawful detainer report will be processed thourhg the U.D. Registry, Inc. Applicants will be disqualified if they have any evictions filing within the last 7 years.  Refer to Tenant Selection Criteria or Qualification Criteria for details related to the qualification process.",
@@ -407,7 +550,7 @@ export const listing: Listing = {
   unitsSummary: [],
   unitsSummarized: undefined,
   unitAmenities: "Dishwasher",
-  developer: "Charities Housing ",
+  developer: "Charities Housing",
   yearBuilt: 2012,
   accessibility:
     "There is a total of 5 ADA units in the complex, all others are adaptable. Exterior Wheelchair ramp (front entry)",

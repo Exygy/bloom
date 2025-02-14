@@ -1,0 +1,31 @@
+.listing-main-details {
+  @media (--sm-only) {
+    padding-inline: var(--seeds-s4);
+  }
+}
+
+.listing-heading {
+  font-size: var(--seeds-type-heading-size-3xl);
+  @media (--sm-only) {
+    font-size: var(--seeds-type-heading-size-2xl);
+  }
+}
+
+.listing-address {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  @media (--sm-only) {
+    .view-on-map {
+      margin-top: var(--seeds-s3);
+    }
+  }
+}
+
+.listing-tags {
+  span {
+    &:not(:last-child) {
+      margin-inline-end: var(--seeds-s2);
+    }
+  }
+}

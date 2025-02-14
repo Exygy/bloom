@@ -2021,10 +2021,10 @@
     tailwindcss-rtl "^0.9.0"
     typesafe-actions "^5.1.0"
 
-"@bloom-housing/ui-seeds@1.18.1":
-  version "1.18.1"
-  resolved "https://registry.npmjs.org/@bloom-housing/ui-seeds/-/ui-seeds-1.18.1.tgz"
-  integrity sha512-no/0kfPquMSb76u7Lfo32BeltB+bZ5si0RH8lhn2nL9js1LhuT/yFlDotGNvGwAAqP6iDcfqjfbWrTM4f+KGrA==
+"@bloom-housing/ui-seeds@^1.19.0":
+  version "1.19.0"
+  resolved "https://registry.yarnpkg.com/@bloom-housing/ui-seeds/-/ui-seeds-1.19.0.tgz#c5e41f6fa99ed33c933efc0e8b6163fa16a35435"
+  integrity sha512-uNPR6ywmSiFdypRcMHfI+jO/Zy7qeSG1cofkP2tzVFi2dF3sMza5G6IXUZ0fMAFq4hzIvKauuI8b+ikXTmQgIQ==
   dependencies:
     "@fortawesome/fontawesome-svg-core" "^6.3.0"
     "@fortawesome/react-fontawesome" "^0.2.0"
@@ -14108,6 +14108,11 @@ whatwg-encoding@^1.0.5:
   integrity sha512-b5lim54JOPN9HtzvK9HFXvBma/rnfFeqsic0hSpjtDbVxR3dJKLc+KB4V6GgiGOvl7CY/KNh8rxSo9DKQrnUEw==
   dependencies:
     iconv-lite "0.4.24"
+
+whatwg-fetch@^3.6.20:
+  version "3.6.20"
+  resolved "https://registry.yarnpkg.com/whatwg-fetch/-/whatwg-fetch-3.6.20.tgz#580ce6d791facec91d37c72890995a0b48d31c70"
+  integrity sha512-EqhiFU6daOA8kpjOWTL0olhVOF3i7OrFzSYiGsEMB8GcXS+RrzauAERX65xMeNWVqxA6HXH2m69Z9LaKKdisfg==
 
 whatwg-mimetype@^2.3.0:
   version "2.3.0"

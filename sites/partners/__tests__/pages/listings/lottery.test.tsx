@@ -260,6 +260,7 @@ describe("lottery", () => {
           ...closedListing,
           lotteryLastRunAt: new Date(),
           lotteryStatus: LotteryStatusEnum.ran,
+          listingMultiselectQuestions: [],
         }}
       />
     )
@@ -571,6 +572,7 @@ describe("lottery", () => {
     const updatedListing = {
       ...closedListing,
       lotteryLastRunAt: new Date("September 6, 2025 8:15:00"),
+      listingMultiselectQuestions: [],
     }
     const { getByText, findByText, findAllByText, getAllByText } = render(
       <Lottery listing={updatedListing} />

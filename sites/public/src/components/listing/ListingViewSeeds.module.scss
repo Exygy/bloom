@@ -1,0 +1,109 @@
+.muted-card {
+  --card-border-color: var(--seeds-color-primary-light);
+  --card-border-width: var(--seeds-border-2);
+  --card-background-color: var(--seeds-bg-color-surface-primary);
+  --card-divider-color: var(--seeds-border-color);
+  --card-divider-width: var(--seeds-border-1);
+}
+
+.heading-group {
+  --heading-color: var(--seeds-text-color-darker);
+  --subheading-margin: var(--seeds-s1);
+  --subheading-margin-sm: var(--seeds-s2);
+}
+
+.listing-view {
+  color: var(--seeds-text-color);
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  font-family: var(--seeds-font-alt-sans);
+  [class*="seeds-card"] {
+    @media (--sm-only) {
+      --card-content-padding-inline: var(--seeds-s4);
+    }
+  }
+  @media (--sm-and-up) {
+    padding-block-start: var(--seeds-spacer-section);
+  }
+}
+
+.content-wrapper {
+  max-width: var(--seeds-width-5xl);
+  display: flex;
+  flex-direction: column;
+  @media (--sm-and-up) {
+    margin-inline: var(--seeds-s2);
+    flex-direction: row;
+  }
+}
+
+.right-bar {
+  display: flex;
+  flex-direction: column;
+  flex-basis: calc(100% / 3);
+  margin-block-end: var(--seeds-spacer-section);
+}
+
+.left-bar {
+  display: flex;
+  flex-direction: column;
+  flex-basis: calc(100% / 3 * 2);
+  @media (--sm-and-up) {
+    padding-inline-end: var(--seeds-spacer-section);
+  }
+}
+
+.main-content {
+  margin-block-start: var(--seeds-spacer-content);
+}
+
+.mobile-full-width-card {
+  @media (--sm-only) {
+    margin-block-start: 0;
+    border-radius: 0;
+    border-inline-end: 0;
+    border-inline-start: 0;
+  }
+}
+
+.mobile-no-bottom-border {
+  @media (--sm-only) {
+    border-block-end: 0;
+  }
+}
+
+.mobile-inline-collapse-padding {
+  padding-inline-start: var(--seeds-spacer-section);
+  @media (--sm-only) {
+    padding-inline: var(--seeds-s4);
+  }
+}
+
+.thin-heading {
+  font-size: var(--seeds-type-heading-size-lg);
+  color: var(--seeds-text-color-darker);
+  font-weight: var(--seeds-font-weight-regular);
+}
+
+.thin-heading-sm {
+  font-size: var(--seeds-type-heading-size-md);
+  color: var(--seeds-text-color-darker);
+  font-weight: var(--seeds-font-weight-regular);
+}
+
+.full-width-button {
+  width: 100%;
+}
+
+.hide-desktop {
+  @media (--sm-and-up) {
+    display: none;
+  }
+}
+
+.hide-mobile {
+  @media (--sm-only) {
+    display: none;
+  }
+}

@@ -65,6 +65,7 @@ const getListingTableData = (
 }
 
 export const getListingApplicationStatus = (listing: Listing): StatusBarType => {
+  if (!listing) return
   let content = ""
   let subContent = ""
   let formattedDate = ""
