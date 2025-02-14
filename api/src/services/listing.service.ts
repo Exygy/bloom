@@ -906,6 +906,7 @@ export class ListingService implements OnModuleInit {
               },
             }
           : undefined,
+        isVerified: !!dto.isVerified,
       },
     });
 
@@ -1613,6 +1614,7 @@ export class ListingService implements OnModuleInit {
                 },
               }
             : undefined,
+          isVerified: !!dto.isVerified,
         },
         include: views.details,
         where: {

@@ -90,6 +90,14 @@ export const stagingSeed = async (
       [jurisdiction.id],
     ),
   });
+  await prismaClient.featureFlags.create({
+    data: featureFlagFactory(
+      'enableIsVerified',
+      false,
+      'When true, the listing can ba have its contents manually verified by a user',
+      [jurisdiction.id],
+    ),
+  });
   // create admin user
   await prismaClient.userAccounts.create({
     data: await userFactory({

@@ -5,5 +5,6 @@ export enum FeatureFlagEnum {
   enableHomeType = 'enableHomeType',
   enableAccessibilityFeatures = 'enableAccessibilityFeatures',
   enableUtilitiesIncluded = 'enableUtilitiesIncluded',
+  enableIsVerified = 'enableIsVerified',
   hideCloseListingButton = 'hideCloseListingButton',
 }
